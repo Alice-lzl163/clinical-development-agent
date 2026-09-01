@@ -84,8 +84,8 @@ class ProportionTwoMethod:
             nt,nc=int(result.raw["analysis_n_treatment"]),int(result.raw["analysis_n_control"]); rt,rc=_ceil_dropout(nt,values["dropout_rate"]),_ceil_dropout(nc,values["dropout_rate"])
         else:
             nt,nc=values["analyzable_treatment"],values["analyzable_control"]
-            realized_ratio=nt/nc
-            if not math.isclose(realized_ratio,values["allocation_ratio"],rel_tol=0,abs_tol=1e-12): raise RequestValidationError("analyzable_treatment / analyzable_control must equal allocation_ratio")
+            allocation_deviation=abs(nt-values["allocation_ratio"]*nc)
+            if allocation_deviation>1+1e-12: raise RequestValidationError("analyzable arm sizes are inconsistent with allocation_ratio beyond the frozen one-subject rounding allowance")
             result=self.adapter.power(treatment_probability=values["treatment_probability"],control_probability=values["control_probability"],n_treatment=nt,n_control=nc,alpha=values["alpha"]); rt=rc=None
         return _result(spec, values, result, solve_mode=solve_mode, analysis_total=nt+nc, randomized_total=rt+rc if rt is not None else None, per_group={"treatment": nt, "control": nc},
             derived={"beta": 1-values["power"] if solve_mode=="sample_size" else None, "analyzable_treatment": nt, "analyzable_control": nc, "randomized_treatment": rt, "randomized_control": rc},

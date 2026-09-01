@@ -142,7 +142,11 @@ class CalculatorTests(unittest.TestCase):
     def test_proportion_power_orientation_and_ratio_are_explicit(self):
         p={"control_probability":.2,"treatment_probability":.35,"allocation_ratio":2.,"alpha":.05,"analyzable_treatment":100,"analyzable_control":50}
         result,engine=self.power("proportion_two",p); self.assertEqual({"treatment":100,"control":50},result.sample_size_per_group); self.assertIn("0.35",engine.calls[0]["calculation_code"])
-        with self.assertRaises(RequestValidationError): self.power("proportion_two",{**p,"analyzable_treatment":99})
+        with self.assertRaises(RequestValidationError): self.power("proportion_two",{**p,"analyzable_treatment":98})
+
+    def test_proportion_power_accepts_one_subject_rounding_deviation(self):
+        p={"control_probability":.2,"treatment_probability":.35,"allocation_ratio":2.,"alpha":.05,"analyzable_treatment":191,"analyzable_control":96}
+        result,_=self.power("proportion_two",p); self.assertEqual({"treatment":191,"control":96},result.sample_size_per_group)
 
     def test_missing_r_is_dependency_error(self):
         if shutil.which("Rscript"): self.skipTest("Rscript is installed")
