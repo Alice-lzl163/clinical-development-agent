@@ -1,0 +1,159 @@
+{
+  "test_key": "adaptive_simulate",
+  "method_id": "adaptive_simulation",
+  "display_name": "Adaptive/group-sequential Monte Carlo",
+  "endpoint_family": "continuous_or_binary",
+  "design_family": "adaptive_simulation",
+  "estimand": "Operating characteristics of a fully specified adaptive design.",
+  "hypothesis": {
+    "null": "Generated null scenarios",
+    "alternative": "Generated alternative scenarios",
+    "effect_measure": "design_specific",
+    "beneficial_direction": "higher_or_lower_explicit"
+  },
+  "inputs": [
+    {
+      "name": "adaptive_method",
+      "definition": "Prespecified adaptive method.",
+      "type": "string",
+      "unit": "category",
+      "required": true,
+      "valid_range": {
+        "enum": [
+          "combination_test_ssr"
+        ]
+      },
+      "default": null,
+      "clinical_interpretation": "Prespecified adaptive method."
+    },
+    {
+      "name": "stage_information",
+      "definition": "Planned information fractions and stage sample sizes.",
+      "type": "object",
+      "unit": "design",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Planned information fractions and stage sample sizes."
+    },
+    {
+      "name": "adaptation_rule",
+      "definition": "Fully prespecified promising-zone/SSR rule and caps.",
+      "type": "object",
+      "unit": "rule",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Fully prespecified promising-zone/SSR rule and caps."
+    },
+    {
+      "name": "effect_scenarios",
+      "definition": "Null and alternative effects for OC evaluation.",
+      "type": "array",
+      "unit": "effect units",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Null and alternative effects for OC evaluation."
+    },
+    {
+      "name": "simulation_replicates",
+      "definition": "Monte Carlo replicates.",
+      "type": "integer",
+      "unit": "replicates",
+      "required": true,
+      "valid_range": {
+        "minimum": 10000
+      },
+      "default": null,
+      "clinical_interpretation": "Monte Carlo replicates."
+    },
+    {
+      "name": "rng_seed",
+      "definition": "RNG seed.",
+      "type": "integer",
+      "unit": "seed",
+      "required": true,
+      "valid_range": {
+        "minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "RNG seed."
+    },
+    {
+      "name": "alpha",
+      "definition": "Overall type-I error probability.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.05,
+      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis."
+    },
+    {
+      "name": "power",
+      "definition": "Target probability of rejecting the null under the design alternative.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.8,
+      "clinical_interpretation": "Target probability of rejecting the null under the design alternative."
+    }
+  ],
+  "alpha": {
+    "sidedness": "one_or_two_sided",
+    "convention": "Overall alpha; one-sided uses alpha and two-sided divides alpha equally between tails."
+  },
+  "allocation": {
+    "ratio_definition": "n_treatment / n_control",
+    "supported": true,
+    "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power."
+  },
+  "solve_modes": {
+    "sample_size": false,
+    "power": false,
+    "events": false,
+    "operating_characteristics": true
+  },
+  "engine": {
+    "engine_family": "custom_sim",
+    "type": "simulation",
+    "package": null,
+    "package_version_policy": "Not applicable; pin the specification and implementation commit.",
+    "function": null,
+    "function_signature": null,
+    "parameter_mapping": {},
+    "output_mapping": {}
+  },
+  "method_type": "simulation",
+  "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
+  "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
+  "assumptions": [
+    "The continuous_or_binary endpoint model and adaptive_simulation design are correctly specified.",
+    "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+    "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+  ],
+  "unsupported_domains": [],
+  "warnings": [
+    "The recovered simulator is evidence only and requires independent cross-engine validation before migration."
+  ],
+  "validation_grade": "V2",
+  "migration_action": "KEEP_AND_VALIDATE",
+  "lifecycle_status": "EXPERIMENTAL",
+  "primary_reference": "Armitage, McPherson & Rowe; Cui, Hung & Wang",
+  "package_reference": null,
+  "guideline_reference": "FDA Adaptive Guidance",
+  "benchmark_requirements": [
+    "Cross-engine boundary/T1E/power/ASN tests; multiple seeds; analytic fixed-design limits",
+    "Reproduce official package examples for the pinned version.",
+    "Compare forward power and inverse sample-size results on a prespecified grid.",
+    "Verify null-boundary type-I error and clinically relevant alternatives independently."
+  ]
+}

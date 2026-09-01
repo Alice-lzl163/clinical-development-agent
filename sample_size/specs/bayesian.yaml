@@ -1,0 +1,142 @@
+{
+  "test_key": "bayesian",
+  "method_id": "bayesian_binary_decision_sim",
+  "display_name": "Bayesian binary trial",
+  "endpoint_family": "binary",
+  "design_family": "bayesian_parallel",
+  "estimand": "Prior-predictive/frequentist operating characteristics of a frozen posterior decision rule.",
+  "hypothesis": {
+    "null": "Null data-generating scenarios",
+    "alternative": "Alternative scenarios meeting the target effect",
+    "effect_measure": "posterior_probability_decision",
+    "beneficial_direction": "higher_or_lower_explicit"
+  },
+  "inputs": [
+    {
+      "name": "prior",
+      "definition": "Fully specified prior distribution and hyperparameters.",
+      "type": "object",
+      "unit": "distribution",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Fully specified prior distribution and hyperparameters."
+    },
+    {
+      "name": "likelihood",
+      "definition": "Endpoint likelihood and parameterization.",
+      "type": "object",
+      "unit": "model",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Endpoint likelihood and parameterization."
+    },
+    {
+      "name": "decision_rule",
+      "definition": "Posterior success/futility rule and thresholds.",
+      "type": "object",
+      "unit": "rule",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Posterior success/futility rule and thresholds."
+    },
+    {
+      "name": "true_parameter_scenarios",
+      "definition": "Null and alternative data-generating scenarios.",
+      "type": "array",
+      "unit": "effect units",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Null and alternative data-generating scenarios."
+    },
+    {
+      "name": "candidate_sample_sizes",
+      "definition": "Candidate sample sizes.",
+      "type": "array",
+      "unit": "subjects",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Candidate sample sizes."
+    },
+    {
+      "name": "simulation_replicates",
+      "definition": "Monte Carlo replicates.",
+      "type": "integer",
+      "unit": "replicates",
+      "required": true,
+      "valid_range": {
+        "minimum": 10000
+      },
+      "default": null,
+      "clinical_interpretation": "Monte Carlo replicates."
+    },
+    {
+      "name": "rng_seed",
+      "definition": "RNG seed.",
+      "type": "integer",
+      "unit": "seed",
+      "required": true,
+      "valid_range": {
+        "minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "RNG seed."
+    }
+  ],
+  "alpha": {
+    "sidedness": "one_or_two_sided",
+    "convention": "Overall alpha; one-sided uses alpha and two-sided divides alpha equally between tails."
+  },
+  "allocation": {
+    "ratio_definition": "n_treatment / n_control",
+    "supported": true,
+    "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power."
+  },
+  "solve_modes": {
+    "sample_size": true,
+    "power": true,
+    "events": false,
+    "operating_characteristics": true
+  },
+  "engine": {
+    "engine_family": "custom_sim",
+    "type": "simulation",
+    "package": null,
+    "package_version_policy": "Not applicable; pin the specification and implementation commit.",
+    "function": null,
+    "function_signature": null,
+    "parameter_mapping": {},
+    "output_mapping": {}
+  },
+  "method_type": "simulation",
+  "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
+  "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
+  "assumptions": [
+    "The binary endpoint model and bayesian_parallel design are correctly specified.",
+    "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+    "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+  ],
+  "unsupported_domains": [
+    "A request that supplies only a prior strength without likelihood and decision rule."
+  ],
+  "warnings": [
+    "No package function is frozen: BayesCTDesign::simple_sim has a fixed package-defined credible-interval design and does not accept the general prior/decision-rule interface required here.",
+    "DO_NOT_REPRODUCE_HISTORICAL_BEHAVIOR: Do not label the historical frequentist two-proportion formula Bayesian; its prior was unused."
+  ],
+  "validation_grade": "V5",
+  "migration_action": "REDESIGN",
+  "lifecycle_status": "EXPERIMENTAL",
+  "primary_reference": "Berry et al.; Bayesian decision-theoretic design literature",
+  "package_reference": null,
+  "guideline_reference": "FDA Bayesian methodology guidance/draft; ICH E9",
+  "benchmark_requirements": [
+    "Verify posterior calculations analytically in conjugate cases; simulation T1E/power/assurance across prior conflict",
+    "Reproduce official package examples for the pinned version.",
+    "Compare forward power and inverse sample-size results on a prespecified grid.",
+    "Verify null-boundary type-I error and clinically relevant alternatives independently."
+  ]
+}

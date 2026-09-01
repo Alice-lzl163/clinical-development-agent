@@ -1,0 +1,157 @@
+{
+  "test_key": "multiple_endpoints",
+  "method_id": "multiple_endpoint_joint_power",
+  "display_name": "Multiple/compound endpoints",
+  "endpoint_family": "multiple_endpoints",
+  "design_family": "multiple_primary",
+  "estimand": "Disjunctive or conjunctive power under a fully specified endpoint vector and multiplicity procedure.",
+  "hypothesis": {
+    "null": "Global and partial nulls defined by the procedure",
+    "alternative": "Prespecified vector of endpoint alternatives",
+    "effect_measure": "joint_rejection_probability",
+    "beneficial_direction": "endpoint_specific"
+  },
+  "inputs": [
+    {
+      "name": "endpoint_models",
+      "definition": "Endpoint-specific distributions, effects, and analysis tests.",
+      "type": "array",
+      "unit": "models",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Endpoint-specific distributions, effects, and analysis tests."
+    },
+    {
+      "name": "correlation_matrix",
+      "definition": "Positive-semidefinite full endpoint correlation matrix.",
+      "type": "array",
+      "unit": "correlation",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Positive-semidefinite full endpoint correlation matrix."
+    },
+    {
+      "name": "success_rule",
+      "definition": "Joint success rule.",
+      "type": "string",
+      "unit": "category",
+      "required": true,
+      "valid_range": {
+        "enum": [
+          "all_endpoints",
+          "at_least_one_endpoint"
+        ]
+      },
+      "default": null,
+      "clinical_interpretation": "Joint success rule."
+    },
+    {
+      "name": "allocation_ratio",
+      "definition": "Planned treatment-to-control sample-size ratio n_treatment / n_control.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": 1,
+      "clinical_interpretation": "Planned treatment-to-control sample-size ratio n_treatment / n_control."
+    },
+    {
+      "name": "alpha",
+      "definition": "Overall type-I error probability.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.05,
+      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis."
+    },
+    {
+      "name": "power",
+      "definition": "Target probability of rejecting the null under the design alternative.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.8,
+      "clinical_interpretation": "Target probability of rejecting the null under the design alternative."
+    },
+    {
+      "name": "dropout_rate",
+      "definition": "Expected proportion without an analyzable primary endpoint.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0,
+      "clinical_interpretation": "Anticipated loss applied only after the analysis-required sample size is obtained."
+    }
+  ],
+  "alpha": {
+    "sidedness": "one_or_two_sided",
+    "convention": "Overall alpha; one-sided uses alpha and two-sided divides alpha equally between tails."
+  },
+  "allocation": {
+    "ratio_definition": "n_treatment / n_control",
+    "supported": true,
+    "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power."
+  },
+  "solve_modes": {
+    "sample_size": false,
+    "power": false,
+    "events": false,
+    "operating_characteristics": true
+  },
+  "engine": {
+    "engine_family": "mediana",
+    "type": "simulation",
+    "package": "MedianaDesigner",
+    "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
+    "function": "MedianaDesigner::MultAdj",
+    "function_signature": "MultAdj(parameters)",
+    "parameter_mapping": {
+      "endpoint models, effects, covariance, multiplicity, sample sizes, alpha, dropout, seed, and nsims": "fields in the documented parameters list"
+    },
+    "output_mapping": {
+      "operating_characteristics": "sim_summary and sim_results"
+    }
+  },
+  "method_type": "simulation",
+  "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
+  "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
+  "assumptions": [
+    "The multiple_endpoints endpoint model and multiple_primary design are correctly specified.",
+    "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+    "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+  ],
+  "unsupported_domains": [
+    "Endpoint count/effect and scalar correlation without endpoint-specific models, full covariance, and success rule."
+  ],
+  "warnings": [
+    "DO_NOT_REPRODUCE_HISTORICAL_BEHAVIOR: Do not use a single-effect scalar correlation inflation for an unspecified endpoint family/success rule."
+  ],
+  "validation_grade": "V4",
+  "migration_action": "REPLACE",
+  "lifecycle_status": "EXPERIMENTAL",
+  "primary_reference": "Sozu et al.; Dmitrienko et al.",
+  "package_reference": "https://search.r-project.org/CRAN/refmans/MedianaDesigner/html/MultAdj.html",
+  "guideline_reference": "FDA Multiple Endpoints Guidance",
+  "benchmark_requirements": [
+    "Package examples plus multivariate simulation; verify FWER and disjunctive/conjunctive power",
+    "Reproduce official package examples for the pinned version.",
+    "Compare forward power and inverse sample-size results on a prespecified grid.",
+    "Verify null-boundary type-I error and clinically relevant alternatives independently."
+  ]
+}

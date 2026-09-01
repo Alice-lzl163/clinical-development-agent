@@ -1,0 +1,191 @@
+{
+  "test_key": "cox_covariate",
+  "method_id": "cox_covariate_effect",
+  "display_name": "Cox regression with covariate R²",
+  "endpoint_family": "time_to_event",
+  "design_family": "regression",
+  "estimand": "Target Cox regression coefficient/hazard ratio.",
+  "hypothesis": {
+    "null": "coefficient = 0 (HR = 1)",
+    "alternative": "coefficient differs from or exceeds 0",
+    "effect_measure": "hazard_ratio",
+    "beneficial_direction": "lower_or_higher_explicit"
+  },
+  "inputs": [
+    {
+      "name": "alternative_hazard_ratio",
+      "definition": "Hazard ratio per unit/contrast of the target covariate.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "Hazard ratio per unit/contrast of the target covariate."
+    },
+    {
+      "name": "covariate_type",
+      "definition": "Target covariate type.",
+      "type": "string",
+      "unit": "category",
+      "required": true,
+      "valid_range": {
+        "enum": [
+          "binary",
+          "continuous"
+        ]
+      },
+      "default": null,
+      "clinical_interpretation": "Target covariate type."
+    },
+    {
+      "name": "binary_pilot_data",
+      "definition": "Pilot vectors X1, X2, and failureFlag required when covariate_type is binary.",
+      "type": "object",
+      "unit": "subject-level pilot data",
+      "required": false,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Empirical joint covariate and event information used by ssizeEpi; it is not replaced by a marginal prevalence."
+    },
+    {
+      "name": "covariate_variance",
+      "definition": "Variance of the target covariate required when covariate_type is continuous.",
+      "type": "number",
+      "unit": "squared covariate units",
+      "required": false,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "Planned variance of the continuous prognostic/exposure covariate."
+    },
+    {
+      "name": "event_probability",
+      "definition": "Probability of observing the event during study.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "minimum": 0,
+        "maximum": 1
+      },
+      "default": null,
+      "clinical_interpretation": "Probability of observing the event during study."
+    },
+    {
+      "name": "r_squared_other_covariates",
+      "definition": "R-squared of target covariate explained by other covariates.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "minimum": 0,
+        "maximum": 1
+      },
+      "default": null,
+      "clinical_interpretation": "R-squared of target covariate explained by other covariates."
+    },
+    {
+      "name": "alpha",
+      "definition": "Overall type-I error probability.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.05,
+      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis."
+    },
+    {
+      "name": "power",
+      "definition": "Target probability of rejecting the null under the design alternative.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.8,
+      "clinical_interpretation": "Target probability of rejecting the null under the design alternative."
+    },
+    {
+      "name": "dropout_rate",
+      "definition": "Expected proportion without an analyzable primary endpoint.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0,
+      "clinical_interpretation": "Anticipated loss applied only after the analysis-required sample size is obtained."
+    }
+  ],
+  "alpha": {
+    "sidedness": "one_or_two_sided",
+    "convention": "Overall alpha; one-sided uses alpha and two-sided divides alpha equally between tails."
+  },
+  "allocation": {
+    "ratio_definition": "n_treatment / n_control",
+    "supported": true,
+    "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power."
+  },
+  "solve_modes": {
+    "sample_size": true,
+    "power": true,
+    "events": false,
+    "operating_characteristics": false
+  },
+  "engine": {
+    "engine_family": "powersurvepi",
+    "type": "asymptotic",
+    "package": "powerSurvEpi",
+    "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
+    "function": "powerSurvEpi::ssizeEpi / powerSurvEpi::ssizeEpiCont",
+    "function_signature": "ssizeEpi(X1, X2, failureFlag, power, theta, alpha = 0.05) or ssizeEpiCont.default(power, theta, sigma2, psi, rho2, alpha = 0.05); covariate_type selects the documented function",
+    "parameter_mapping": {
+      "covariate_type": "selects function",
+      "binary_pilot_data.X1, X2, failureFlag": "X1, X2, failureFlag for ssizeEpi",
+      "alternative_hazard_ratio": "theta",
+      "covariate_variance": "sigma2 for ssizeEpiCont.default",
+      "event_probability": "psi for ssizeEpiCont.default",
+      "r_squared_other_covariates": "rho2 for ssizeEpiCont.default",
+      "alpha": "alpha",
+      "power": "power"
+    },
+    "output_mapping": {
+      "sample_size": "subjects"
+    }
+  },
+  "method_type": "asymptotic",
+  "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
+  "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
+  "assumptions": [
+    "The time_to_event endpoint model and regression design are correctly specified.",
+    "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+    "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+  ],
+  "unsupported_domains": [
+    "Missing covariate distribution/type or unexplained use of a single R-squared value.",
+    "Binary covariate requests without binary_pilot_data; continuous requests without covariate_variance."
+  ],
+  "warnings": [],
+  "validation_grade": "V3",
+  "migration_action": "REPLACE",
+  "lifecycle_status": "VALIDATION_PENDING",
+  "primary_reference": "Hsieh & Lavori (2000); Schmoor et al. (2000)",
+  "package_reference": "https://search.r-project.org/CRAN/refmans/powerSurvEpi/html/00Index.html",
+  "guideline_reference": "ICH E9; FDA covariate-adjustment guidance",
+  "benchmark_requirements": [
+    "Reproduce package/paper examples; simulate Cox models with specified covariate correlation",
+    "Reproduce official package examples for the pinned version.",
+    "Compare forward power and inverse sample-size results on a prespecified grid.",
+    "Verify null-boundary type-I error and clinically relevant alternatives independently."
+  ]
+}

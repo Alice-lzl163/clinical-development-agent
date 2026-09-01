@@ -1,0 +1,149 @@
+{
+  "test_key": "win_ratio",
+  "method_id": "win_ratio_design",
+  "display_name": "Hierarchical win ratio",
+  "endpoint_family": "hierarchical_composite",
+  "design_family": "fixed_parallel",
+  "estimand": "Win ratio from a prespecified hierarchical comparison rule and component model.",
+  "hypothesis": {
+    "null": "win ratio = 1",
+    "alternative": "win ratio = alternative_win_ratio",
+    "effect_measure": "win_ratio",
+    "beneficial_direction": "higher"
+  },
+  "inputs": [
+    {
+      "name": "component_model",
+      "definition": "Joint distributions, censoring, ties, and priority hierarchy for all components.",
+      "type": "object",
+      "unit": "model",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Joint distributions, censoring, ties, and priority hierarchy for all components."
+    },
+    {
+      "name": "alternative_win_ratio",
+      "definition": "Target win ratio.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "Target win ratio."
+    },
+    {
+      "name": "allocation_ratio",
+      "definition": "Planned treatment-to-control sample-size ratio n_treatment / n_control.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": 1,
+      "clinical_interpretation": "Planned treatment-to-control sample-size ratio n_treatment / n_control."
+    },
+    {
+      "name": "alpha",
+      "definition": "Overall type-I error probability.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.05,
+      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis."
+    },
+    {
+      "name": "power",
+      "definition": "Target probability of rejecting the null under the design alternative.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.8,
+      "clinical_interpretation": "Target probability of rejecting the null under the design alternative."
+    },
+    {
+      "name": "dropout_rate",
+      "definition": "Expected proportion without an analyzable primary endpoint.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0,
+      "clinical_interpretation": "Anticipated loss applied only after the analysis-required sample size is obtained."
+    }
+  ],
+  "alpha": {
+    "sidedness": "one_or_two_sided",
+    "convention": "Overall alpha; one-sided uses alpha and two-sided divides alpha equally between tails."
+  },
+  "allocation": {
+    "ratio_definition": "n_treatment / n_control",
+    "supported": true,
+    "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power."
+  },
+  "solve_modes": {
+    "sample_size": true,
+    "power": true,
+    "events": false,
+    "operating_characteristics": false
+  },
+  "engine": {
+    "engine_family": "wrestimates",
+    "type": "asymptotic",
+    "package": "WRestimates",
+    "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
+    "function": "WRestimates::wr.ss",
+    "function_signature": "wr.ss(alpha = 0.025, beta = 0.1, WR.true = 1, k, p.tie, sigma.sqr)",
+    "parameter_mapping": {
+      "alpha": "alpha",
+      "1-power": "beta",
+      "alternative_win_ratio": "WR.true",
+      "allocation_ratio converted to treatment proportion": "k",
+      "tie probability derived from component model": "p.tie",
+      "log-WR variance derived from component model": "sigma.sqr"
+    },
+    "output_mapping": {
+      "sample_size": "N"
+    }
+  },
+  "method_type": "asymptotic",
+  "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
+  "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
+  "assumptions": [
+    "The hierarchical_composite endpoint model and fixed_parallel design are correctly specified.",
+    "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+    "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+  ],
+  "unsupported_domains": [
+    "Win ratio and a user-entered standard-error proxy without component distributions/dependence."
+  ],
+  "warnings": [
+    "DO_NOT_REPRODUCE_HISTORICAL_BEHAVIOR: Do not infer sample size from win ratio and a free SE proxy without component distributions."
+  ],
+  "validation_grade": "V4",
+  "migration_action": "REPLACE",
+  "lifecycle_status": "EXPERIMENTAL",
+  "primary_reference": "Yu & Ganju (2022); Mao, Kim & Miao (2021)",
+  "package_reference": "https://search.r-project.org/CRAN/refmans/WRestimates/html/wr.ss.html",
+  "guideline_reference": "ICH E9; endpoint-specific FDA guidance",
+  "benchmark_requirements": [
+    "Reproduce package/paper examples; simulate hierarchical outcomes and analyze with intended win-statistic test",
+    "Reproduce official package examples for the pinned version.",
+    "Compare forward power and inverse sample-size results on a prespecified grid.",
+    "Verify null-boundary type-I error and clinically relevant alternatives independently."
+  ]
+}

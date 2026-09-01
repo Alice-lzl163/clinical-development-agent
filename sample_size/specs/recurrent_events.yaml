@@ -1,0 +1,195 @@
+{
+  "test_key": "recurrent_events",
+  "method_id": "recurrent_event_design",
+  "display_name": "Andersen–Gill recurrent events",
+  "endpoint_family": "recurrent_count",
+  "design_family": "fixed_parallel",
+  "estimand": "Rate ratio from the prespecified recurrent-event model.",
+  "hypothesis": {
+    "null": "rate ratio = null ratio",
+    "alternative": "rate ratio = alternative ratio",
+    "effect_measure": "recurrent_event_rate_ratio",
+    "beneficial_direction": "lower_or_higher_explicit"
+  },
+  "inputs": [
+    {
+      "name": "control_rate",
+      "definition": "Control recurrent-event rate.",
+      "type": "number",
+      "unit": "events/person-time",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "Control recurrent-event rate."
+    },
+    {
+      "name": "treatment_rate",
+      "definition": "Treatment recurrent-event rate.",
+      "type": "number",
+      "unit": "events/person-time",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "Treatment recurrent-event rate."
+    },
+    {
+      "name": "dispersion",
+      "definition": "Negative-binomial dispersion parameter.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "Negative-binomial dispersion parameter."
+    },
+    {
+      "name": "follow_up",
+      "definition": "Planned observation time per subject.",
+      "type": "number",
+      "unit": "time",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "Planned observation time per subject."
+    },
+    {
+      "name": "allocation_ratio",
+      "definition": "Planned treatment-to-control sample-size ratio n_treatment / n_control.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": 1,
+      "clinical_interpretation": "Planned treatment-to-control sample-size ratio n_treatment / n_control."
+    },
+    {
+      "name": "alpha",
+      "definition": "Overall type-I error probability.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.05,
+      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis."
+    },
+    {
+      "name": "power",
+      "definition": "Target probability of rejecting the null under the design alternative.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.8,
+      "clinical_interpretation": "Target probability of rejecting the null under the design alternative."
+    },
+    {
+      "name": "dropout_rate",
+      "definition": "Expected proportion without an analyzable primary endpoint.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0,
+      "clinical_interpretation": "Anticipated loss applied only after the analysis-required sample size is obtained."
+    },
+    {
+      "name": "analysis_model",
+      "definition": "Prespecified primary analysis model.",
+      "type": "string",
+      "unit": "category",
+      "required": true,
+      "valid_range": {
+        "enum": [
+          "negative_binomial",
+          "andersen_gill_robust"
+        ]
+      },
+      "default": null,
+      "clinical_interpretation": "Prespecified primary analysis model."
+    }
+  ],
+  "alpha": {
+    "sidedness": "one_or_two_sided",
+    "convention": "Overall alpha; one-sided uses alpha and two-sided divides alpha equally between tails."
+  },
+  "allocation": {
+    "ratio_definition": "n_treatment / n_control",
+    "supported": true,
+    "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power."
+  },
+  "solve_modes": {
+    "sample_size": true,
+    "power": true,
+    "events": false,
+    "operating_characteristics": false
+  },
+  "engine": {
+    "engine_family": "gsdesignnb",
+    "type": "asymptotic",
+    "package": "gsDesignNB",
+    "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
+    "function": "gsDesignNB::sample_size_nbinom",
+    "function_signature": "sample_size_nbinom(lambda1, lambda2, dispersion, power = NULL, alpha = 0.025, sided = 1, ratio = 1, rr0 = 1, accrual_rate, accrual_duration, trial_duration, dropout_rate = 0, max_followup = NULL, test_type = c(\"wald\", \"score\"), event_gap = NULL)",
+    "parameter_mapping": {
+      "control_rate": "lambda1",
+      "treatment_rate": "lambda2",
+      "dispersion": "dispersion",
+      "power": "power",
+      "alpha": "alpha",
+      "allocation_ratio": "ratio",
+      "null rate ratio": "rr0",
+      "accrual/follow-up/dropout": "accrual_rate, accrual_duration, trial_duration, max_followup, dropout_rate",
+      "analysis test": "test_type"
+    },
+    "output_mapping": {
+      "sample_size": "n1, n2, n_total",
+      "events": "events_n1, events_n2, total_events",
+      "power": "power"
+    }
+  },
+  "method_type": "asymptotic",
+  "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
+  "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
+  "assumptions": [
+    "The recurrent_count endpoint model and fixed_parallel design are correctly specified.",
+    "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+    "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+  ],
+  "unsupported_domains": [
+    "Requests without dependence/dispersion, censoring, terminal-event handling, follow-up, and primary analysis model."
+  ],
+  "warnings": [
+    "DO_NOT_REPRODUCE_HISTORICAL_BEHAVIOR: Do not label an independent Poisson-rate formula as Andersen–Gill recurrent-event planning."
+  ],
+  "validation_grade": "V4",
+  "migration_action": "REPLACE",
+  "lifecycle_status": "EXPERIMENTAL",
+  "primary_reference": "Tang & Fitzpatrick (2021); Andersen & Gill (1982); Zhu & Lakkis (2014)",
+  "package_reference": "https://keaven.github.io/gsDesignNB/reference/sample_size_nbinom.html",
+  "guideline_reference": "ICH E9(R1)",
+  "benchmark_requirements": [
+    "Reproduce `sample_size_nbinom` examples; simulate recurrent processes and analyze with the prespecified robust AG or NB model; verify T1E under frailty",
+    "Reproduce official package examples for the pinned version.",
+    "Compare forward power and inverse sample-size results on a prespecified grid.",
+    "Verify null-boundary type-I error and clinically relevant alternatives independently."
+  ]
+}

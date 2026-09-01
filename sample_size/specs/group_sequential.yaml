@@ -1,0 +1,153 @@
+{
+  "test_key": "group_sequential",
+  "method_id": "gs_mean",
+  "display_name": "Group-sequential means",
+  "endpoint_family": "continuous",
+  "design_family": "group_sequential",
+  "estimand": "Mean difference under a prespecified group-sequential design.",
+  "hypothesis": {
+    "null": "difference = 0 at every look",
+    "alternative": "difference = planned alternative",
+    "effect_measure": "mean_difference",
+    "beneficial_direction": "higher_or_lower_explicit"
+  },
+  "inputs": [
+    {
+      "name": "design_specification",
+      "definition": "Prespecified rpact group-sequential design.",
+      "type": "object",
+      "unit": "design",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Prespecified rpact group-sequential design."
+    },
+    {
+      "name": "mean_difference",
+      "definition": "Treatment minus control mean.",
+      "type": "number",
+      "unit": "endpoint units",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Treatment minus control mean."
+    },
+    {
+      "name": "sd",
+      "definition": "Common SD.",
+      "type": "number",
+      "unit": "endpoint units",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "Common SD."
+    },
+    {
+      "name": "allocation_ratio",
+      "definition": "Planned treatment-to-control sample-size ratio n_treatment / n_control.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": 1,
+      "clinical_interpretation": "Planned treatment-to-control sample-size ratio n_treatment / n_control."
+    },
+    {
+      "name": "alpha",
+      "definition": "Overall type-I error probability.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.05,
+      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis."
+    },
+    {
+      "name": "power",
+      "definition": "Target probability of rejecting the null under the design alternative.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.8,
+      "clinical_interpretation": "Target probability of rejecting the null under the design alternative."
+    },
+    {
+      "name": "dropout_rate",
+      "definition": "Expected proportion without an analyzable primary endpoint.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0,
+      "clinical_interpretation": "Anticipated loss applied only after the analysis-required sample size is obtained."
+    }
+  ],
+  "alpha": {
+    "sidedness": "one_or_two_sided",
+    "convention": "Overall alpha; one-sided uses alpha and two-sided divides alpha equally between tails."
+  },
+  "allocation": {
+    "ratio_definition": "n_treatment / n_control",
+    "supported": true,
+    "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power."
+  },
+  "solve_modes": {
+    "sample_size": true,
+    "power": true,
+    "events": false,
+    "operating_characteristics": false
+  },
+  "engine": {
+    "engine_family": "rpact",
+    "type": "exact_package",
+    "package": "rpact",
+    "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
+    "function": "rpact::getSampleSizeMeans",
+    "function_signature": "getSampleSizeMeans(design = NULL, groups = 2, normalApproximation = TRUE, meanRatio = FALSE, thetaH0 = 0, alternative = 1, stDev = 1, allocationRatioPlanned = 1, directionUpper = TRUE, maxNumberOfSubjects = NA_real_, ...) ",
+    "parameter_mapping": {
+      "design_specification": "design",
+      "mean_difference": "alternative",
+      "sd": "stDev",
+      "allocation_ratio": "allocationRatioPlanned"
+    },
+    "output_mapping": {
+      "sample_size": "maxNumberOfSubjects"
+    }
+  },
+  "method_type": "exact_package",
+  "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
+  "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
+  "assumptions": [
+    "The continuous endpoint model and group_sequential design are correctly specified.",
+    "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+    "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+  ],
+  "unsupported_domains": [],
+  "warnings": [],
+  "validation_grade": "V1",
+  "migration_action": "KEEP",
+  "lifecycle_status": "VALIDATION_PENDING",
+  "primary_reference": "Jennison & Turnbull",
+  "package_reference": "https://docs.rpact.org/reference/index.html",
+  "guideline_reference": "FDA Adaptive Guidance; ICH E9",
+  "benchmark_requirements": [
+    "rpact vignette reproduction; fixed limit; simulated T1E/power/ASN",
+    "Reproduce official package examples for the pinned version.",
+    "Compare forward power and inverse sample-size results on a prespecified grid.",
+    "Verify null-boundary type-I error and clinically relevant alternatives independently."
+  ]
+}

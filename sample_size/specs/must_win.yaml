@@ -1,0 +1,163 @@
+{
+  "test_key": "must_win",
+  "method_id": "multiple_endpoint_joint_power",
+  "display_name": "All co-primary endpoints must succeed",
+  "endpoint_family": "multiple_endpoints",
+  "design_family": "co_primary",
+  "estimand": "Probability that all prespecified co-primary endpoints reject under intersection-union testing.",
+  "hypothesis": {
+    "null": "At least one required endpoint null is true",
+    "alternative": "All endpoint alternatives hold and all tests reject",
+    "effect_measure": "conjunctive_power",
+    "beneficial_direction": "endpoint_specific"
+  },
+  "inputs": [
+    {
+      "name": "endpoint_models",
+      "definition": "Endpoint-specific distributions, effects, and analysis tests.",
+      "type": "array",
+      "unit": "models",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Endpoint-specific distributions, effects, and analysis tests."
+    },
+    {
+      "name": "correlation_matrix",
+      "definition": "Positive-semidefinite full endpoint correlation matrix.",
+      "type": "array",
+      "unit": "correlation",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Positive-semidefinite full endpoint correlation matrix."
+    },
+    {
+      "name": "success_rule",
+      "definition": "Joint success rule.",
+      "type": "string",
+      "unit": "category",
+      "required": true,
+      "valid_range": {
+        "enum": [
+          "all_endpoints",
+          "at_least_one_endpoint"
+        ]
+      },
+      "default": null,
+      "clinical_interpretation": "Joint success rule."
+    },
+    {
+      "name": "allocation_ratio",
+      "definition": "Planned treatment-to-control sample-size ratio n_treatment / n_control.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": 1,
+      "clinical_interpretation": "Planned treatment-to-control sample-size ratio n_treatment / n_control."
+    },
+    {
+      "name": "alpha",
+      "definition": "Overall type-I error probability.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.05,
+      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis."
+    },
+    {
+      "name": "power",
+      "definition": "Target probability of rejecting the null under the design alternative.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.8,
+      "clinical_interpretation": "Target probability of rejecting the null under the design alternative."
+    },
+    {
+      "name": "dropout_rate",
+      "definition": "Expected proportion without an analyzable primary endpoint.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0,
+      "clinical_interpretation": "Anticipated loss applied only after the analysis-required sample size is obtained."
+    }
+  ],
+  "alpha": {
+    "sidedness": "one_or_two_sided",
+    "convention": "Overall alpha; one-sided uses alpha and two-sided divides alpha equally between tails."
+  },
+  "allocation": {
+    "ratio_definition": "n_treatment / n_control",
+    "supported": true,
+    "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power."
+  },
+  "solve_modes": {
+    "sample_size": true,
+    "power": true,
+    "events": false,
+    "operating_characteristics": false
+  },
+  "engine": {
+    "engine_family": "mkpower",
+    "type": "asymptotic",
+    "package": "MKpower",
+    "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
+    "function": "MKpower::power.mpe.known.var",
+    "function_signature": "power.mpe.known.var(K, n = NULL, delta = NULL, Sigma, SD, rho, sig.level = 0.05, power = NULL, n.max = 1e5, tol = .Machine$double.eps^0.25)",
+    "parameter_mapping": {
+      "number of endpoints": "K",
+      "candidate or solved sample size": "n",
+      "endpoint effects": "delta",
+      "correlation/variances": "Sigma or SD and rho",
+      "alpha": "sig.level",
+      "target power": "power"
+    },
+    "output_mapping": {
+      "power": "conjunctive power",
+      "sample_size": "n"
+    }
+  },
+  "method_type": "asymptotic",
+  "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
+  "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
+  "assumptions": [
+    "The multiple_endpoints endpoint model and co_primary design are correctly specified.",
+    "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+    "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+  ],
+  "unsupported_domains": [
+    "Only endpoint count and one scalar correlation."
+  ],
+  "warnings": [
+    "DO_NOT_REPRODUCE_HISTORICAL_BEHAVIOR: Do not use scalar correlation inflation as conjunctive co-primary power."
+  ],
+  "validation_grade": "V4",
+  "migration_action": "REPLACE",
+  "lifecycle_status": "VALIDATION_PENDING",
+  "primary_reference": "Sozu, Sugimoto, Hamasaki & Evans (2015)",
+  "package_reference": "https://stat.ethz.ch/CRAN/web/packages/MKpower/refman/MKpower.html",
+  "guideline_reference": "[FDA Multiple Endpoints Guidance][fda-multiple]",
+  "benchmark_requirements": [
+    "Reproduce package/paper examples; multivariate-normal or copula simulation; verify conjunctive power",
+    "Reproduce official package examples for the pinned version.",
+    "Compare forward power and inverse sample-size results on a prespecified grid.",
+    "Verify null-boundary type-I error and clinically relevant alternatives independently."
+  ]
+}

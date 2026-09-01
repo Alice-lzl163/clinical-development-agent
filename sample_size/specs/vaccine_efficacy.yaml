@@ -1,0 +1,196 @@
+{
+  "test_key": "vaccine_efficacy",
+  "method_id": "vaccine_incidence_design",
+  "display_name": "Vaccine efficacy / incidence reduction",
+  "endpoint_family": "binary_incidence",
+  "design_family": "vaccine_parallel",
+  "estimand": "One minus the vaccine-to-control incidence ratio under the selected incidence model.",
+  "hypothesis": {
+    "null": "VE <= null_efficacy",
+    "alternative": "VE > null_efficacy",
+    "effect_measure": "vaccine_efficacy",
+    "beneficial_direction": "higher"
+  },
+  "inputs": [
+    {
+      "name": "vaccine_estimand",
+      "definition": "Vaccine efficacy estimand and incidence regime.",
+      "type": "string",
+      "unit": "category",
+      "required": true,
+      "valid_range": {
+        "enum": [
+          "relative_disease_incidence",
+          "exposure_longitudinal_disease_incidence"
+        ]
+      },
+      "default": null,
+      "clinical_interpretation": "Vaccine efficacy estimand and incidence regime."
+    },
+    {
+      "name": "relative_incidence_ci_half_width",
+      "definition": "Required half-width d for the incidence-ratio confidence interval when vaccine_estimand is relative_disease_incidence.",
+      "type": "number",
+      "unit": "ratio units",
+      "required": false,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "Precision target used by Vaccine.RDI; this branch is precision-based rather than target-power-based."
+    },
+    {
+      "name": "null_conditional_case_probability",
+      "definition": "Null theta0 for the vaccine-arm share of cases when vaccine_estimand is exposure_longitudinal_disease_incidence.",
+      "type": "number",
+      "unit": "probability",
+      "required": false,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": null,
+      "clinical_interpretation": "Null conditional probability used by Vaccine.ELDI; it is commonly but not automatically 0.5."
+    },
+    {
+      "name": "control_incidence",
+      "definition": "Control-arm disease incidence under the chosen model.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "minimum": 0,
+        "maximum": 1
+      },
+      "default": null,
+      "clinical_interpretation": "Control-arm disease incidence under the chosen model."
+    },
+    {
+      "name": "vaccine_incidence",
+      "definition": "Vaccine-arm disease incidence under the chosen model.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "minimum": 0,
+        "maximum": 1
+      },
+      "default": null,
+      "clinical_interpretation": "Vaccine-arm disease incidence under the chosen model."
+    },
+    {
+      "name": "allocation_ratio",
+      "definition": "Planned treatment-to-control sample-size ratio n_treatment / n_control.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "enum": [
+          1
+        ]
+      },
+      "default": 1,
+      "clinical_interpretation": "Planned treatment-to-control sample-size ratio n_treatment / n_control."
+    },
+    {
+      "name": "alpha",
+      "definition": "Overall type-I error probability.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.05,
+      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis."
+    },
+    {
+      "name": "power",
+      "definition": "Target probability of rejecting the null under the design alternative.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.8,
+      "clinical_interpretation": "Target probability of rejecting the null under the design alternative."
+    },
+    {
+      "name": "dropout_rate",
+      "definition": "Expected proportion without an analyzable primary endpoint.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0,
+      "clinical_interpretation": "Anticipated loss applied only after the analysis-required sample size is obtained."
+    }
+  ],
+  "alpha": {
+    "sidedness": "one_or_two_sided",
+    "convention": "Overall alpha; one-sided uses alpha and two-sided divides alpha equally between tails."
+  },
+  "allocation": {
+    "ratio_definition": "The selected TrialSize vaccine functions do not expose an unequal-allocation argument; allocation_ratio must equal 1.",
+    "supported": false,
+    "rounding_rule": "Use the documented equal-allocation result and round upward; unequal allocation fails."
+  },
+  "solve_modes": {
+    "sample_size": true,
+    "power": true,
+    "events": false,
+    "operating_characteristics": false
+  },
+  "engine": {
+    "engine_family": "trialsize",
+    "type": "exact_package",
+    "package": "TrialSize",
+    "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
+    "function": "TrialSize::Vaccine.RDI / TrialSize::Vaccine.ELDI",
+    "function_signature": "Vaccine.RDI(alpha, d, pt, pc) or Vaccine.ELDI(alpha, beta, theta0, theta, pt, pc); vaccine_estimand selects exactly one documented interface",
+    "parameter_mapping": {
+      "vaccine_estimand": "selects function",
+      "alpha": "alpha",
+      "relative_incidence_ci_half_width": "d for Vaccine.RDI",
+      "1-power": "beta for Vaccine.ELDI",
+      "null_conditional_case_probability": "theta0 for Vaccine.ELDI",
+      "derived vaccine_incidence / (vaccine_incidence + control_incidence)": "theta for Vaccine.ELDI",
+      "vaccine_incidence": "pt",
+      "control_incidence": "pc"
+    },
+    "output_mapping": {
+      "sample_size": "arm sizes"
+    }
+  },
+  "method_type": "asymptotic",
+  "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
+  "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
+  "assumptions": [
+    "The binary_incidence endpoint model and vaccine_parallel design are correctly specified.",
+    "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+    "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+  ],
+  "unsupported_domains": [
+    "A generic vaccine-efficacy request without incidence estimand, exposure/follow-up model, and arm incidences.",
+    "Relative-incidence precision requests without relative_incidence_ci_half_width; ELDI requests without null_conditional_case_probability; unequal allocation."
+  ],
+  "warnings": [],
+  "validation_grade": "V3",
+  "migration_action": "REPLACE",
+  "lifecycle_status": "EXPERIMENTAL",
+  "primary_reference": "Halloran, Longini & Struchiner; Chow et al.",
+  "package_reference": "https://search.r-project.org/CRAN/refmans/TrialSize/html/00Index.html",
+  "guideline_reference": "ICH E9; applicable FDA vaccine guidance",
+  "benchmark_requirements": [
+    "Reproduce package examples; compare binomial/Poisson simulation across incidence regimes",
+    "Reproduce official package examples for the pinned version.",
+    "Compare forward power and inverse sample-size results on a prespecified grid.",
+    "Verify null-boundary type-I error and clinically relevant alternatives independently."
+  ]
+}

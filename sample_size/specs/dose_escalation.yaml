@@ -1,0 +1,156 @@
+{
+  "test_key": "dose_escalation",
+  "method_id": "dose_escalation_oc",
+  "display_name": "Phase I 3+3 / CRM",
+  "endpoint_family": "binary_toxicity",
+  "design_family": "phase_i_dose_finding",
+  "estimand": "Dose-selection, toxicity, and stopping operating characteristics under explicit scenarios.",
+  "hypothesis": {
+    "null": "Not a single null hypothesis; evaluate safety/calibration scenarios",
+    "alternative": "Target and alternative toxicity curves",
+    "effect_measure": "dose_selection_operating_characteristics",
+    "beneficial_direction": "target_toxicity_closeness"
+  },
+  "inputs": [
+    {
+      "name": "dose_design",
+      "definition": "Dose-finding design.",
+      "type": "string",
+      "unit": "category",
+      "required": true,
+      "valid_range": {
+        "enum": [
+          "three_plus_three",
+          "crm",
+          "boin"
+        ]
+      },
+      "default": null,
+      "clinical_interpretation": "Dose-finding design."
+    },
+    {
+      "name": "dose_levels",
+      "definition": "Ordered dose labels.",
+      "type": "array",
+      "unit": "dose",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Ordered dose labels."
+    },
+    {
+      "name": "true_toxicity_scenarios",
+      "definition": "Scenario matrix of toxicity probabilities by dose.",
+      "type": "array",
+      "unit": "probability",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Scenario matrix of toxicity probabilities by dose."
+    },
+    {
+      "name": "target_toxicity",
+      "definition": "Target DLT probability.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "minimum": 0,
+        "maximum": 1
+      },
+      "default": null,
+      "clinical_interpretation": "Target DLT probability."
+    },
+    {
+      "name": "selector_specification",
+      "definition": "Complete model/prior/cohort/stopping specification for selected design.",
+      "type": "object",
+      "unit": "design",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Complete model/prior/cohort/stopping specification for selected design."
+    },
+    {
+      "name": "simulation_replicates",
+      "definition": "Monte Carlo trials per scenario.",
+      "type": "integer",
+      "unit": "replicates",
+      "required": true,
+      "valid_range": {
+        "minimum": 10000
+      },
+      "default": null,
+      "clinical_interpretation": "Monte Carlo trials per scenario."
+    },
+    {
+      "name": "rng_seed",
+      "definition": "RNG seed.",
+      "type": "integer",
+      "unit": "seed",
+      "required": true,
+      "valid_range": {
+        "minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "RNG seed."
+    }
+  ],
+  "alpha": {
+    "sidedness": "one_or_two_sided",
+    "convention": "Overall alpha; one-sided uses alpha and two-sided divides alpha equally between tails."
+  },
+  "allocation": {
+    "ratio_definition": "n_treatment / n_control",
+    "supported": true,
+    "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power."
+  },
+  "solve_modes": {
+    "sample_size": false,
+    "power": false,
+    "events": false,
+    "operating_characteristics": true
+  },
+  "engine": {
+    "engine_family": "escalation",
+    "type": "simulation",
+    "package": "escalation",
+    "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
+    "function": "escalation::simulate_trials",
+    "function_signature": "simulate_trials(selector_factory, num_sims, true_prob_tox, true_prob_eff = NULL, ...)",
+    "parameter_mapping": {
+      "selector_specification": "selector_factory",
+      "simulation_replicates": "num_sims",
+      "true_toxicity_scenarios": "true_prob_tox"
+    },
+    "output_mapping": {
+      "operating_characteristics": "selection, allocation, toxicity, stopping summaries"
+    }
+  },
+  "method_type": "simulation",
+  "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
+  "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
+  "assumptions": [
+    "The binary_toxicity endpoint model and phase_i_dose_finding design are correctly specified.",
+    "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+    "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+  ],
+  "unsupported_domains": [
+    "Dose level count and target DLT alone."
+  ],
+  "warnings": [
+    "DO_NOT_REPRODUCE_HISTORICAL_BEHAVIOR: Do not return the historical four-per-dose range or call it CRM/3+3 operating characteristics."
+  ],
+  "validation_grade": "V5",
+  "migration_action": "REDESIGN",
+  "lifecycle_status": "EXPERIMENTAL",
+  "primary_reference": "Storer (1989); O'Quigley et al. (1990); Liu & Yuan (2015)",
+  "package_reference": "https://search.r-project.org/CRAN/refmans/escalation/html/simulate_trials.html",
+  "guideline_reference": "FDA Adaptive Guidance / early-phase guidance",
+  "benchmark_requirements": [
+    "Reproduce package examples; probability of correct MTD, overdose, no-selection, n distribution, and scenario suite",
+    "Reproduce official package examples for the pinned version.",
+    "Compare forward power and inverse sample-size results on a prespecified grid.",
+    "Verify null-boundary type-I error and clinically relevant alternatives independently."
+  ]
+}

@@ -1,0 +1,182 @@
+{
+  "test_key": "competing_risks",
+  "method_id": "competing_risk_sim",
+  "display_name": "Gray test on cumulative incidence",
+  "endpoint_family": "time_to_event_competing",
+  "design_family": "fixed_parallel",
+  "estimand": "Cumulative-incidence distribution or Fine–Gray effect for the target cause under the prespecified analysis.",
+  "hypothesis": {
+    "null": "No arm effect under the selected Gray/Fine-Gray test",
+    "alternative": "Prespecified competing-risk alternative",
+    "effect_measure": "cumulative_incidence_or_subdistribution_hr",
+    "beneficial_direction": "lower_or_higher_explicit"
+  },
+  "inputs": [
+    {
+      "name": "data_generating_model",
+      "definition": "Cause-specific event-time and censoring distributions for every arm/cause.",
+      "type": "object",
+      "unit": "model",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Cause-specific event-time and censoring distributions for every arm/cause."
+    },
+    {
+      "name": "analysis_test",
+      "definition": "Primary competing-risk analysis.",
+      "type": "string",
+      "unit": "category",
+      "required": true,
+      "valid_range": {
+        "enum": [
+          "gray",
+          "fine_gray"
+        ]
+      },
+      "default": null,
+      "clinical_interpretation": "Primary competing-risk analysis."
+    },
+    {
+      "name": "target_cause",
+      "definition": "Code/name of target event cause.",
+      "type": "string",
+      "unit": "category",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Code/name of target event cause."
+    },
+    {
+      "name": "analysis_horizon",
+      "definition": "Clinically relevant horizon.",
+      "type": "number",
+      "unit": "time",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "Clinically relevant horizon."
+    },
+    {
+      "name": "candidate_sample_sizes",
+      "definition": "Candidate total sample sizes.",
+      "type": "array",
+      "unit": "subjects",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Candidate total sample sizes."
+    },
+    {
+      "name": "simulation_replicates",
+      "definition": "Replicates per candidate size.",
+      "type": "integer",
+      "unit": "replicates",
+      "required": true,
+      "valid_range": {
+        "minimum": 10000
+      },
+      "default": null,
+      "clinical_interpretation": "Replicates per candidate size."
+    },
+    {
+      "name": "allocation_ratio",
+      "definition": "Planned treatment-to-control sample-size ratio n_treatment / n_control.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": 1,
+      "clinical_interpretation": "Planned treatment-to-control sample-size ratio n_treatment / n_control."
+    },
+    {
+      "name": "alpha",
+      "definition": "Overall type-I error probability.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.05,
+      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis."
+    },
+    {
+      "name": "power",
+      "definition": "Target probability of rejecting the null under the design alternative.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.8,
+      "clinical_interpretation": "Target probability of rejecting the null under the design alternative."
+    }
+  ],
+  "alpha": {
+    "sidedness": "one_or_two_sided",
+    "convention": "Overall alpha; one-sided uses alpha and two-sided divides alpha equally between tails."
+  },
+  "allocation": {
+    "ratio_definition": "n_treatment / n_control",
+    "supported": true,
+    "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power."
+  },
+  "solve_modes": {
+    "sample_size": true,
+    "power": true,
+    "events": false,
+    "operating_characteristics": true
+  },
+  "engine": {
+    "engine_family": "cmprsk",
+    "type": "simulation",
+    "package": "cmprsk",
+    "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
+    "function": "cmprsk::cuminc",
+    "function_signature": "cuminc(ftime, fstatus, group, strata, rho = 0, cencode = 0, subset, na.action = na.omit)",
+    "parameter_mapping": {
+      "simulated event/censor times": "ftime",
+      "simulated cause": "fstatus",
+      "arm": "group",
+      "gray weight": "rho"
+    },
+    "output_mapping": {
+      "operating_characteristics": "empirical rejection probability",
+      "sample_size": "smallest candidate meeting power"
+    }
+  },
+  "method_type": "simulation",
+  "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
+  "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
+  "assumptions": [
+    "The time_to_event_competing endpoint model and fixed_parallel design are correctly specified.",
+    "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+    "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+  ],
+  "unsupported_domains": [
+    "Only a CIF value at one time without cause-specific timing and censoring distributions."
+  ],
+  "warnings": [
+    "DO_NOT_REPRODUCE_HISTORICAL_BEHAVIOR: Do not substitute a two-proportion calculation at one horizon for Gray-test power."
+  ],
+  "validation_grade": "V4",
+  "migration_action": "REPLACE",
+  "lifecycle_status": "EXPERIMENTAL",
+  "primary_reference": "Gray (1988); Fine & Gray (1999)",
+  "package_reference": "https://cran.r-project.org/package=cmprsk",
+  "guideline_reference": "ICH E9(R1)",
+  "benchmark_requirements": [
+    "Validate simulator recovery; compare empirical T1E/power using `cuminc`; stress competing-event hazards and censoring",
+    "Reproduce official package examples for the pinned version.",
+    "Compare forward power and inverse sample-size results on a prespecified grid.",
+    "Verify null-boundary type-I error and clinically relevant alternatives independently."
+  ]
+}

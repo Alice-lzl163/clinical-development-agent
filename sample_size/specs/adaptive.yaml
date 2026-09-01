@@ -1,0 +1,167 @@
+{
+  "test_key": "adaptive",
+  "method_id": "adaptive_combination_design",
+  "display_name": "Generic adaptive SSR/population/combination",
+  "endpoint_family": "continuous_or_binary",
+  "design_family": "adaptive",
+  "estimand": "Operating characteristics of a prespecified combination-test sample-size adaptation.",
+  "hypothesis": {
+    "null": "Global null under the frozen combination test",
+    "alternative": "Prespecified alternative scenarios",
+    "effect_measure": "combination_test_statistic",
+    "beneficial_direction": "higher_or_lower_explicit"
+  },
+  "inputs": [
+    {
+      "name": "adaptive_method",
+      "definition": "Prespecified adaptive method.",
+      "type": "string",
+      "unit": "category",
+      "required": true,
+      "valid_range": {
+        "enum": [
+          "combination_test_ssr"
+        ]
+      },
+      "default": null,
+      "clinical_interpretation": "Prespecified adaptive method."
+    },
+    {
+      "name": "stage_information",
+      "definition": "Planned information fractions and stage sample sizes.",
+      "type": "object",
+      "unit": "design",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Planned information fractions and stage sample sizes."
+    },
+    {
+      "name": "adaptation_rule",
+      "definition": "Fully prespecified promising-zone/SSR rule and caps.",
+      "type": "object",
+      "unit": "rule",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Fully prespecified promising-zone/SSR rule and caps."
+    },
+    {
+      "name": "effect_scenarios",
+      "definition": "Null and alternative effects for OC evaluation.",
+      "type": "array",
+      "unit": "effect units",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Null and alternative effects for OC evaluation."
+    },
+    {
+      "name": "simulation_replicates",
+      "definition": "Monte Carlo replicates.",
+      "type": "integer",
+      "unit": "replicates",
+      "required": true,
+      "valid_range": {
+        "minimum": 10000
+      },
+      "default": null,
+      "clinical_interpretation": "Monte Carlo replicates."
+    },
+    {
+      "name": "rng_seed",
+      "definition": "RNG seed.",
+      "type": "integer",
+      "unit": "seed",
+      "required": true,
+      "valid_range": {
+        "minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "RNG seed."
+    },
+    {
+      "name": "alpha",
+      "definition": "Overall type-I error probability.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.05,
+      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis."
+    },
+    {
+      "name": "power",
+      "definition": "Target probability of rejecting the null under the design alternative.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.8,
+      "clinical_interpretation": "Target probability of rejecting the null under the design alternative."
+    }
+  ],
+  "alpha": {
+    "sidedness": "one_or_two_sided",
+    "convention": "Overall alpha; one-sided uses alpha and two-sided divides alpha equally between tails."
+  },
+  "allocation": {
+    "ratio_definition": "n_treatment / n_control",
+    "supported": true,
+    "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power."
+  },
+  "solve_modes": {
+    "sample_size": false,
+    "power": false,
+    "events": false,
+    "operating_characteristics": true
+  },
+  "engine": {
+    "engine_family": "rpact",
+    "type": "simulation",
+    "package": "rpact",
+    "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
+    "function": "rpact::getSimulationMeans",
+    "function_signature": "getSimulationMeans(design = NULL, ... , conditionalPower = NA_real_, minNumberOfSubjectsPerStage = NA_real_, maxNumberOfSubjectsPerStage = NA_real_, iterations = 1000, seed = NA_real_)",
+    "parameter_mapping": {
+      "design/adaptation": "documented design and conditional-power arguments",
+      "simulation_replicates": "iterations",
+      "rng_seed": "seed"
+    },
+    "output_mapping": {
+      "operating_characteristics": "rejection, sample size, adaptation summaries"
+    }
+  },
+  "method_type": "simulation",
+  "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
+  "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
+  "assumptions": [
+    "The continuous_or_binary endpoint model and adaptive design are correctly specified.",
+    "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+    "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+  ],
+  "unsupported_domains": [
+    "Adaptive requests lacking endpoint, stage design, adaptation rule, cap, and combination-test definition."
+  ],
+  "warnings": [
+    "DO_NOT_REPRODUCE_HISTORICAL_BEHAVIOR: Do not expose the fixed-design SSR formula as a general adaptive, population, or combination-test method."
+  ],
+  "validation_grade": "V5",
+  "migration_action": "REDESIGN",
+  "lifecycle_status": "EXPERIMENTAL",
+  "primary_reference": "Bauer & Köhne; Cui, Hung & Wang; Wassmer & Brannath",
+  "package_reference": "https://docs.rpact.org/reference/index.html",
+  "guideline_reference": "FDA Adaptive Guidance",
+  "benchmark_requirements": [
+    "Validate each new subtype with null/alternative simulation and fixed-design special cases",
+    "Reproduce official package examples for the pinned version.",
+    "Compare forward power and inverse sample-size results on a prespecified grid.",
+    "Verify null-boundary type-I error and clinically relevant alternatives independently."
+  ]
+}

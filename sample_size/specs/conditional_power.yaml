@@ -1,0 +1,128 @@
+{
+  "test_key": "conditional_power",
+  "method_id": "conditional_power_design",
+  "display_name": "Interim conditional power / SSR",
+  "endpoint_family": "continuous_or_binary",
+  "design_family": "interim_monitoring",
+  "estimand": "Conditional probability of final rejection given interim data and a declared future-effect assumption.",
+  "hypothesis": {
+    "null": "Final test does not reject under conditional distribution",
+    "alternative": "Final test rejects under conditional distribution",
+    "effect_measure": "conditional_power",
+    "beneficial_direction": "higher"
+  },
+  "inputs": [
+    {
+      "name": "design_specification",
+      "definition": "Exact group-sequential/combination design used at interim.",
+      "type": "object",
+      "unit": "design",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Exact group-sequential/combination design used at interim."
+    },
+    {
+      "name": "interim_data",
+      "definition": "Information fraction and standardized interim statistic.",
+      "type": "object",
+      "unit": "interim",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Information fraction and standardized interim statistic."
+    },
+    {
+      "name": "effect_assumption",
+      "definition": "Effect used for future increments.",
+      "type": "string",
+      "unit": "category",
+      "required": true,
+      "valid_range": {
+        "enum": [
+          "planned",
+          "observed",
+          "specified"
+        ]
+      },
+      "default": null,
+      "clinical_interpretation": "Effect used for future increments."
+    },
+    {
+      "name": "specified_future_effect",
+      "definition": "Future standardized effect when effect_assumption=specified.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": false,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Future standardized effect when effect_assumption=specified."
+    },
+    {
+      "name": "alpha",
+      "definition": "Overall type-I error probability.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.05,
+      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis."
+    }
+  ],
+  "alpha": {
+    "sidedness": "one_or_two_sided",
+    "convention": "Overall alpha; one-sided uses alpha and two-sided divides alpha equally between tails."
+  },
+  "allocation": {
+    "ratio_definition": "Not applicable.",
+    "supported": false,
+    "rounding_rule": "Not applicable."
+  },
+  "solve_modes": {
+    "sample_size": false,
+    "power": true,
+    "events": false,
+    "operating_characteristics": false
+  },
+  "engine": {
+    "engine_family": "rpact",
+    "type": "exact_package",
+    "package": "rpact",
+    "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
+    "function": "rpact::getConditionalPower",
+    "function_signature": "getConditionalPower(stageResults, ..., thetaH1 = NA_real_, nPlanned = NA_real_, eventsOverStages = NA_real_, longTimeSimulationAllowed = FALSE)",
+    "parameter_mapping": {
+      "design/interim": "stageResults",
+      "specified_future_effect": "thetaH1",
+      "updated plan": "nPlanned/eventsOverStages"
+    },
+    "output_mapping": {
+      "power": "conditionalPower"
+    }
+  },
+  "method_type": "asymptotic",
+  "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
+  "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
+  "assumptions": [
+    "The continuous_or_binary endpoint model and interim_monitoring design are correctly specified.",
+    "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+    "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+  ],
+  "unsupported_domains": [],
+  "warnings": [],
+  "validation_grade": "V3",
+  "migration_action": "REPLACE",
+  "lifecycle_status": "VALIDATION_PENDING",
+  "primary_reference": "Proschan & Hunsberger; Cui, Hung & Wang",
+  "package_reference": "https://docs.rpact.org/reference/index.html",
+  "guideline_reference": "FDA Adaptive Guidance",
+  "benchmark_requirements": [
+    "Compare rpact conditional power, hand-calculated canonical joint-normal cases, and full SSR simulations",
+    "Reproduce official package examples for the pinned version.",
+    "Compare forward power and inverse sample-size results on a prespecified grid.",
+    "Verify null-boundary type-I error and clinically relevant alternatives independently."
+  ]
+}

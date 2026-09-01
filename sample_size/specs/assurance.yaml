@@ -1,0 +1,155 @@
+{
+  "test_key": "assurance",
+  "method_id": "bayesian_assurance_sim",
+  "display_name": "Bayesian assurance",
+  "endpoint_family": "binary_or_continuous",
+  "design_family": "bayesian_assurance",
+  "estimand": "Prior-predictive probability that the frozen trial decision rule declares success.",
+  "hypothesis": {
+    "null": "Prior-predictive assurance below target",
+    "alternative": "Assurance at or above target",
+    "effect_measure": "assurance_probability",
+    "beneficial_direction": "higher"
+  },
+  "inputs": [
+    {
+      "name": "prior",
+      "definition": "Fully specified prior distribution and hyperparameters.",
+      "type": "object",
+      "unit": "distribution",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Fully specified prior distribution and hyperparameters."
+    },
+    {
+      "name": "likelihood",
+      "definition": "Endpoint likelihood and parameterization.",
+      "type": "object",
+      "unit": "model",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Endpoint likelihood and parameterization."
+    },
+    {
+      "name": "decision_rule",
+      "definition": "Posterior success/futility rule and thresholds.",
+      "type": "object",
+      "unit": "rule",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Posterior success/futility rule and thresholds."
+    },
+    {
+      "name": "true_parameter_scenarios",
+      "definition": "Null and alternative data-generating scenarios.",
+      "type": "array",
+      "unit": "effect units",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Null and alternative data-generating scenarios."
+    },
+    {
+      "name": "candidate_sample_sizes",
+      "definition": "Candidate sample sizes.",
+      "type": "array",
+      "unit": "subjects",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Candidate sample sizes."
+    },
+    {
+      "name": "simulation_replicates",
+      "definition": "Monte Carlo replicates.",
+      "type": "integer",
+      "unit": "replicates",
+      "required": true,
+      "valid_range": {
+        "minimum": 10000
+      },
+      "default": null,
+      "clinical_interpretation": "Monte Carlo replicates."
+    },
+    {
+      "name": "rng_seed",
+      "definition": "RNG seed.",
+      "type": "integer",
+      "unit": "seed",
+      "required": true,
+      "valid_range": {
+        "minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "RNG seed."
+    },
+    {
+      "name": "target_assurance",
+      "definition": "Required prior-predictive probability of trial success.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "minimum": 0,
+        "maximum": 1
+      },
+      "default": null,
+      "clinical_interpretation": "Required prior-predictive probability of trial success."
+    }
+  ],
+  "alpha": {
+    "sidedness": "one_or_two_sided",
+    "convention": "Overall alpha; one-sided uses alpha and two-sided divides alpha equally between tails."
+  },
+  "allocation": {
+    "ratio_definition": "n_treatment / n_control",
+    "supported": true,
+    "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power."
+  },
+  "solve_modes": {
+    "sample_size": true,
+    "power": false,
+    "events": false,
+    "operating_characteristics": true
+  },
+  "engine": {
+    "engine_family": "custom_sim",
+    "type": "simulation",
+    "package": null,
+    "package_version_policy": "Not applicable; pin the specification and implementation commit.",
+    "function": null,
+    "function_signature": null,
+    "parameter_mapping": {},
+    "output_mapping": {}
+  },
+  "method_type": "simulation",
+  "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
+  "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
+  "assumptions": [
+    "The binary_or_continuous endpoint model and bayesian_assurance design are correctly specified.",
+    "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+    "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+  ],
+  "unsupported_domains": [
+    "Assurance without prior predictive distribution and complete trial decision rule."
+  ],
+  "warnings": [
+    "No package function is frozen until the prior, likelihood, success rule, and sample-size search are specified.",
+    "DO_NOT_REPRODUCE_HISTORICAL_BEHAVIOR: Do not retain the hard-coded posterior threshold, fixed inner simulation count, or unused target-power input."
+  ],
+  "validation_grade": "V5",
+  "migration_action": "REDESIGN",
+  "lifecycle_status": "EXPERIMENTAL",
+  "primary_reference": "O'Hagan et al.; Pan & Banerjee (2022)",
+  "package_reference": null,
+  "guideline_reference": "FDA Bayesian methodology guidance/draft",
+  "benchmark_requirements": [
+    "Conjugate analytic oracle where possible; independent implementation; MCSE-controlled n search and prior sensitivity",
+    "Reproduce official package examples for the pinned version.",
+    "Compare forward power and inverse sample-size results on a prespecified grid.",
+    "Verify null-boundary type-I error and clinically relevant alternatives independently."
+  ]
+}

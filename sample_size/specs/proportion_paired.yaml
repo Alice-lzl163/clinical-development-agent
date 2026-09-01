@@ -1,0 +1,139 @@
+{
+  "test_key": "proportion_paired",
+  "method_id": "binary_paired_mcnemar",
+  "display_name": "Paired proportions / McNemar",
+  "endpoint_family": "binary",
+  "design_family": "paired",
+  "estimand": "Difference between the two directional discordance probabilities.",
+  "hypothesis": {
+    "null": "p_treatment_only = p_control_only",
+    "alternative": "p_treatment_only differs from or exceeds p_control_only",
+    "effect_measure": "discordant_pair_difference",
+    "beneficial_direction": "higher_or_lower_as_prespecified"
+  },
+  "inputs": [
+    {
+      "name": "p_control_only",
+      "definition": "Probability of discordance favoring control (treatment no event, control event orientation must be declared).",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "minimum": 0,
+        "maximum": 1
+      },
+      "default": null,
+      "clinical_interpretation": "Probability of discordance favoring control (treatment no event, control event orientation must be declared)."
+    },
+    {
+      "name": "p_treatment_only",
+      "definition": "Probability of discordance favoring treatment.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "minimum": 0,
+        "maximum": 1
+      },
+      "default": null,
+      "clinical_interpretation": "Probability of discordance favoring treatment."
+    },
+    {
+      "name": "alpha",
+      "definition": "Overall type-I error probability.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.05,
+      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis."
+    },
+    {
+      "name": "power",
+      "definition": "Target probability of rejecting the null under the design alternative.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.8,
+      "clinical_interpretation": "Target probability of rejecting the null under the design alternative."
+    },
+    {
+      "name": "dropout_rate",
+      "definition": "Expected proportion without an analyzable primary endpoint.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0,
+      "clinical_interpretation": "Anticipated loss applied only after the analysis-required sample size is obtained."
+    }
+  ],
+  "alpha": {
+    "sidedness": "one_or_two_sided",
+    "convention": "Overall alpha; one-sided uses alpha and two-sided divides alpha equally between tails."
+  },
+  "allocation": {
+    "ratio_definition": "Not applicable.",
+    "supported": false,
+    "rounding_rule": "Not applicable."
+  },
+  "solve_modes": {
+    "sample_size": true,
+    "power": true,
+    "events": false,
+    "operating_characteristics": false
+  },
+  "engine": {
+    "engine_family": "trialsize",
+    "type": "exact_package",
+    "package": "TrialSize",
+    "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
+    "function": "TrialSize::McNemar.Test",
+    "function_signature": "McNemar.Test(alpha, beta, psai, paid)",
+    "parameter_mapping": {
+      "alpha": "alpha",
+      "1-power": "beta",
+      "p_treatment_only / p_control_only": "psai",
+      "p_treatment_only + p_control_only": "paid"
+    },
+    "output_mapping": {
+      "sample_size": "complete matched pairs"
+    }
+  },
+  "method_type": "asymptotic",
+  "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
+  "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
+  "assumptions": [
+    "The binary endpoint model and paired design are correctly specified.",
+    "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+    "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+  ],
+  "unsupported_domains": [
+    "Marginal paired probabilities without the joint discordance probabilities."
+  ],
+  "warnings": [
+    "DO_NOT_REPRODUCE_HISTORICAL_BEHAVIOR: Do not power marginal independent proportions as if they were McNemar discordant pairs."
+  ],
+  "validation_grade": "V4",
+  "migration_action": "REPLACE",
+  "lifecycle_status": "VALIDATION_PENDING",
+  "primary_reference": "McNemar (1947); Chow et al.",
+  "package_reference": "https://search.r-project.org/CRAN/refmans/TrialSize/html/00Index.html",
+  "guideline_reference": "ICH E9",
+  "benchmark_requirements": [
+    "Reproduce TrialSize example; enumerate discordant binomial outcomes; simulate paired 2×2 tables",
+    "Reproduce official package examples for the pinned version.",
+    "Compare forward power and inverse sample-size results on a prespecified grid.",
+    "Verify null-boundary type-I error and clinically relevant alternatives independently."
+  ]
+}

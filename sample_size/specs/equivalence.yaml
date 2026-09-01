@@ -1,0 +1,171 @@
+{
+  "test_key": "equivalence",
+  "method_id": "mean_equivalence_tost",
+  "display_name": "Two-mean equivalence / TOST",
+  "endpoint_family": "continuous",
+  "design_family": "fixed_parallel_equivalence",
+  "estimand": "Mean difference relative to prespecified equivalence bounds.",
+  "hypothesis": {
+    "null": "difference <= -lower_bound OR difference >= upper_bound",
+    "alternative": "-lower_bound < difference < upper_bound",
+    "effect_measure": "mean_difference",
+    "beneficial_direction": "inside_equivalence_interval"
+  },
+  "inputs": [
+    {
+      "name": "expected_difference",
+      "definition": "Expected treatment minus control mean.",
+      "type": "number",
+      "unit": "endpoint units",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Expected treatment minus control mean."
+    },
+    {
+      "name": "sd",
+      "definition": "Common outcome SD.",
+      "type": "number",
+      "unit": "endpoint units",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "Common outcome SD."
+    },
+    {
+      "name": "lower_bound",
+      "definition": "Positive magnitude of lower equivalence bound.",
+      "type": "number",
+      "unit": "endpoint units",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "Positive magnitude of lower equivalence bound."
+    },
+    {
+      "name": "upper_bound",
+      "definition": "Positive upper equivalence bound.",
+      "type": "number",
+      "unit": "endpoint units",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "Positive upper equivalence bound."
+    },
+    {
+      "name": "allocation_ratio",
+      "definition": "Planned treatment-to-control sample-size ratio n_treatment / n_control.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": 1,
+      "clinical_interpretation": "Planned treatment-to-control sample-size ratio n_treatment / n_control."
+    },
+    {
+      "name": "alpha",
+      "definition": "Overall type-I error probability.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.05,
+      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis."
+    },
+    {
+      "name": "power",
+      "definition": "Target probability of rejecting the null under the design alternative.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.8,
+      "clinical_interpretation": "Target probability of rejecting the null under the design alternative."
+    },
+    {
+      "name": "dropout_rate",
+      "definition": "Expected proportion without an analyzable primary endpoint.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0,
+      "clinical_interpretation": "Anticipated loss applied only after the analysis-required sample size is obtained."
+    }
+  ],
+  "alpha": {
+    "sidedness": "one_or_two_sided",
+    "convention": "Overall alpha; one-sided uses alpha and two-sided divides alpha equally between tails."
+  },
+  "allocation": {
+    "ratio_definition": "n_treatment / n_control",
+    "supported": true,
+    "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power."
+  },
+  "solve_modes": {
+    "sample_size": true,
+    "power": true,
+    "events": false,
+    "operating_characteristics": false
+  },
+  "engine": {
+    "engine_family": "trialsize",
+    "type": "exact_package",
+    "package": "TrialSize",
+    "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
+    "function": "TrialSize::TwoSampleMean.Equivalence",
+    "function_signature": "TwoSampleMean.Equivalence(alpha, beta, sigma, k, delta, margin)",
+    "parameter_mapping": {
+      "alpha": "alpha",
+      "1-power": "beta",
+      "sd": "sigma",
+      "allocation_ratio": "k",
+      "symmetric equivalence bound": "delta",
+      "expected_difference": "margin"
+    },
+    "output_mapping": {
+      "sample_size": "arm sample sizes"
+    }
+  },
+  "method_type": "exact_package",
+  "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
+  "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
+  "assumptions": [
+    "The continuous endpoint model and fixed_parallel_equivalence design are correctly specified.",
+    "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+    "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+  ],
+  "unsupported_domains": [],
+  "warnings": [
+    "TrialSize supports a symmetric bound; asymmetric bounds require a separately verified engine and must not be silently symmetrized."
+  ],
+  "validation_grade": "V2",
+  "migration_action": "KEEP_AND_VALIDATE",
+  "lifecycle_status": "VALIDATION_PENDING",
+  "primary_reference": "Chow, Shao, Wang & Lokhnygina; Schuirmann (1987)",
+  "package_reference": "https://search.r-project.org/CRAN/refmans/TrialSize/html/00Index.html",
+  "guideline_reference": "ICH E9; ICH E10",
+  "benchmark_requirements": [
+    "Compare TrialSize with two one-sided noncentral-t calculations and a commercial/textbook benchmark",
+    "Reproduce official package examples for the pinned version.",
+    "Compare forward power and inverse sample-size results on a prespecified grid.",
+    "Verify null-boundary type-I error and clinically relevant alternatives independently."
+  ]
+}

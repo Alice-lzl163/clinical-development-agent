@@ -1,0 +1,183 @@
+{
+  "test_key": "survival_superiority",
+  "method_id": "cox_margin_design",
+  "display_name": "Survival superiority over HR margin",
+  "endpoint_family": "time_to_event",
+  "design_family": "superiority_margin",
+  "estimand": "Hazard ratio relative to a non-null superiority margin.",
+  "hypothesis": {
+    "null": "HR >= null_hazard_ratio_margin under beneficial-lower orientation",
+    "alternative": "HR < null_hazard_ratio_margin",
+    "effect_measure": "hazard_ratio",
+    "beneficial_direction": "lower"
+  },
+  "inputs": [
+    {
+      "name": "alternative_hazard_ratio",
+      "definition": "Hazard ratio under the design alternative.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "Hazard ratio under the design alternative."
+    },
+    {
+      "name": "control_median",
+      "definition": "Control median survival used by the accrual/event model.",
+      "type": "number",
+      "unit": "time",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "Control median survival used by the accrual/event model."
+    },
+    {
+      "name": "accrual_duration",
+      "definition": "Enrollment duration.",
+      "type": "number",
+      "unit": "time",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "Enrollment duration."
+    },
+    {
+      "name": "follow_up_duration",
+      "definition": "Additional follow-up after accrual.",
+      "type": "number",
+      "unit": "time",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "Additional follow-up after accrual."
+    },
+    {
+      "name": "dropout_probability",
+      "definition": "Cumulative independent dropout probability over the stated horizon.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "minimum": 0,
+        "maximum": 1
+      },
+      "default": null,
+      "clinical_interpretation": "Cumulative independent dropout probability over the stated horizon."
+    },
+    {
+      "name": "allocation_ratio",
+      "definition": "Planned treatment-to-control sample-size ratio n_treatment / n_control.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": 1,
+      "clinical_interpretation": "Planned treatment-to-control sample-size ratio n_treatment / n_control."
+    },
+    {
+      "name": "alpha",
+      "definition": "Overall type-I error probability.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.05,
+      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis."
+    },
+    {
+      "name": "power",
+      "definition": "Target probability of rejecting the null under the design alternative.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.8,
+      "clinical_interpretation": "Target probability of rejecting the null under the design alternative."
+    },
+    {
+      "name": "null_hazard_ratio_margin",
+      "definition": "Justified noninferiority HR margin.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "Justified noninferiority HR margin."
+    }
+  ],
+  "alpha": {
+    "sidedness": "one_sided",
+    "convention": "Overall alpha; one-sided uses alpha and two-sided divides alpha equally between tails."
+  },
+  "allocation": {
+    "ratio_definition": "n_treatment / n_control",
+    "supported": true,
+    "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power."
+  },
+  "solve_modes": {
+    "sample_size": true,
+    "power": true,
+    "events": true,
+    "operating_characteristics": false
+  },
+  "engine": {
+    "engine_family": "trialsize",
+    "type": "exact_package",
+    "package": "TrialSize",
+    "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
+    "function": "TrialSize::Cox.NIS",
+    "function_signature": "Cox.NIS(alpha, beta, loghr, p1, d, delta)",
+    "parameter_mapping": {
+      "alpha": "alpha",
+      "1-power": "beta",
+      "log alternative hazard ratio with package orientation": "loghr",
+      "treatment allocation proportion": "p1",
+      "event probability": "d",
+      "signed log-HR margin": "delta"
+    },
+    "output_mapping": {
+      "sample_size": "subjects"
+    }
+  },
+  "method_type": "asymptotic",
+  "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
+  "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
+  "assumptions": [
+    "The time_to_event endpoint model and superiority_margin design are correctly specified.",
+    "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+    "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+  ],
+  "unsupported_domains": [],
+  "warnings": [],
+  "validation_grade": "V3",
+  "migration_action": "REPLACE",
+  "lifecycle_status": "VALIDATION_PENDING",
+  "primary_reference": "Chow et al.",
+  "package_reference": "https://search.r-project.org/CRAN/refmans/TrialSize/html/00Index.html",
+  "guideline_reference": "ICH E9",
+  "benchmark_requirements": [
+    "Package examples plus Cox simulations on both sides of the null boundary",
+    "Reproduce official package examples for the pinned version.",
+    "Compare forward power and inverse sample-size results on a prespecified grid.",
+    "Verify null-boundary type-I error and clinically relevant alternatives independently."
+  ]
+}

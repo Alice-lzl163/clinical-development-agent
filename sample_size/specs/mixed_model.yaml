@@ -1,0 +1,163 @@
+{
+  "test_key": "mixed_model",
+  "method_id": "mixed_model_longitudinal_sim",
+  "display_name": "Repeated-measures / longitudinal power",
+  "endpoint_family": "continuous_longitudinal",
+  "design_family": "repeated_measures",
+  "estimand": "Prespecified longitudinal treatment contrast from a fully specified mixed model.",
+  "hypothesis": {
+    "null": "contrast = 0",
+    "alternative": "contrast differs from or exceeds 0",
+    "effect_measure": "model_contrast",
+    "beneficial_direction": "higher_or_lower_as_prespecified"
+  },
+  "inputs": [
+    {
+      "name": "model_specification",
+      "definition": "Versioned fixed/random-effects and covariance model specification.",
+      "type": "object",
+      "unit": "model",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Versioned fixed/random-effects and covariance model specification."
+    },
+    {
+      "name": "analysis_test",
+      "definition": "Named fixed-effect contrast and test method.",
+      "type": "object",
+      "unit": "test",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Named fixed-effect contrast and test method."
+    },
+    {
+      "name": "visit_schedule",
+      "definition": "Observation times and planned visits.",
+      "type": "array",
+      "unit": "time",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Observation times and planned visits."
+    },
+    {
+      "name": "missingness_model",
+      "definition": "Dropout/intermittent-missingness data-generating model.",
+      "type": "object",
+      "unit": "model",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Dropout/intermittent-missingness data-generating model."
+    },
+    {
+      "name": "candidate_sample_sizes",
+      "definition": "Strictly increasing total randomized sample sizes.",
+      "type": "array",
+      "unit": "subjects",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Strictly increasing total randomized sample sizes."
+    },
+    {
+      "name": "simulation_replicates",
+      "definition": "Replicates per candidate size.",
+      "type": "integer",
+      "unit": "replicates",
+      "required": true,
+      "valid_range": {
+        "minimum": 1000
+      },
+      "default": null,
+      "clinical_interpretation": "Replicates per candidate size."
+    },
+    {
+      "name": "alpha",
+      "definition": "Overall type-I error probability.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.05,
+      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis."
+    },
+    {
+      "name": "power",
+      "definition": "Target probability of rejecting the null under the design alternative.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.8,
+      "clinical_interpretation": "Target probability of rejecting the null under the design alternative."
+    }
+  ],
+  "alpha": {
+    "sidedness": "one_or_two_sided",
+    "convention": "Overall alpha; one-sided uses alpha and two-sided divides alpha equally between tails."
+  },
+  "allocation": {
+    "ratio_definition": "n_treatment / n_control",
+    "supported": true,
+    "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power."
+  },
+  "solve_modes": {
+    "sample_size": true,
+    "power": true,
+    "events": false,
+    "operating_characteristics": true
+  },
+  "engine": {
+    "engine_family": "simr",
+    "type": "simulation",
+    "package": "simr",
+    "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
+    "function": "simr::powerSim",
+    "function_signature": "powerSim(fit, test = fixed(getDefaultXname(fit)), sim = fit, fitOpts = list(), testOpts = list(), simOpts = list(), seed, ...)",
+    "parameter_mapping": {
+      "model_specification": "fit constructed and frozen before simulation",
+      "analysis_test": "test",
+      "simulation_replicates": "nsim",
+      "rng_seed": "seed"
+    },
+    "output_mapping": {
+      "power": "empirical rejection proportion",
+      "sample_size": "smallest candidate meeting target"
+    }
+  },
+  "method_type": "simulation",
+  "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
+  "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
+  "assumptions": [
+    "The continuous_longitudinal endpoint model and repeated_measures design are correctly specified.",
+    "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+    "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+  ],
+  "unsupported_domains": [
+    "Requests lacking covariance, random-effects, visit, missingness, or analysis-test specifications."
+  ],
+  "warnings": [
+    "DO_NOT_REPRODUCE_HISTORICAL_BEHAVIOR: Do not reuse the generic historical model or treat a power-given-n template as a complete design."
+  ],
+  "validation_grade": "V5",
+  "migration_action": "REDESIGN",
+  "lifecycle_status": "EXPERIMENTAL",
+  "primary_reference": "Green & MacLeod (2016)",
+  "package_reference": "https://search.r-project.org/CRAN/refmans/simr/html/powerSim.html",
+  "guideline_reference": "ICH E9(R1); FDA covariate-adjustment guidance",
+  "benchmark_requirements": [
+    "Validate simple cases against analytical repeated-measures results; then simulation recovery, null T1E, missingness scenarios",
+    "Reproduce official package examples for the pinned version.",
+    "Compare forward power and inverse sample-size results on a prespecified grid.",
+    "Verify null-boundary type-I error and clinically relevant alternatives independently."
+  ]
+}

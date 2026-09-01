@@ -1,0 +1,174 @@
+{
+  "test_key": "survival_historical",
+  "method_id": "historical_survival_sensitivity",
+  "display_name": "Historical-control survival",
+  "endpoint_family": "time_to_event",
+  "design_family": "single_arm_external_control",
+  "estimand": "One-sample survival effect relative to an external reference, including uncertainty/drift.",
+  "hypothesis": {
+    "null": "No improvement over reference including margin",
+    "alternative": "Prespecified improvement",
+    "effect_measure": "hazard_ratio_or_survival_contrast",
+    "beneficial_direction": "beneficial_direction_explicit"
+  },
+  "inputs": [
+    {
+      "name": "null_median",
+      "definition": "Fixed reference median under exponential survival.",
+      "type": "number",
+      "unit": "time",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "Fixed reference median under exponential survival."
+    },
+    {
+      "name": "alternative_median",
+      "definition": "Alternative median under exponential survival.",
+      "type": "number",
+      "unit": "time",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "Alternative median under exponential survival."
+    },
+    {
+      "name": "accrual_duration",
+      "definition": "Accrual duration.",
+      "type": "number",
+      "unit": "time",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "Accrual duration."
+    },
+    {
+      "name": "follow_up_duration",
+      "definition": "Additional follow-up.",
+      "type": "number",
+      "unit": "time",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "Additional follow-up."
+    },
+    {
+      "name": "alpha",
+      "definition": "Overall type-I error probability.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.05,
+      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis."
+    },
+    {
+      "name": "power",
+      "definition": "Target probability of rejecting the null under the design alternative.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.8,
+      "clinical_interpretation": "Target probability of rejecting the null under the design alternative."
+    },
+    {
+      "name": "dropout_rate",
+      "definition": "Expected proportion without an analyzable primary endpoint.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0,
+      "clinical_interpretation": "Anticipated loss applied only after the analysis-required sample size is obtained."
+    },
+    {
+      "name": "historical_sample_size",
+      "definition": "Number supporting the external reference.",
+      "type": "number",
+      "unit": "subjects",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "Number supporting the external reference."
+    },
+    {
+      "name": "drift_sensitivity",
+      "definition": "Prespecified external-control drift scenarios.",
+      "type": "array",
+      "unit": "effect units",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Prespecified external-control drift scenarios."
+    }
+  ],
+  "alpha": {
+    "sidedness": "one_or_two_sided",
+    "convention": "Overall alpha; one-sided uses alpha and two-sided divides alpha equally between tails."
+  },
+  "allocation": {
+    "ratio_definition": "Not applicable.",
+    "supported": false,
+    "rounding_rule": "Not applicable."
+  },
+  "solve_modes": {
+    "sample_size": true,
+    "power": true,
+    "events": false,
+    "operating_characteristics": true
+  },
+  "engine": {
+    "engine_family": "custom_sim",
+    "type": "simulation",
+    "package": null,
+    "package_version_policy": "Not applicable; pin the specification and implementation commit.",
+    "function": null,
+    "function_signature": null,
+    "parameter_mapping": {},
+    "output_mapping": {}
+  },
+  "method_type": "simulation",
+  "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
+  "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
+  "assumptions": [
+    "The time_to_event endpoint model and single_arm_external_control design are correctly specified.",
+    "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+    "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+  ],
+  "unsupported_domains": [
+    "Historical benchmark without uncertainty, exchangeability assessment, or drift sensitivity."
+  ],
+  "warnings": [],
+  "validation_grade": "V3",
+  "migration_action": "KEEP_AND_VALIDATE",
+  "lifecycle_status": "EXPERIMENTAL",
+  "primary_reference": "Korn & Freidlin on historical controls; exponential one-sample methods",
+  "package_reference": null,
+  "guideline_reference": "ICH E10; ICH E9(R1)",
+  "benchmark_requirements": [
+    "Compare no-uncertainty analytical case, then simulate bias/drift and historical sampling uncertainty",
+    "Reproduce official package examples for the pinned version.",
+    "Compare forward power and inverse sample-size results on a prespecified grid.",
+    "Verify null-boundary type-I error and clinically relevant alternatives independently."
+  ]
+}

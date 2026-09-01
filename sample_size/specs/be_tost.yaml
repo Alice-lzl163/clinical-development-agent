@@ -1,0 +1,175 @@
+{
+  "test_key": "be_tost",
+  "method_id": "bioequivalence_tost",
+  "display_name": "Average bioequivalence TOST",
+  "endpoint_family": "continuous_pk",
+  "design_family": "bioequivalence",
+  "estimand": "Geometric mean ratio on the log scale.",
+  "hypothesis": {
+    "null": "GMR <= lower_limit OR GMR >= upper_limit",
+    "alternative": "lower_limit < GMR < upper_limit",
+    "effect_measure": "geometric_mean_ratio",
+    "beneficial_direction": "inside_equivalence_interval"
+  },
+  "inputs": [
+    {
+      "name": "cv",
+      "definition": "Within-subject coefficient of variation.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "Within-subject coefficient of variation."
+    },
+    {
+      "name": "theta0",
+      "definition": "Expected geometric mean ratio.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "Expected geometric mean ratio."
+    },
+    {
+      "name": "lower_limit",
+      "definition": "Lower bioequivalence limit.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "Lower bioequivalence limit."
+    },
+    {
+      "name": "upper_limit",
+      "definition": "Upper bioequivalence limit.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "Upper bioequivalence limit."
+    },
+    {
+      "name": "design",
+      "definition": "PowerTOST design code.",
+      "type": "string",
+      "unit": "category",
+      "required": true,
+      "valid_range": {
+        "enum": [
+          "2x2",
+          "parallel"
+        ]
+      },
+      "default": null,
+      "clinical_interpretation": "PowerTOST design code."
+    },
+    {
+      "name": "alpha",
+      "definition": "Overall type-I error probability.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.05,
+      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis."
+    },
+    {
+      "name": "power",
+      "definition": "Target probability of rejecting the null under the design alternative.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.8,
+      "clinical_interpretation": "Target probability of rejecting the null under the design alternative."
+    },
+    {
+      "name": "dropout_rate",
+      "definition": "Expected proportion without an analyzable primary endpoint.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0,
+      "clinical_interpretation": "Anticipated loss applied only after the analysis-required sample size is obtained."
+    }
+  ],
+  "alpha": {
+    "sidedness": "two_one_sided_tests",
+    "convention": "Each component one-sided test uses alpha; resulting TOST confidence level is 1 - 2*alpha."
+  },
+  "allocation": {
+    "ratio_definition": "n_treatment / n_control",
+    "supported": true,
+    "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power."
+  },
+  "solve_modes": {
+    "sample_size": true,
+    "power": true,
+    "events": false,
+    "operating_characteristics": false
+  },
+  "engine": {
+    "engine_family": "powertost",
+    "type": "exact_package",
+    "package": "PowerTOST",
+    "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
+    "function": "PowerTOST::sampleN.TOST",
+    "function_signature": "sampleN.TOST(alpha = 0.05, targetpower = 0.8, logscale = TRUE, theta0 = 0.95, theta1, theta2, CV, design = \"2x2\", method = \"exact\", robust = FALSE, print = TRUE, details = FALSE)",
+    "parameter_mapping": {
+      "alpha": "alpha",
+      "power": "targetpower",
+      "theta0": "theta0",
+      "lower_limit": "theta1",
+      "upper_limit": "theta2",
+      "cv": "CV",
+      "design": "design"
+    },
+    "output_mapping": {
+      "sample_size": "total sample size reported by package"
+    }
+  },
+  "method_type": "exact_package",
+  "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
+  "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
+  "assumptions": [
+    "The continuous_pk endpoint model and bioequivalence design are correctly specified.",
+    "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+    "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+  ],
+  "unsupported_domains": [],
+  "warnings": [],
+  "validation_grade": "V1",
+  "migration_action": "KEEP",
+  "lifecycle_status": "VALIDATION_PENDING",
+  "primary_reference": "Schuirmann (1987); PowerTOST documentation",
+  "package_reference": "https://cran.r-project.org/package=PowerTOST",
+  "guideline_reference": "FDA bioavailability/bioequivalence guidance; EMA BE guideline",
+  "benchmark_requirements": [
+    "Reproduce PowerTOST manual examples and regulatory worked examples; forward/reverse round trips",
+    "Reproduce official package examples for the pinned version.",
+    "Compare forward power and inverse sample-size results on a prespecified grid.",
+    "Verify null-boundary type-I error and clinically relevant alternatives independently."
+  ]
+}

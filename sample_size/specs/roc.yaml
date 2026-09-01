@@ -1,0 +1,184 @@
+{
+  "test_key": "roc",
+  "method_id": "roc_auc_design",
+  "display_name": "AUC sample size",
+  "endpoint_family": "diagnostic",
+  "design_family": "case_control",
+  "estimand": "AUC or AUC difference under the selected one-/two-curve design.",
+  "hypothesis": {
+    "null": "AUC contrast = null value",
+    "alternative": "AUC contrast = alternative value",
+    "effect_measure": "auc_or_auc_difference",
+    "beneficial_direction": "higher"
+  },
+  "inputs": [
+    {
+      "name": "roc_design",
+      "definition": "ROC power design.",
+      "type": "string",
+      "unit": "category",
+      "required": true,
+      "valid_range": {
+        "enum": [
+          "one_curve_vs_null",
+          "two_independent_curves",
+          "two_paired_curves"
+        ]
+      },
+      "default": null,
+      "clinical_interpretation": "ROC power design."
+    },
+    {
+      "name": "auc_null",
+      "definition": "Null AUC or reference AUC.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "minimum": 0.5,
+        "maximum": 1
+      },
+      "default": null,
+      "clinical_interpretation": "Null AUC or reference AUC."
+    },
+    {
+      "name": "auc_alternative",
+      "definition": "Alternative AUC.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "minimum": 0.5,
+        "maximum": 1
+      },
+      "default": null,
+      "clinical_interpretation": "Alternative AUC."
+    },
+    {
+      "name": "case_control_ratio",
+      "definition": "Number controls per case.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "Number controls per case."
+    },
+    {
+      "name": "variance_method",
+      "definition": "Variance/covariance method.",
+      "type": "string",
+      "unit": "category",
+      "required": true,
+      "valid_range": {
+        "enum": [
+          "delong",
+          "obuchowski"
+        ]
+      },
+      "default": null,
+      "clinical_interpretation": "Variance/covariance method."
+    },
+    {
+      "name": "alpha",
+      "definition": "Overall type-I error probability.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.05,
+      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis."
+    },
+    {
+      "name": "power",
+      "definition": "Target probability of rejecting the null under the design alternative.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.8,
+      "clinical_interpretation": "Target probability of rejecting the null under the design alternative."
+    },
+    {
+      "name": "dropout_rate",
+      "definition": "Expected proportion without an analyzable primary endpoint.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0,
+      "clinical_interpretation": "Anticipated loss applied only after the analysis-required sample size is obtained."
+    }
+  ],
+  "alpha": {
+    "sidedness": "one_or_two_sided",
+    "convention": "Overall alpha; one-sided uses alpha and two-sided divides alpha equally between tails."
+  },
+  "allocation": {
+    "ratio_definition": "n_treatment / n_control",
+    "supported": true,
+    "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power."
+  },
+  "solve_modes": {
+    "sample_size": true,
+    "power": true,
+    "events": false,
+    "operating_characteristics": false
+  },
+  "engine": {
+    "engine_family": "proc",
+    "type": "asymptotic",
+    "package": "pROC",
+    "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
+    "function": "pROC::power.roc.test",
+    "function_signature": "power.roc.test(..., sig.level = 0.05, power = NULL, kappa = 1, alternative = c(\"two.sided\", \"one.sided\"), method = c(\"delong\", \"obuchowski\"))",
+    "parameter_mapping": {
+      "roc_design": "selects one- or two-curve invocation and pairing",
+      "auc_null/auc_alternative": "auc or roc objects",
+      "case_control_ratio": "kappa",
+      "alpha": "sig.level",
+      "power": "power",
+      "variance_method": "method"
+    },
+    "output_mapping": {
+      "sample_size": "ncases and ncontrols"
+    }
+  },
+  "method_type": "asymptotic",
+  "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
+  "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
+  "assumptions": [
+    "The diagnostic endpoint model and case_control design are correctly specified.",
+    "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+    "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+  ],
+  "unsupported_domains": [
+    "AUC values without one/two-curve design, paired status, and case/control ratio."
+  ],
+  "warnings": [
+    "DO_NOT_REPRODUCE_HISTORICAL_BEHAVIOR: Do not reuse the uncited AUC normal approximation without identifying one- versus two-curve design and covariance."
+  ],
+  "validation_grade": "V4",
+  "migration_action": "REPLACE",
+  "lifecycle_status": "EXPERIMENTAL",
+  "primary_reference": "Obuchowski & McClish (1997); DeLong, DeLong & Clarke-Pearson (1988)",
+  "package_reference": "https://xrobin.github.io/pROC/reference/power.roc.test.html",
+  "guideline_reference": "FDA diagnostic-device statistical guidance where applicable",
+  "benchmark_requirements": [
+    "Reproduce `power.roc.test` examples and primary-paper cases; simulate binormal and non-binormal marker distributions",
+    "Reproduce official package examples for the pinned version.",
+    "Compare forward power and inverse sample-size results on a prespecified grid.",
+    "Verify null-boundary type-I error and clinically relevant alternatives independently."
+  ]
+}

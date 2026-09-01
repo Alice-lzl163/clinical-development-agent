@@ -1,0 +1,132 @@
+{
+  "test_key": "bland_altman",
+  "method_id": "bland_altman_precision",
+  "display_name": "Bland–Altman method-comparison sample size",
+  "endpoint_family": "method_comparison",
+  "design_family": "paired_precision",
+  "estimand": "Confidence-interval precision for mean bias or limits of agreement.",
+  "hypothesis": {
+    "null": "Not a hypothesis-power design",
+    "alternative": "Achieve the requested confidence-interval half-width",
+    "effect_measure": "ci_half_width",
+    "beneficial_direction": "smaller"
+  },
+  "inputs": [
+    {
+      "name": "sd_difference",
+      "definition": "SD of paired method differences.",
+      "type": "number",
+      "unit": "measurement units",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "SD of paired method differences."
+    },
+    {
+      "name": "target_half_width",
+      "definition": "Desired CI half-width for bias or limit of agreement.",
+      "type": "number",
+      "unit": "measurement units",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "Desired CI half-width for bias or limit of agreement."
+    },
+    {
+      "name": "precision_target",
+      "definition": "Quantity whose precision is controlled.",
+      "type": "string",
+      "unit": "category",
+      "required": true,
+      "valid_range": {
+        "enum": [
+          "mean_bias",
+          "lower_loa",
+          "upper_loa",
+          "both_loa"
+        ]
+      },
+      "default": null,
+      "clinical_interpretation": "Quantity whose precision is controlled."
+    },
+    {
+      "name": "alpha",
+      "definition": "Overall type-I error probability.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.05,
+      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis."
+    },
+    {
+      "name": "dropout_rate",
+      "definition": "Expected proportion without an analyzable primary endpoint.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0,
+      "clinical_interpretation": "Anticipated loss applied only after the analysis-required sample size is obtained."
+    }
+  ],
+  "alpha": {
+    "sidedness": "one_or_two_sided",
+    "convention": "Overall alpha; one-sided uses alpha and two-sided divides alpha equally between tails."
+  },
+  "allocation": {
+    "ratio_definition": "Not applicable.",
+    "supported": false,
+    "rounding_rule": "Not applicable."
+  },
+  "solve_modes": {
+    "sample_size": true,
+    "power": false,
+    "events": false,
+    "operating_characteristics": false
+  },
+  "engine": {
+    "engine_family": "analytical",
+    "type": "analytical",
+    "package": null,
+    "package_version_policy": "Not applicable; pin the specification and implementation commit.",
+    "function": null,
+    "function_signature": null,
+    "parameter_mapping": {},
+    "output_mapping": {}
+  },
+  "method_type": "analytical",
+  "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
+  "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
+  "assumptions": [
+    "The method_comparison endpoint model and paired_precision design are correctly specified.",
+    "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+    "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+  ],
+  "unsupported_domains": [],
+  "warnings": [
+    "This is a precision design, not a power calculation."
+  ],
+  "validation_grade": "V3",
+  "migration_action": "KEEP_AND_VALIDATE",
+  "lifecycle_status": "VALIDATION_PENDING",
+  "primary_reference": "Bland & Altman (1986); Lu et al. on precision planning",
+  "package_reference": null,
+  "guideline_reference": "CLSI EP09 where applicable",
+  "benchmark_requirements": [
+    "Reproduce paper tables; simulate CI coverage and half-width; compare analysis CIs",
+    "Reproduce official package examples for the pinned version.",
+    "Compare forward power and inverse sample-size results on a prespecified grid.",
+    "Verify null-boundary type-I error and clinically relevant alternatives independently."
+  ]
+}

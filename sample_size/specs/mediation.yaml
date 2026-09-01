@@ -1,0 +1,170 @@
+{
+  "test_key": "mediation",
+  "method_id": "linear_mediation_sobel",
+  "display_name": "Mediation / indirect effect",
+  "endpoint_family": "continuous",
+  "design_family": "mediation",
+  "estimand": "Product-of-coefficients indirect effect a*b in a specified linear mediation model.",
+  "hypothesis": {
+    "null": "a*b = 0",
+    "alternative": "a*b differs from or exceeds 0",
+    "effect_measure": "indirect_effect",
+    "beneficial_direction": "higher_or_lower_explicit"
+  },
+  "inputs": [
+    {
+      "name": "path_a",
+      "definition": "Exposure-to-mediator coefficient.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Exposure-to-mediator coefficient."
+    },
+    {
+      "name": "path_b",
+      "definition": "Mediator-to-outcome coefficient conditional on exposure.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Mediator-to-outcome coefficient conditional on exposure."
+    },
+    {
+      "name": "sigma_x",
+      "definition": "SD of exposure.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "SD of exposure."
+    },
+    {
+      "name": "sigma_m",
+      "definition": "Residual SD of mediator.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "Residual SD of mediator."
+    },
+    {
+      "name": "sigma_y",
+      "definition": "Residual SD of outcome.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "Residual SD of outcome."
+    },
+    {
+      "name": "alpha",
+      "definition": "Overall type-I error probability.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.05,
+      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis."
+    },
+    {
+      "name": "power",
+      "definition": "Target probability of rejecting the null under the design alternative.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.8,
+      "clinical_interpretation": "Target probability of rejecting the null under the design alternative."
+    },
+    {
+      "name": "dropout_rate",
+      "definition": "Expected proportion without an analyzable primary endpoint.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0,
+      "clinical_interpretation": "Anticipated loss applied only after the analysis-required sample size is obtained."
+    }
+  ],
+  "alpha": {
+    "sidedness": "one_or_two_sided",
+    "convention": "Overall alpha; one-sided uses alpha and two-sided divides alpha equally between tails."
+  },
+  "allocation": {
+    "ratio_definition": "n_treatment / n_control",
+    "supported": true,
+    "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power."
+  },
+  "solve_modes": {
+    "sample_size": true,
+    "power": true,
+    "events": false,
+    "operating_characteristics": false
+  },
+  "engine": {
+    "engine_family": "powermediation",
+    "type": "asymptotic",
+    "package": "powerMediation",
+    "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
+    "function": "powerMediation::ssMediation.Sobel",
+    "function_signature": "ssMediation.Sobel(power, theta.1a, lambda.a, sigma.x, sigma.m, sigma.epsilon, n.lower = 1, n.upper = 1e+30, alpha = 0.05, verbose = TRUE)",
+    "parameter_mapping": {
+      "power": "power",
+      "path_a": "theta.1a",
+      "path_b": "lambda.a",
+      "sigma_x": "sigma.x",
+      "sigma_m": "sigma.m",
+      "sigma_y": "sigma.epsilon",
+      "alpha": "alpha"
+    },
+    "output_mapping": {
+      "sample_size": "n"
+    }
+  },
+  "method_type": "asymptotic",
+  "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
+  "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
+  "assumptions": [
+    "The continuous endpoint model and mediation design are correctly specified.",
+    "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+    "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+  ],
+  "unsupported_domains": [],
+  "warnings": [
+    "This specification is Sobel asymptotic mediation, not general causal mediation."
+  ],
+  "validation_grade": "V3",
+  "migration_action": "REPLACE",
+  "lifecycle_status": "VALIDATION_PENDING",
+  "primary_reference": "Sobel (1982); Fritz & MacKinnon (2007)",
+  "package_reference": "https://search.r-project.org/CRAN/refmans/powerMediation/html/ssMediation.Sobel.html",
+  "guideline_reference": "ICH E9 for confirmatory use",
+  "benchmark_requirements": [
+    "Reproduce package example and published tables; simulate product-of-coefficients and bootstrap/Monte Carlo alternatives",
+    "Reproduce official package examples for the pinned version.",
+    "Compare forward power and inverse sample-size results on a prespecified grid.",
+    "Verify null-boundary type-I error and clinically relevant alternatives independently."
+  ]
+}

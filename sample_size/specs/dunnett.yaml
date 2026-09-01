@@ -1,0 +1,156 @@
+{
+  "test_key": "dunnett",
+  "method_id": "dunnett_many_to_one",
+  "display_name": "Dunnett many-to-one comparisons",
+  "endpoint_family": "continuous",
+  "design_family": "multiple_treatments_control",
+  "estimand": "Simultaneous treatment-versus-control mean contrasts.",
+  "hypothesis": {
+    "null": "All selected contrasts = 0",
+    "alternative": "At least the prespecified contrast success rule is met",
+    "effect_measure": "mean_contrasts",
+    "beneficial_direction": "higher_or_lower_explicit"
+  },
+  "inputs": [
+    {
+      "name": "experimental_arms",
+      "definition": "Number of treatments compared with shared control.",
+      "type": "integer",
+      "unit": "arms",
+      "required": true,
+      "valid_range": {
+        "minimum": 2
+      },
+      "default": null,
+      "clinical_interpretation": "Number of treatments compared with shared control."
+    },
+    {
+      "name": "mean_differences",
+      "definition": "Alternative mean difference for each treatment versus control.",
+      "type": "array",
+      "unit": "endpoint units",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Alternative mean difference for each treatment versus control."
+    },
+    {
+      "name": "sd",
+      "definition": "Common SD.",
+      "type": "number",
+      "unit": "endpoint units",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "Common SD."
+    },
+    {
+      "name": "allocation_ratio",
+      "definition": "Planned treatment-to-control sample-size ratio n_treatment / n_control.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": 1,
+      "clinical_interpretation": "Planned treatment-to-control sample-size ratio n_treatment / n_control."
+    },
+    {
+      "name": "alpha",
+      "definition": "Overall type-I error probability.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.05,
+      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis."
+    },
+    {
+      "name": "power",
+      "definition": "Target probability of rejecting the null under the design alternative.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.8,
+      "clinical_interpretation": "Target probability of rejecting the null under the design alternative."
+    },
+    {
+      "name": "dropout_rate",
+      "definition": "Expected proportion without an analyzable primary endpoint.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0,
+      "clinical_interpretation": "Anticipated loss applied only after the analysis-required sample size is obtained."
+    }
+  ],
+  "alpha": {
+    "sidedness": "one_or_two_sided",
+    "convention": "Overall alpha; one-sided uses alpha and two-sided divides alpha equally between tails."
+  },
+  "allocation": {
+    "ratio_definition": "n_treatment / n_control",
+    "supported": true,
+    "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power."
+  },
+  "solve_modes": {
+    "sample_size": true,
+    "power": true,
+    "events": false,
+    "operating_characteristics": false
+  },
+  "engine": {
+    "engine_family": "mvtnorm",
+    "type": "exact_package",
+    "package": "mvtnorm",
+    "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
+    "function": "mvtnorm::qmvt",
+    "function_signature": "qmvt(p, interval = NULL, tail = c(\"lower.tail\", \"upper.tail\", \"both.tails\"), df = 0, delta = 0, corr = NULL, sigma = NULL, algorithm = GenzBretz(), type = c(\"Kshirsagar\", \"shifted\"), ptol = 1e-06, maxiter = 500, trace = FALSE)",
+    "parameter_mapping": {
+      "alpha and shared-control correlation": "tail probability and corr/sigma",
+      "degrees of freedom": "df"
+    },
+    "output_mapping": {
+      "critical_value": "Dunnett multivariate-t quantile used by independently specified sample-size inversion"
+    }
+  },
+  "method_type": "exact_package",
+  "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
+  "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
+  "assumptions": [
+    "The continuous endpoint model and multiple_treatments_control design are correctly specified.",
+    "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+    "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+  ],
+  "unsupported_domains": [],
+  "warnings": [
+    "qmvt supplies the multivariate-t quantile; the sample-size inversion is a separately validated method layer.",
+    "DO_NOT_REPRODUCE_HISTORICAL_BEHAVIOR: Do not use z + 0.5 log(k) or Bonferroni as a Dunnett critical value."
+  ],
+  "validation_grade": "V4",
+  "migration_action": "REPLACE",
+  "lifecycle_status": "VALIDATION_PENDING",
+  "primary_reference": "Dunnett (1955)",
+  "package_reference": "https://cran.r-project.org/package=mvtnorm",
+  "guideline_reference": "FDA Multiple Endpoints Guidance",
+  "benchmark_requirements": [
+    "Compare published Dunnett tables, mvtnorm probabilities, and simulated familywise power",
+    "Reproduce official package examples for the pinned version.",
+    "Compare forward power and inverse sample-size results on a prespecified grid.",
+    "Verify null-boundary type-I error and clinically relevant alternatives independently."
+  ]
+}

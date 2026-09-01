@@ -1,0 +1,119 @@
+{
+  "test_key": "ttest_paired",
+  "method_id": "mean_t_paired",
+  "display_name": "Paired t / 2×2 crossover",
+  "endpoint_family": "continuous",
+  "design_family": "paired",
+  "estimand": "Mean within-pair difference.",
+  "hypothesis": {
+    "null": "mean_difference = 0",
+    "alternative": "mean_difference differs from or exceeds 0",
+    "effect_measure": "paired_mean_difference",
+    "beneficial_direction": "higher_or_lower_as_prespecified"
+  },
+  "inputs": [
+    {
+      "name": "standardized_paired_effect",
+      "definition": "Mean paired difference divided by SD of paired differences.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "Mean paired difference divided by SD of paired differences."
+    },
+    {
+      "name": "alpha",
+      "definition": "Overall type-I error probability.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.05,
+      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis."
+    },
+    {
+      "name": "power",
+      "definition": "Target probability of rejecting the null under the design alternative.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.8,
+      "clinical_interpretation": "Target probability of rejecting the null under the design alternative."
+    },
+    {
+      "name": "dropout_rate",
+      "definition": "Expected proportion without an analyzable primary endpoint.",
+      "type": "number",
+      "unit": "dimensionless",
+      "required": true,
+      "valid_range": {
+        "minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0,
+      "clinical_interpretation": "Anticipated loss applied only after the analysis-required sample size is obtained."
+    }
+  ],
+  "alpha": {
+    "sidedness": "one_or_two_sided",
+    "convention": "Overall alpha; one-sided uses alpha and two-sided divides alpha equally between tails."
+  },
+  "allocation": {
+    "ratio_definition": "Not applicable.",
+    "supported": false,
+    "rounding_rule": "Not applicable."
+  },
+  "solve_modes": {
+    "sample_size": true,
+    "power": true,
+    "events": false,
+    "operating_characteristics": false
+  },
+  "engine": {
+    "engine_family": "pwr_t",
+    "type": "exact_package",
+    "package": "pwr",
+    "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
+    "function": "pwr::pwr.t.test",
+    "function_signature": "pwr.t.test(n = NULL, d = NULL, sig.level = 0.05, power = NULL, type = c(\"two.sample\", \"one.sample\", \"paired\"), alternative = c(\"two.sided\", \"less\", \"greater\"))",
+    "parameter_mapping": {
+      "standardized_paired_effect": "d",
+      "design_constant": "type = paired"
+    },
+    "output_mapping": {
+      "n": "number of complete pairs"
+    }
+  },
+  "method_type": "exact_package",
+  "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
+  "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
+  "assumptions": [
+    "The continuous endpoint model and paired design are correctly specified.",
+    "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+    "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+  ],
+  "unsupported_domains": [],
+  "warnings": [],
+  "validation_grade": "V1",
+  "migration_action": "KEEP",
+  "lifecycle_status": "VALIDATION_PENDING",
+  "primary_reference": "Cohen (1988)",
+  "package_reference": "https://cran.r-project.org/package=pwr",
+  "guideline_reference": "ICH E9",
+  "benchmark_requirements": [
+    "Compare against noncentral t and published examples; test correlation-to-SD conversion separately",
+    "Reproduce official package examples for the pinned version.",
+    "Compare forward power and inverse sample-size results on a prespecified grid.",
+    "Verify null-boundary type-I error and clinically relevant alternatives independently."
+  ]
+}

@@ -1,0 +1,146 @@
+{
+  "test_key": "historical_controls",
+  "method_id": "map_historical_borrowing",
+  "display_name": "MAP / historical borrowing",
+  "endpoint_family": "binary_or_continuous",
+  "design_family": "external_control_borrowing",
+  "estimand": "Operating characteristics of a robust MAP borrowing design under exchangeability and conflict scenarios.",
+  "hypothesis": {
+    "null": "Null current-treatment scenarios including prior-data conflict",
+    "alternative": "Prespecified treatment-effect scenarios",
+    "effect_measure": "posterior_decision_with_borrowing",
+    "beneficial_direction": "higher_or_lower_explicit"
+  },
+  "inputs": [
+    {
+      "name": "historical_studies",
+      "definition": "Study-level historical outcomes and sample sizes with exchangeability metadata.",
+      "type": "array",
+      "unit": "studies",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Study-level historical outcomes and sample sizes with exchangeability metadata."
+    },
+    {
+      "name": "map_model",
+      "definition": "Likelihood, link, heterogeneity prior, and robustification specification.",
+      "type": "object",
+      "unit": "model",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Likelihood, link, heterogeneity prior, and robustification specification."
+    },
+    {
+      "name": "current_trial_design",
+      "definition": "Current likelihood, allocation, and posterior decision rule.",
+      "type": "object",
+      "unit": "design",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Current likelihood, allocation, and posterior decision rule."
+    },
+    {
+      "name": "drift_scenarios",
+      "definition": "Prior-data conflict and temporal drift scenarios.",
+      "type": "array",
+      "unit": "effect units",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Prior-data conflict and temporal drift scenarios."
+    },
+    {
+      "name": "candidate_sample_sizes",
+      "definition": "Candidate current-trial sizes.",
+      "type": "array",
+      "unit": "subjects",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Candidate current-trial sizes."
+    },
+    {
+      "name": "simulation_replicates",
+      "definition": "Monte Carlo replicates.",
+      "type": "integer",
+      "unit": "replicates",
+      "required": true,
+      "valid_range": {
+        "minimum": 10000
+      },
+      "default": null,
+      "clinical_interpretation": "Monte Carlo replicates."
+    },
+    {
+      "name": "rng_seed",
+      "definition": "RNG seed.",
+      "type": "integer",
+      "unit": "seed",
+      "required": true,
+      "valid_range": {
+        "minimum": 0
+      },
+      "default": null,
+      "clinical_interpretation": "RNG seed."
+    }
+  ],
+  "alpha": {
+    "sidedness": "one_or_two_sided",
+    "convention": "Overall alpha; one-sided uses alpha and two-sided divides alpha equally between tails."
+  },
+  "allocation": {
+    "ratio_definition": "n_treatment / n_control",
+    "supported": true,
+    "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power."
+  },
+  "solve_modes": {
+    "sample_size": false,
+    "power": false,
+    "events": false,
+    "operating_characteristics": true
+  },
+  "engine": {
+    "engine_family": "rbest",
+    "type": "simulation",
+    "package": "RBesT",
+    "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
+    "function": "RBesT::gMAP",
+    "function_signature": "gMAP(formula, family = gaussian, data, weights, tau.dist = \"HalfNormal\", tau.prior, beta.prior, tau.strata, contrasts = NULL, ... )",
+    "parameter_mapping": {
+      "map_model and historical_studies": "formula, family, data, weights, tau/beta priors",
+      "current trial simulation": "uses predictive prior derived from gMAP"
+    },
+    "output_mapping": {
+      "prior": "MAP posterior/predictive mixture used by a separate frozen simulation layer"
+    }
+  },
+  "method_type": "simulation",
+  "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
+  "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
+  "assumptions": [
+    "The binary_or_continuous endpoint model and external_control_borrowing design are correctly specified.",
+    "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+    "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+  ],
+  "unsupported_domains": [
+    "Historical sample size and discount weight without historical outcomes, heterogeneity, robustification, or conflict scenarios."
+  ],
+  "warnings": [
+    "DO_NOT_REPRODUCE_HISTORICAL_BEHAVIOR: Do not discount a no-borrow z-test using historical_n × a0; the historical response was ignored."
+  ],
+  "validation_grade": "V5",
+  "migration_action": "REDESIGN",
+  "lifecycle_status": "EXPERIMENTAL",
+  "primary_reference": "Neuenschwander et al.; Schmidli et al.",
+  "package_reference": "https://search.r-project.org/CRAN/refmans/RBesT/html/gMAP.html",
+  "guideline_reference": "FDA Bayesian methodology guidance/draft; ICH E10",
+  "benchmark_requirements": [
+    "Reproduce RBesT vignettes; prior-predictive checks; simulate bias, T1E, power under agreement/conflict/drift",
+    "Reproduce official package examples for the pinned version.",
+    "Compare forward power and inverse sample-size results on a prespecified grid.",
+    "Verify null-boundary type-I error and clinically relevant alternatives independently."
+  ]
+}
