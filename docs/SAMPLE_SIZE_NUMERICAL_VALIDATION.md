@@ -1,90 +1,46 @@
 # Sample-Size Numerical Validation — Round 4.2
 
-## 1. Scope and outcome
+## Outcome
 
-This round attempted live numerical validation of `ttest_one`, `ttest_paired`, `ttest_ind`, `anova`, `proportion_two`, and `be_tost`. It followed the permitted dependency-blocked path. No new calculator or statistical engine was added, no frozen method was changed, and no method was promoted.
+All 24 frozen fixtures for `ttest_one`, `ttest_paired`, `ttest_ind`, `anova`, `proportion_two`, and `be_tost` passed all six validation gates. The run made 114 live R calculations; all 114 completed successfully. These six implementations are `BENCHMARK_VALIDATED`, while their specification lifecycle remains `VALIDATION_PENDING`; none is declared `PRODUCTION` by this validation.
 
-Outcome: **DEPENDENCY_MISSING_R_RUNTIME** and **DEPENDENCY_MISSING_VALIDATION_REFERENCE**. Zero live R calculations were executed and no pending benchmark value was populated.
+Validation date: 2026-09-02. Basis commit: `3c8f9ba08fbb645189f4687ec3a422fbe5870c64`.
 
-## 2. Environment
+## Validated environment
 
-Validation date: 2026-09-01. Basis commit: `fb9ed65`.
-
-| Component | Observed result |
+| Component | Live version |
 |---|---|
-| Rscript | Not found in PATH, `C:\Program Files\R`, `C:\Program Files (x86)\R`, `%LOCALAPPDATA%\Programs\R`, `C:\R`, or R-core registry keys |
-| R version/platform/architecture | Unavailable; not inferred |
-| Python | 3.12.13, 64-bit AMD64 |
-| Platform | Windows 11, build 26100 |
-| SciPy | Not installed; version unavailable |
-| jsonlite, pwr, TrialSize, PowerTOST | Not auditable without R; versions and library paths unavailable |
+| Python | 3.12.7 |
+| SciPy (independent reference only) | 1.18.1 |
+| R | 4.6.1, x86_64-w64-mingw32 |
+| jsonlite | 2.0.0 |
+| pwr | 1.3.0 |
+| TrialSize | 1.4.1 |
+| PowerTOST | 1.5.7 |
 
-## 3. Validation methodology
+The exact validated versions are pinned in `sample_size/r_dependencies.yaml` and `requirements-dev.txt`. Calculator results inherit `BENCHMARK_VALIDATED` only when the runtime R and statistical-package versions match this environment.
 
-The planned gates were direct package reproduction, rounded inverse/forward consistency, independent reference comparison, rounding/dropout/allocation invariants, edge/monotonicity checks, and reproducible-code re-execution with version capture. The first mandatory gate could not start without R. Per the stop rule, downstream numerical gates were classified `BLOCKED`, not passed or skipped-as-success.
+## Gate results
 
-The existing non-R contract suite remains useful evidence for mappings and deterministic transformations, but it is not numerical validation.
-
-## 4. Tolerance policy
-
-The following predeclared tolerances remain pending use:
-
-- Rounded sample sizes and balance/block counts: exact integer equality.
-- Identical package raw continuous results: absolute difference at most `1e-6`.
-- Same-package power reproduction: absolute difference at most `1e-6`.
-- Independent noncentral-distribution power: initial absolute tolerance `1e-6` to `1e-5`, with any wider tolerance requiring a method-specific numerical investigation.
-
-No tolerance was evaluated or widened.
-
-## 5. Results by method
-
-| Method | Package reproduction | Round trip | Independent reference | Monotonicity | Dropout/rounding | Reproducible code | Final status |
+| Method | Authoritative reproduction | Forward/inverse | Independent reference | Allocation/dropout/rounding | Edge/monotonicity | Reproducibility | Fixtures |
 |---|---|---|---|---|---|---|---|
-| `ttest_one` | BLOCKED | BLOCKED | BLOCKED | BLOCKED | BLOCKED | BLOCKED | IMPLEMENTED_UNVALIDATED |
-| `ttest_paired` | BLOCKED | BLOCKED | BLOCKED | BLOCKED | BLOCKED | BLOCKED | IMPLEMENTED_UNVALIDATED |
-| `ttest_ind` | BLOCKED | BLOCKED | BLOCKED | BLOCKED | BLOCKED | BLOCKED | IMPLEMENTED_UNVALIDATED |
-| `anova` | BLOCKED | BLOCKED | BLOCKED | BLOCKED | BLOCKED | BLOCKED | IMPLEMENTED_UNVALIDATED |
-| `proportion_two` | BLOCKED | BLOCKED | BLOCKED | BLOCKED | BLOCKED | BLOCKED | IMPLEMENTED_UNVALIDATED |
-| `be_tost` | BLOCKED | BLOCKED | BLOCKED | BLOCKED | BLOCKED | BLOCKED | IMPLEMENTED_UNVALIDATED |
+| `ttest_one` | PASS | PASS | PASS | PASS | PASS | PASS | 4/4 |
+| `ttest_paired` | PASS | PASS | PASS | PASS | PASS | PASS | 3/3 |
+| `ttest_ind` | PASS | PASS | PASS | PASS | PASS | PASS | 4/4 |
+| `anova` | PASS | PASS | PASS | PASS | PASS | PASS | 5/5 |
+| `proportion_two` | PASS | PASS | PASS | PASS | PASS | PASS | 3/3 |
+| `be_tost` | PASS | PASS | PASS | PASS | PASS | PASS | 5/5 |
 
-## 6. Benchmarks
+Direct package calls and emitted reproducible R were executed independently. T-test power was checked with SciPy noncentral-t distributions, including signed `less` alternatives; ANOVA was checked with noncentral-F and its per-group-to-total-N derivation. `proportion_two` was checked against the TrialSize equation and the asymmetric control 0.20, treatment 0.35, ratio 2 benchmark. Bioequivalence was checked with an independent chi-square-conditioned TOST integration for declared 2x2 crossover and parallel designs. SciPy was never used as the production engine.
 
-The fixture contains 24 cases: 18 sample-size and 6 public-power cases. Numerically executed: 0; passed: 0; failed: 0; pending: 24. Existing null expectations were preserved. No raw R output, expected N, or expected power was invented.
+Exact raw calls, arguments, results, session/version information, round trips, independent comparisons, and monotonicity runs are stored in `sample_size/validation/round42_evidence.json`. The 24 frozen expected results and provenance are in `sample_size/validation/benchmarks/fixed_design_round4.yaml`.
 
-## 7–11. Numerical gates
+## Discrepancy record
 
-- Round-trip results: blocked before execution.
-- Independent-reference results: blocked because SciPy is absent; independent analytical reference code was not treated as executed.
-- Monotonicity results: blocked for live statistical calculations.
-- Dropout/rounding results: deterministic non-R tests pass, but the complete numerical gate remains blocked because package-derived analyzable N was not produced live.
-- Reproducibility results: generated code was not executed and is therefore not marked reproduced.
+One implementation defect was found. TrialSize returned continuous treatment N 190.9894 for the mandatory asymmetric proportion case, producing 191 treatment and 96 control after integer rounding. The public forward-power validator incorrectly required the realized integer ratio to equal 2 exactly. The invariant now permits only the unavoidable one-subject allocation remainder (`abs(n_treatment - ratio * n_control) <= 1`); larger departures still fail. The affected fixture and the entire suite were rerun successfully.
 
-## 12. Deviations and discrepancies
+No formula was changed to force agreement. No specification defect, independent-reference mismatch, numerical-tolerance issue, package/version behavior discrepancy, or unsupported-domain discrepancy remained after the run.
 
-No numerical discrepancy exists because no numerical comparison was run. The two environment blockers are classified `ENVIRONMENT_DEPENDENCY`. There were no resolved discrepancies to report.
+## Tolerance and status policy
 
-## 13. Validation status
-
-All six methods remain `IMPLEMENTED_UNVALIDATED`. None reached `PACKAGE_REPRODUCED` or `BENCHMARK_VALIDATED`.
-
-## 14. Remaining limitations and setup
-
-Install R manually, then run the repository-provided setup helper explicitly:
-
-```powershell
-& 'C:\Program Files\R\R-<version>\bin\Rscript.exe' sample_size/validation/install_r_dependencies.R
-& 'C:\Program Files\R\R-<version>\bin\Rscript.exe' --version
-python sample_size/validation/environment_probe.py
-```
-
-For independent validation, install the development-only Python reference dependency into the chosen validation environment:
-
-```powershell
-python -m pip install "scipy==<reviewed-version>"
-```
-
-Select and record the actual SciPy version before freezing it; this report does not nominate an untested version. Package installation remains user-initiated and is never performed by the calculator.
-
-## 15. Exact validated software versions
-
-None. `sample_size/r_dependencies.yaml` remains unpinned because no R or package version was executed and validated. Exact versions may be frozen only after all required gates pass.
+Integer sample sizes and block balance are exact. Same-package raw values and power use absolute tolerance `1e-6`. Independent distribution checks use the predeclared method tolerances; observed differences were comfortably within them. A historical implementation, an installed package, or a passing unit test alone cannot confer `BENCHMARK_VALIDATED` or `PRODUCTION` status.

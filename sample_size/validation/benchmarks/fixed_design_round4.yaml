@@ -1,28 +1,1193 @@
 schema_version: 1
 status: R_RUNTIME_VALIDATION_PENDING
-provenance_policy: Expected numerical values must be captured from the pinned package version and independently reviewed; null values are not assertions.
+provenance_policy: Expected numerical values must be captured from the pinned package
+  version and independently reviewed; null values are not assertions.
 cases:
-  - {id: ttest_one_two_sided, test_key: ttest_one, inputs: {standardized_effect: 0.5, alpha: 0.05, power: 0.8, dropout_rate: 0, alternative: two_sided}, expected_package_call: "pwr::pwr.t.test(type='one.sample', alternative='two.sided')", expected_raw_package_output: null, expected_analyzable_n: null, expected_randomized_n: null, expected_achieved_power: null, tolerance: 1.0e-10, source: "pwr official documentation; capture pending local R"}
-  - {id: ttest_one_greater, test_key: ttest_one, inputs: {standardized_effect: 0.5, alpha: 0.025, power: 0.8, dropout_rate: 0, alternative: greater}, expected_package_call: "pwr::pwr.t.test(type='one.sample', alternative='greater')", expected_raw_package_output: null, expected_analyzable_n: null, expected_randomized_n: null, expected_achieved_power: null, tolerance: 1.0e-10, source: "pwr official documentation; capture pending local R"}
-  - {id: ttest_one_less, test_key: ttest_one, inputs: {standardized_effect: 0.5, alpha: 0.025, power: 0.8, dropout_rate: 0, alternative: less}, expected_package_call: "pwr::pwr.t.test(type='one.sample', alternative='less')", expected_raw_package_output: null, expected_analyzable_n: null, expected_randomized_n: null, expected_achieved_power: null, tolerance: 1.0e-10, source: "pwr official documentation; capture pending local R"}
-  - {id: ttest_paired_standard, test_key: ttest_paired, inputs: {standardized_paired_effect: 0.5, alpha: 0.05, power: 0.8, dropout_rate: 0, alternative: two_sided}, expected_package_call: "pwr::pwr.t.test(type='paired')", expected_raw_package_output: null, expected_analyzable_n: null, expected_randomized_n: null, expected_achieved_power: null, tolerance: 1.0e-10, source: "pwr official documentation; capture pending local R"}
-  - {id: ttest_paired_dropout, test_key: ttest_paired, inputs: {standardized_paired_effect: 0.5, alpha: 0.05, power: 0.8, dropout_rate: 0.15, alternative: two_sided}, expected_package_call: "pwr::pwr.t.test(type='paired')", expected_raw_package_output: null, expected_analyzable_n: null, expected_randomized_n: null, expected_achieved_power: null, tolerance: 1.0e-10, source: "pwr plus frozen deterministic dropout rule; capture pending local R"}
-  - {id: ttest_ind_equal, test_key: ttest_ind, inputs: {standardized_effect: 0.5, allocation_ratio: 1, alpha: 0.05, power: 0.8, dropout_rate: 0, alternative: two_sided}, expected_package_call: "pwr::pwr.t.test(type='two.sample')", expected_raw_package_output: null, expected_analyzable_n: null, expected_randomized_n: null, expected_achieved_power: null, tolerance: 1.0e-10, source: "pwr official documentation; capture pending local R"}
-  - {id: ttest_ind_dropout, test_key: ttest_ind, inputs: {standardized_effect: 0.5, allocation_ratio: 1, alpha: 0.05, power: 0.8, dropout_rate: 0.2, alternative: two_sided}, expected_package_call: "pwr::pwr.t.test(type='two.sample')", expected_raw_package_output: null, expected_analyzable_n: null, expected_randomized_n: null, expected_achieved_power: null, tolerance: 1.0e-10, source: "pwr plus frozen per-arm dropout rule; capture pending local R"}
-  - {id: ttest_ind_reject_unequal, test_key: ttest_ind, inputs: {standardized_effect: 0.5, allocation_ratio: 2, alpha: 0.05, power: 0.8, dropout_rate: 0, alternative: two_sided}, expected_package_call: null, expected_raw_package_output: null, expected_analyzable_n: null, expected_randomized_n: null, expected_achieved_power: null, expected_error: RequestValidationError, tolerance: 0, source: "Frozen ttest_ind equal-allocation contract"}
-  - {id: anova_three_groups, test_key: anova, inputs: {groups: 3, cohen_f: 0.25, alpha: 0.05, power: 0.8, dropout_rate: 0}, expected_package_call: "pwr::pwr.anova.test(k=3)", expected_raw_package_output: null, expected_analyzable_n: null, expected_randomized_n: null, expected_achieved_power: null, tolerance: 1.0e-10, source: "pwr official documentation; capture pending local R"}
-  - {id: anova_four_groups, test_key: anova, inputs: {groups: 4, cohen_f: 0.25, alpha: 0.05, power: 0.8, dropout_rate: 0}, expected_package_call: "pwr::pwr.anova.test(k=4)", expected_raw_package_output: null, expected_analyzable_n: null, expected_randomized_n: null, expected_achieved_power: null, tolerance: 1.0e-10, source: "pwr official documentation; capture pending local R"}
-  - {id: anova_dropout, test_key: anova, inputs: {groups: 3, cohen_f: 0.25, alpha: 0.05, power: 0.8, dropout_rate: 0.1}, expected_package_call: "pwr::pwr.anova.test(k=3)", expected_raw_package_output: null, expected_analyzable_n: null, expected_randomized_n: null, expected_achieved_power: null, tolerance: 1.0e-10, source: "pwr plus frozen per-group dropout rule; capture pending local R"}
-  - {id: anova_per_group_semantic_regression, test_key: anova, inputs: {groups: 3, package_n_fixture: 32, dropout_rate: 0}, expected_package_call: "semantic fixture; no R call", expected_raw_package_output: {n: 32}, expected_analyzable_n: 96, expected_randomized_n: 96, expected_achieved_power: null, tolerance: 0, source: "Frozen ANOVA output contract: pwr n is per group, so 3*32=96"}
-  - {id: proportion_equal, test_key: proportion_two, inputs: {control_probability: 0.2, treatment_probability: 0.35, allocation_ratio: 1, alpha: 0.05, power: 0.8, dropout_rate: 0}, expected_package_call: "TrialSize::TwoSampleProportion.Equality(p1=0.35,p2=0.20,k=1)", expected_raw_package_output: null, expected_analyzable_n: null, expected_randomized_n: null, expected_achieved_power: null, tolerance: 1.0e-10, source: "TrialSize official source; capture pending local R"}
-  - {id: proportion_asymmetric_orientation, test_key: proportion_two, inputs: {control_probability: 0.2, treatment_probability: 0.35, allocation_ratio: 2, alpha: 0.05, power: 0.8, dropout_rate: 0}, expected_package_call: "TrialSize::TwoSampleProportion.Equality(p1=0.35,p2=0.20,k=2)", expected_raw_package_output: null, expected_analyzable_n: null, expected_randomized_n: null, expected_achieved_power: null, tolerance: 1.0e-10, source: "TrialSize official source: return n1=k*n2; capture pending local R"}
-  - {id: be_2x2_standard, test_key: be_tost, inputs: {cv: 0.2, theta0: 0.95, lower_limit: 0.8, upper_limit: 1.25, design: 2x2, alpha: 0.05, power: 0.8, dropout_rate: 0}, expected_package_call: "PowerTOST::sampleN.TOST(design='2x2',print=FALSE)", expected_raw_package_output: null, expected_analyzable_n: null, expected_randomized_n: null, expected_achieved_power: null, tolerance: 1.0e-10, source: "PowerTOST official examples; capture pending local R"}
-  - {id: be_2x2_gmr, test_key: be_tost, inputs: {cv: 0.25, theta0: 0.9, lower_limit: 0.8, upper_limit: 1.25, design: 2x2, alpha: 0.05, power: 0.8, dropout_rate: 0}, expected_package_call: "PowerTOST::sampleN.TOST(theta0=0.90,design='2x2',print=FALSE)", expected_raw_package_output: null, expected_analyzable_n: null, expected_randomized_n: null, expected_achieved_power: null, tolerance: 1.0e-10, source: "PowerTOST official documentation; capture pending local R"}
-  - {id: be_2x2_dropout, test_key: be_tost, inputs: {cv: 0.2, theta0: 0.95, lower_limit: 0.8, upper_limit: 1.25, design: 2x2, alpha: 0.05, power: 0.8, dropout_rate: 0.1}, expected_package_call: "PowerTOST::sampleN.TOST(design='2x2',print=FALSE)", expected_raw_package_output: null, expected_analyzable_n: null, expected_randomized_n: null, expected_achieved_power: null, tolerance: 1.0e-10, source: "PowerTOST plus frozen block rounding; capture pending local R"}
-  - {id: be_parallel_balanced, test_key: be_tost, inputs: {cv: 0.4, theta0: 0.95, lower_limit: 0.8, upper_limit: 1.25, design: parallel, alpha: 0.05, power: 0.8, dropout_rate: 0.1}, expected_package_call: "PowerTOST::sampleN.TOST(design='parallel',print=FALSE)", expected_raw_package_output: null, expected_analyzable_n: null, expected_randomized_n: null, expected_achieved_power: null, tolerance: 1.0e-10, source: "PowerTOST plus frozen balanced block rounding; capture pending local R"}
-  - {id: ttest_one_power, test_key: ttest_one, solve_mode: power, inputs: {standardized_effect: 0.5, alpha: 0.05, alternative: two_sided, analyzable_sample_size: 34}, expected_package_call: "pwr::pwr.t.test(n=34,type='one.sample')", expected_raw_package_output: null, expected_analyzable_n: 34, expected_randomized_n: null, expected_achieved_power: null, tolerance: 1.0e-10, source: "Pending pinned pwr execution and review"}
-  - {id: ttest_paired_power, test_key: ttest_paired, solve_mode: power, inputs: {standardized_paired_effect: 0.5, alpha: 0.05, alternative: two_sided, analyzable_pairs: 34}, expected_package_call: "pwr::pwr.t.test(n=34,type='paired')", expected_raw_package_output: null, expected_analyzable_n: 34, expected_randomized_n: null, expected_achieved_power: null, tolerance: 1.0e-10, source: "Pending pinned pwr execution and review"}
-  - {id: ttest_ind_power, test_key: ttest_ind, solve_mode: power, inputs: {standardized_effect: 0.5, allocation_ratio: 1, alpha: 0.05, alternative: two_sided, analyzable_sample_size_per_arm: 64}, expected_package_call: "pwr::pwr.t.test(n=64,type='two.sample')", expected_raw_package_output: null, expected_analyzable_n: 128, expected_randomized_n: null, expected_achieved_power: null, tolerance: 1.0e-10, source: "Pending pinned pwr execution and review"}
-  - {id: anova_power, test_key: anova, solve_mode: power, inputs: {groups: 3, cohen_f: 0.25, alpha: 0.05, analyzable_sample_size_per_group: 32}, expected_package_call: "pwr::pwr.anova.test(k=3,n=32)", expected_raw_package_output: null, expected_analyzable_n: 96, expected_randomized_n: null, expected_achieved_power: null, tolerance: 1.0e-10, source: "Pending pinned pwr execution and review"}
-  - {id: proportion_two_power, test_key: proportion_two, solve_mode: power, inputs: {control_probability: 0.2, treatment_probability: 0.35, allocation_ratio: 2, alpha: 0.05, analyzable_treatment: 100, analyzable_control: 50}, expected_package_call: "Documented forward inversion of TrialSize equality equation with treatment=100, control=50", expected_raw_package_output: null, expected_analyzable_n: 150, expected_randomized_n: null, expected_achieved_power: null, tolerance: 1.0e-10, source: "TrialSize official source equation; numerical capture pending pinned R"}
-  - {id: be_tost_power, test_key: be_tost, solve_mode: power, inputs: {cv: 0.2, theta0: 0.95, lower_limit: 0.8, upper_limit: 1.25, design: 2x2, alpha: 0.05, evaluable_total: 24}, expected_package_call: "PowerTOST::power.TOST(n=24,design='2x2')", expected_raw_package_output: null, expected_analyzable_n: 24, expected_randomized_n: null, expected_achieved_power: null, tolerance: 1.0e-10, source: "Pending pinned PowerTOST execution and review"}
+- id: ttest_one_two_sided
+  test_key: ttest_one
+  inputs:
+    standardized_effect: 0.5
+    alpha: 0.05
+    power: 0.8
+    dropout_rate: 0
+    alternative: two_sided
+  expected_package_call: pwr::pwr.t.test(type='one.sample', alternative='two.sided')
+  expected_raw_package_output:
+    package_n: 33.367129139076646
+    analysis_n: 34
+    achieved_power: 0.80777750127944
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.3.0
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nother attached packages:\n\
+      [1] pwr_1.3-0\n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1\
+      \ jsonlite_2.0.0"
+  expected_analyzable_n: 34
+  expected_randomized_n: 34
+  expected_achieved_power: 0.80777750127944
+  tolerance: 1.0e-10
+  source: pwr official documentation; capture pending local R
+  validation_status: FROZEN_VALIDATED
+  observed_agent_result:
+    analysis_required_sample_size: 34
+    randomized_sample_size: 34
+    achieved_power: 0.80777750127944
+  validation_provenance:
+    R_version: R version 4.6.1 (2026-06-24 ucrt)
+    package: pwr
+    package_version: 1.3.0
+    package_function: pwr::pwr.t.test
+    package_arguments:
+      d: 0.5
+      sig.level: 0.05
+      power: 0.8
+      type: one.sample
+      alternative: two.sided
+    independent_reference:
+      method: SciPy noncentral distribution
+      result: 0.8077775012792738
+      absolute_difference: 1.6620038678638593e-13
+      status: PASS
+    validation_date: '2026-09-02'
+    basis_commit: 3c8f9ba08fbb645189f4687ec3a422fbe5870c64
+- id: ttest_one_greater
+  test_key: ttest_one
+  inputs:
+    standardized_effect: 0.5
+    alpha: 0.025
+    power: 0.8
+    dropout_rate: 0
+    alternative: greater
+  expected_package_call: pwr::pwr.t.test(type='one.sample', alternative='greater')
+  expected_raw_package_output:
+    package_n: 33.3672041610244
+    analysis_n: 34
+    achieved_power: 0.8077766855150784
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.3.0
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nother attached packages:\n\
+      [1] pwr_1.3-0\n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1\
+      \ jsonlite_2.0.0"
+  expected_analyzable_n: 34
+  expected_randomized_n: 34
+  expected_achieved_power: 0.8077766855150784
+  tolerance: 1.0e-10
+  source: pwr official documentation; capture pending local R
+  validation_status: FROZEN_VALIDATED
+  observed_agent_result:
+    analysis_required_sample_size: 34
+    randomized_sample_size: 34
+    achieved_power: 0.8077766855150784
+  validation_provenance:
+    R_version: R version 4.6.1 (2026-06-24 ucrt)
+    package: pwr
+    package_version: 1.3.0
+    package_function: pwr::pwr.t.test
+    package_arguments:
+      d: 0.5
+      sig.level: 0.025
+      power: 0.8
+      type: one.sample
+      alternative: greater
+    independent_reference:
+      method: SciPy noncentral distribution
+      result: 0.8077766855149762
+      absolute_difference: 1.0225154056797692e-13
+      status: PASS
+    validation_date: '2026-09-02'
+    basis_commit: 3c8f9ba08fbb645189f4687ec3a422fbe5870c64
+- id: ttest_one_less
+  test_key: ttest_one
+  inputs:
+    standardized_effect: 0.5
+    alpha: 0.025
+    power: 0.8
+    dropout_rate: 0
+    alternative: less
+  expected_package_call: pwr::pwr.t.test(type='one.sample', alternative='less')
+  expected_raw_package_output:
+    package_n: 33.3672041610244
+    analysis_n: 34
+    achieved_power: 0.8077766855150784
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.3.0
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nother attached packages:\n\
+      [1] pwr_1.3-0\n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1\
+      \ jsonlite_2.0.0"
+  expected_analyzable_n: 34
+  expected_randomized_n: 34
+  expected_achieved_power: 0.8077766855150784
+  tolerance: 1.0e-10
+  source: pwr official documentation; capture pending local R
+  validation_status: FROZEN_VALIDATED
+  observed_agent_result:
+    analysis_required_sample_size: 34
+    randomized_sample_size: 34
+    achieved_power: 0.8077766855150784
+  validation_provenance:
+    R_version: R version 4.6.1 (2026-06-24 ucrt)
+    package: pwr
+    package_version: 1.3.0
+    package_function: pwr::pwr.t.test
+    package_arguments:
+      d: -0.5
+      sig.level: 0.025
+      power: 0.8
+      type: one.sample
+      alternative: less
+    independent_reference:
+      method: SciPy noncentral distribution
+      result: 0.8077766855149762
+      absolute_difference: 1.0225154056797692e-13
+      status: PASS
+    validation_date: '2026-09-02'
+    basis_commit: 3c8f9ba08fbb645189f4687ec3a422fbe5870c64
+- id: ttest_paired_standard
+  test_key: ttest_paired
+  inputs:
+    standardized_paired_effect: 0.5
+    alpha: 0.05
+    power: 0.8
+    dropout_rate: 0
+    alternative: two_sided
+  expected_package_call: pwr::pwr.t.test(type='paired')
+  expected_raw_package_output:
+    package_n: 33.367129139076646
+    analysis_n: 34
+    achieved_power: 0.80777750127944
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.3.0
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nother attached packages:\n\
+      [1] pwr_1.3-0\n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1\
+      \ jsonlite_2.0.0"
+  expected_analyzable_n: 34
+  expected_randomized_n: 34
+  expected_achieved_power: 0.80777750127944
+  tolerance: 1.0e-10
+  source: pwr official documentation; capture pending local R
+  validation_status: FROZEN_VALIDATED
+  observed_agent_result:
+    analysis_required_sample_size: 34
+    randomized_sample_size: 34
+    achieved_power: 0.80777750127944
+  validation_provenance:
+    R_version: R version 4.6.1 (2026-06-24 ucrt)
+    package: pwr
+    package_version: 1.3.0
+    package_function: pwr::pwr.t.test
+    package_arguments:
+      d: 0.5
+      sig.level: 0.05
+      power: 0.8
+      type: paired
+      alternative: two.sided
+    independent_reference:
+      method: SciPy noncentral distribution
+      result: 0.8077775012792738
+      absolute_difference: 1.6620038678638593e-13
+      status: PASS
+    validation_date: '2026-09-02'
+    basis_commit: 3c8f9ba08fbb645189f4687ec3a422fbe5870c64
+- id: ttest_paired_dropout
+  test_key: ttest_paired
+  inputs:
+    standardized_paired_effect: 0.5
+    alpha: 0.05
+    power: 0.8
+    dropout_rate: 0.15
+    alternative: two_sided
+  expected_package_call: pwr::pwr.t.test(type='paired')
+  expected_raw_package_output:
+    package_n: 33.367129139076646
+    analysis_n: 34
+    achieved_power: 0.80777750127944
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.3.0
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nother attached packages:\n\
+      [1] pwr_1.3-0\n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1\
+      \ jsonlite_2.0.0"
+  expected_analyzable_n: 34
+  expected_randomized_n: 40
+  expected_achieved_power: 0.80777750127944
+  tolerance: 1.0e-10
+  source: pwr plus frozen deterministic dropout rule; capture pending local R
+  validation_status: FROZEN_VALIDATED
+  observed_agent_result:
+    analysis_required_sample_size: 34
+    randomized_sample_size: 40
+    achieved_power: 0.80777750127944
+  validation_provenance:
+    R_version: R version 4.6.1 (2026-06-24 ucrt)
+    package: pwr
+    package_version: 1.3.0
+    package_function: pwr::pwr.t.test
+    package_arguments:
+      d: 0.5
+      sig.level: 0.05
+      power: 0.8
+      type: paired
+      alternative: two.sided
+    independent_reference:
+      method: SciPy noncentral distribution
+      result: 0.8077775012792738
+      absolute_difference: 1.6620038678638593e-13
+      status: PASS
+    validation_date: '2026-09-02'
+    basis_commit: 3c8f9ba08fbb645189f4687ec3a422fbe5870c64
+- id: ttest_ind_equal
+  test_key: ttest_ind
+  inputs:
+    standardized_effect: 0.5
+    allocation_ratio: 1
+    alpha: 0.05
+    power: 0.8
+    dropout_rate: 0
+    alternative: two_sided
+  expected_package_call: pwr::pwr.t.test(type='two.sample')
+  expected_raw_package_output:
+    package_n: 63.76561044414832
+    analysis_n: 64
+    achieved_power: 0.8014595579223274
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.3.0
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nother attached packages:\n\
+      [1] pwr_1.3-0\n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1\
+      \ jsonlite_2.0.0"
+  expected_analyzable_n: 128
+  expected_randomized_n: 128
+  expected_achieved_power: 0.8014595579223274
+  tolerance: 1.0e-10
+  source: pwr official documentation; capture pending local R
+  validation_status: FROZEN_VALIDATED
+  observed_agent_result:
+    analysis_required_sample_size: 128
+    randomized_sample_size: 128
+    achieved_power: 0.8014595579223274
+  validation_provenance:
+    R_version: R version 4.6.1 (2026-06-24 ucrt)
+    package: pwr
+    package_version: 1.3.0
+    package_function: pwr::pwr.t.test
+    package_arguments:
+      d: 0.5
+      sig.level: 0.05
+      power: 0.8
+      type: two.sample
+      alternative: two.sided
+    independent_reference:
+      method: SciPy noncentral distribution
+      result: 0.8014595579222542
+      absolute_difference: 7.316369732279782e-14
+      status: PASS
+    validation_date: '2026-09-02'
+    basis_commit: 3c8f9ba08fbb645189f4687ec3a422fbe5870c64
+- id: ttest_ind_dropout
+  test_key: ttest_ind
+  inputs:
+    standardized_effect: 0.5
+    allocation_ratio: 1
+    alpha: 0.05
+    power: 0.8
+    dropout_rate: 0.2
+    alternative: two_sided
+  expected_package_call: pwr::pwr.t.test(type='two.sample')
+  expected_raw_package_output:
+    package_n: 63.76561044414832
+    analysis_n: 64
+    achieved_power: 0.8014595579223274
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.3.0
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nother attached packages:\n\
+      [1] pwr_1.3-0\n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1\
+      \ jsonlite_2.0.0"
+  expected_analyzable_n: 128
+  expected_randomized_n: 160
+  expected_achieved_power: 0.8014595579223274
+  tolerance: 1.0e-10
+  source: pwr plus frozen per-arm dropout rule; capture pending local R
+  validation_status: FROZEN_VALIDATED
+  observed_agent_result:
+    analysis_required_sample_size: 128
+    randomized_sample_size: 160
+    achieved_power: 0.8014595579223274
+  validation_provenance:
+    R_version: R version 4.6.1 (2026-06-24 ucrt)
+    package: pwr
+    package_version: 1.3.0
+    package_function: pwr::pwr.t.test
+    package_arguments:
+      d: 0.5
+      sig.level: 0.05
+      power: 0.8
+      type: two.sample
+      alternative: two.sided
+    independent_reference:
+      method: SciPy noncentral distribution
+      result: 0.8014595579222542
+      absolute_difference: 7.316369732279782e-14
+      status: PASS
+    validation_date: '2026-09-02'
+    basis_commit: 3c8f9ba08fbb645189f4687ec3a422fbe5870c64
+- id: ttest_ind_reject_unequal
+  test_key: ttest_ind
+  inputs:
+    standardized_effect: 0.5
+    allocation_ratio: 2
+    alpha: 0.05
+    power: 0.8
+    dropout_rate: 0
+    alternative: two_sided
+  expected_package_call: null
+  expected_raw_package_output: null
+  expected_analyzable_n: null
+  expected_randomized_n: null
+  expected_achieved_power: null
+  expected_error: RequestValidationError
+  tolerance: 0
+  source: Frozen ttest_ind equal-allocation contract
+  validation_status: FROZEN_VALIDATED
+- id: anova_three_groups
+  test_key: anova
+  inputs:
+    groups: 3
+    cohen_f: 0.25
+    alpha: 0.05
+    power: 0.8
+    dropout_rate: 0
+  expected_package_call: pwr::pwr.anova.test(k=3)
+  expected_raw_package_output:
+    package_n: 52.396601605594526
+    analysis_n_per_group: 53
+    achieved_power: 0.8048872853634701
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.3.0
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nother attached packages:\n\
+      [1] pwr_1.3-0\n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1\
+      \ jsonlite_2.0.0"
+  expected_analyzable_n: 159
+  expected_randomized_n: 159
+  expected_achieved_power: 0.8048872853634701
+  tolerance: 1.0e-10
+  source: pwr official documentation; capture pending local R
+  validation_status: FROZEN_VALIDATED
+  observed_agent_result:
+    analysis_required_sample_size: 159
+    randomized_sample_size: 159
+    achieved_power: 0.8048872853634701
+  validation_provenance:
+    R_version: R version 4.6.1 (2026-06-24 ucrt)
+    package: pwr
+    package_version: 1.3.0
+    package_function: pwr::pwr.anova.test
+    package_arguments:
+      k: 3
+      f: 0.25
+      sig.level: 0.05
+      power: 0.8
+    independent_reference:
+      method: SciPy noncentral distribution
+      result: 0.8048872853010698
+      absolute_difference: 6.240030714366185e-11
+      status: PASS
+    validation_date: '2026-09-02'
+    basis_commit: 3c8f9ba08fbb645189f4687ec3a422fbe5870c64
+- id: anova_four_groups
+  test_key: anova
+  inputs:
+    groups: 4
+    cohen_f: 0.25
+    alpha: 0.05
+    power: 0.8
+    dropout_rate: 0
+  expected_package_call: pwr::pwr.anova.test(k=4)
+  expected_raw_package_output:
+    package_n: 44.599274299020145
+    analysis_n_per_group: 45
+    achieved_power: 0.8039869130983317
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.3.0
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nother attached packages:\n\
+      [1] pwr_1.3-0\n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1\
+      \ jsonlite_2.0.0"
+  expected_analyzable_n: 180
+  expected_randomized_n: 180
+  expected_achieved_power: 0.8039869130983317
+  tolerance: 1.0e-10
+  source: pwr official documentation; capture pending local R
+  validation_status: FROZEN_VALIDATED
+  observed_agent_result:
+    analysis_required_sample_size: 180
+    randomized_sample_size: 180
+    achieved_power: 0.8039869130983317
+  validation_provenance:
+    R_version: R version 4.6.1 (2026-06-24 ucrt)
+    package: pwr
+    package_version: 1.3.0
+    package_function: pwr::pwr.anova.test
+    package_arguments:
+      k: 4
+      f: 0.25
+      sig.level: 0.05
+      power: 0.8
+    independent_reference:
+      method: SciPy noncentral distribution
+      result: 0.8039869128651759
+      absolute_difference: 2.3315582797778234e-10
+      status: PASS
+    validation_date: '2026-09-02'
+    basis_commit: 3c8f9ba08fbb645189f4687ec3a422fbe5870c64
+- id: anova_dropout
+  test_key: anova
+  inputs:
+    groups: 3
+    cohen_f: 0.25
+    alpha: 0.05
+    power: 0.8
+    dropout_rate: 0.1
+  expected_package_call: pwr::pwr.anova.test(k=3)
+  expected_raw_package_output:
+    package_n: 52.396601605594526
+    analysis_n_per_group: 53
+    achieved_power: 0.8048872853634701
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.3.0
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nother attached packages:\n\
+      [1] pwr_1.3-0\n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1\
+      \ jsonlite_2.0.0"
+  expected_analyzable_n: 159
+  expected_randomized_n: 177
+  expected_achieved_power: 0.8048872853634701
+  tolerance: 1.0e-10
+  source: pwr plus frozen per-group dropout rule; capture pending local R
+  validation_status: FROZEN_VALIDATED
+  observed_agent_result:
+    analysis_required_sample_size: 159
+    randomized_sample_size: 177
+    achieved_power: 0.8048872853634701
+  validation_provenance:
+    R_version: R version 4.6.1 (2026-06-24 ucrt)
+    package: pwr
+    package_version: 1.3.0
+    package_function: pwr::pwr.anova.test
+    package_arguments:
+      k: 3
+      f: 0.25
+      sig.level: 0.05
+      power: 0.8
+    independent_reference:
+      method: SciPy noncentral distribution
+      result: 0.8048872853010698
+      absolute_difference: 6.240030714366185e-11
+      status: PASS
+    validation_date: '2026-09-02'
+    basis_commit: 3c8f9ba08fbb645189f4687ec3a422fbe5870c64
+- id: anova_per_group_semantic_regression
+  test_key: anova
+  inputs:
+    groups: 3
+    package_n_fixture: 32
+    dropout_rate: 0
+  expected_package_call: semantic fixture; no R call
+  expected_raw_package_output:
+    n: 32
+  expected_analyzable_n: 96
+  expected_randomized_n: 96
+  expected_achieved_power: null
+  tolerance: 0
+  source: 'Frozen ANOVA output contract: pwr n is per group, so 3*32=96'
+  validation_status: FROZEN_VALIDATED
+- id: proportion_equal
+  test_key: proportion_two
+  inputs:
+    control_probability: 0.2
+    treatment_probability: 0.35
+    allocation_ratio: 1
+    alpha: 0.05
+    power: 0.8
+    dropout_rate: 0
+  expected_package_call: TrialSize::TwoSampleProportion.Equality(p1=0.35,p2=0.20,k=1)
+  expected_raw_package_output:
+    package_n_treatment: 135.17515098045655
+    analysis_n_treatment: 136
+    analysis_n_control: 136
+    achieved_power: 0.8023808130192349
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.4.1
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nother attached packages:\n\
+      [1] TrialSize_1.4.1\n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1\
+      \ jsonlite_2.0.0"
+  expected_analyzable_n: 272
+  expected_randomized_n: 272
+  expected_achieved_power: 0.8023808130192349
+  tolerance: 1.0e-10
+  source: TrialSize official source; capture pending local R
+  validation_status: FROZEN_VALIDATED
+  observed_agent_result:
+    analysis_required_sample_size: 272
+    randomized_sample_size: 272
+    achieved_power: 0.8023808130192349
+  validation_provenance:
+    R_version: R version 4.6.1 (2026-06-24 ucrt)
+    package: TrialSize
+    package_version: 1.4.1
+    package_function: TrialSize::TwoSampleProportion.Equality
+    package_arguments:
+      alpha: 0.05
+      beta: 0.19999999999999996
+      p1: 0.35
+      p2: 0.2
+      k: 1
+    independent_reference:
+      method: independent matching normal equation
+      result: 0.8023808130192348
+      absolute_difference: 1.1102230246251565e-16
+      status: PASS
+    validation_date: '2026-09-02'
+    basis_commit: 3c8f9ba08fbb645189f4687ec3a422fbe5870c64
+- id: proportion_asymmetric_orientation
+  test_key: proportion_two
+  inputs:
+    control_probability: 0.2
+    treatment_probability: 0.35
+    allocation_ratio: 2
+    alpha: 0.05
+    power: 0.8
+    dropout_rate: 0
+  expected_package_call: TrialSize::TwoSampleProportion.Equality(p1=0.35,p2=0.20,k=2)
+  expected_raw_package_output:
+    package_n_treatment: 190.98940686916123
+    analysis_n_treatment: 191
+    analysis_n_control: 96
+    achieved_power: 0.8012161007368315
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.4.1
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nother attached packages:\n\
+      [1] TrialSize_1.4.1\n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1\
+      \ jsonlite_2.0.0"
+  expected_analyzable_n: 287
+  expected_randomized_n: 287
+  expected_achieved_power: 0.8012161007368315
+  tolerance: 1.0e-10
+  source: 'TrialSize official source: return n1=k*n2; capture pending local R'
+  validation_status: FROZEN_VALIDATED
+  observed_agent_result:
+    analysis_required_sample_size: 287
+    randomized_sample_size: 287
+    achieved_power: 0.8012161007368315
+  validation_provenance:
+    R_version: R version 4.6.1 (2026-06-24 ucrt)
+    package: TrialSize
+    package_version: 1.4.1
+    package_function: TrialSize::TwoSampleProportion.Equality
+    package_arguments:
+      alpha: 0.05
+      beta: 0.19999999999999996
+      p1: 0.35
+      p2: 0.2
+      k: 2
+    independent_reference:
+      method: independent matching normal equation
+      result: 0.8012161007368312
+      absolute_difference: 2.220446049250313e-16
+      status: PASS
+    validation_date: '2026-09-02'
+    basis_commit: 3c8f9ba08fbb645189f4687ec3a422fbe5870c64
+- id: be_2x2_standard
+  test_key: be_tost
+  inputs:
+    cv: 0.2
+    theta0: 0.95
+    lower_limit: 0.8
+    upper_limit: 1.25
+    design: 2x2
+    alpha: 0.05
+    power: 0.8
+    dropout_rate: 0
+  expected_package_call: PowerTOST::sampleN.TOST(design='2x2',print=FALSE)
+  expected_raw_package_output:
+    package_n: 20
+    evaluable_total: 20
+    package_achieved_power: 0.8346801908570284
+    achieved_power: 0.8346801908570284
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.5.7
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nother attached packages:\n\
+      [1] PowerTOST_1.5-7\n\nloaded via a namespace (and not attached):\n[1] cubature_2.1.4-1\
+      \ compiler_4.6.1   tools_4.6.1      Rcpp_1.1.2      \n[5] mvtnorm_1.4-2    jsonlite_2.0.0\
+      \  "
+  expected_analyzable_n: 20
+  expected_randomized_n: 20
+  expected_achieved_power: 0.8346801908570284
+  tolerance: 1.0e-10
+  source: PowerTOST official examples; capture pending local R
+  validation_status: FROZEN_VALIDATED
+  observed_agent_result:
+    analysis_required_sample_size: 20
+    randomized_sample_size: 20
+    achieved_power: 0.8346801908570284
+  validation_provenance:
+    R_version: R version 4.6.1 (2026-06-24 ucrt)
+    package: PowerTOST
+    package_version: 1.5.7
+    package_function: PowerTOST::sampleN.TOST
+    package_arguments:
+      alpha: 0.05
+      targetpower: 0.8
+      theta0: 0.95
+      theta1: 0.8
+      theta2: 1.25
+      CV: 0.2
+      design: 2x2
+      print: false
+    independent_reference:
+      method: independent chi-square-conditioned exact TOST integration
+      result: 0.8346801908568989
+      absolute_difference: 1.2945200467129325e-13
+      status: PASS
+    validation_date: '2026-09-02'
+    basis_commit: 3c8f9ba08fbb645189f4687ec3a422fbe5870c64
+- id: be_2x2_gmr
+  test_key: be_tost
+  inputs:
+    cv: 0.25
+    theta0: 0.9
+    lower_limit: 0.8
+    upper_limit: 1.25
+    design: 2x2
+    alpha: 0.05
+    power: 0.8
+    dropout_rate: 0
+  expected_package_call: PowerTOST::sampleN.TOST(theta0=0.90,design='2x2',print=FALSE)
+  expected_raw_package_output:
+    package_n: 56
+    evaluable_total: 56
+    package_achieved_power: 0.8035824365081963
+    achieved_power: 0.8035824365081963
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.5.7
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nother attached packages:\n\
+      [1] PowerTOST_1.5-7\n\nloaded via a namespace (and not attached):\n[1] cubature_2.1.4-1\
+      \ compiler_4.6.1   tools_4.6.1      Rcpp_1.1.2      \n[5] mvtnorm_1.4-2    jsonlite_2.0.0\
+      \  "
+  expected_analyzable_n: 56
+  expected_randomized_n: 56
+  expected_achieved_power: 0.8035824365081963
+  tolerance: 1.0e-10
+  source: PowerTOST official documentation; capture pending local R
+  validation_status: FROZEN_VALIDATED
+  observed_agent_result:
+    analysis_required_sample_size: 56
+    randomized_sample_size: 56
+    achieved_power: 0.8035824365081963
+  validation_provenance:
+    R_version: R version 4.6.1 (2026-06-24 ucrt)
+    package: PowerTOST
+    package_version: 1.5.7
+    package_function: PowerTOST::sampleN.TOST
+    package_arguments:
+      alpha: 0.05
+      targetpower: 0.8
+      theta0: 0.9
+      theta1: 0.8
+      theta2: 1.25
+      CV: 0.25
+      design: 2x2
+      print: false
+    independent_reference:
+      method: independent chi-square-conditioned exact TOST integration
+      result: 0.8035824365080513
+      absolute_difference: 1.4499512701604544e-13
+      status: PASS
+    validation_date: '2026-09-02'
+    basis_commit: 3c8f9ba08fbb645189f4687ec3a422fbe5870c64
+- id: be_2x2_dropout
+  test_key: be_tost
+  inputs:
+    cv: 0.2
+    theta0: 0.95
+    lower_limit: 0.8
+    upper_limit: 1.25
+    design: 2x2
+    alpha: 0.05
+    power: 0.8
+    dropout_rate: 0.1
+  expected_package_call: PowerTOST::sampleN.TOST(design='2x2',print=FALSE)
+  expected_raw_package_output:
+    package_n: 20
+    evaluable_total: 20
+    package_achieved_power: 0.8346801908570284
+    achieved_power: 0.8346801908570284
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.5.7
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nother attached packages:\n\
+      [1] PowerTOST_1.5-7\n\nloaded via a namespace (and not attached):\n[1] cubature_2.1.4-1\
+      \ compiler_4.6.1   tools_4.6.1      Rcpp_1.1.2      \n[5] mvtnorm_1.4-2    jsonlite_2.0.0\
+      \  "
+  expected_analyzable_n: 20
+  expected_randomized_n: 24
+  expected_achieved_power: 0.8346801908570284
+  tolerance: 1.0e-10
+  source: PowerTOST plus frozen block rounding; capture pending local R
+  validation_status: FROZEN_VALIDATED
+  observed_agent_result:
+    analysis_required_sample_size: 20
+    randomized_sample_size: 24
+    achieved_power: 0.8346801908570284
+  validation_provenance:
+    R_version: R version 4.6.1 (2026-06-24 ucrt)
+    package: PowerTOST
+    package_version: 1.5.7
+    package_function: PowerTOST::sampleN.TOST
+    package_arguments:
+      alpha: 0.05
+      targetpower: 0.8
+      theta0: 0.95
+      theta1: 0.8
+      theta2: 1.25
+      CV: 0.2
+      design: 2x2
+      print: false
+    independent_reference:
+      method: independent chi-square-conditioned exact TOST integration
+      result: 0.8346801908568989
+      absolute_difference: 1.2945200467129325e-13
+      status: PASS
+    validation_date: '2026-09-02'
+    basis_commit: 3c8f9ba08fbb645189f4687ec3a422fbe5870c64
+- id: be_parallel_balanced
+  test_key: be_tost
+  inputs:
+    cv: 0.4
+    theta0: 0.95
+    lower_limit: 0.8
+    upper_limit: 1.25
+    design: parallel
+    alpha: 0.05
+    power: 0.8
+    dropout_rate: 0.1
+  expected_package_call: PowerTOST::sampleN.TOST(design='parallel',print=FALSE)
+  expected_raw_package_output:
+    package_n: 130
+    evaluable_total: 130
+    package_achieved_power: 0.8035119578600546
+    achieved_power: 0.8035119578600546
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.5.7
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nother attached packages:\n\
+      [1] PowerTOST_1.5-7\n\nloaded via a namespace (and not attached):\n[1] cubature_2.1.4-1\
+      \ compiler_4.6.1   tools_4.6.1      Rcpp_1.1.2      \n[5] mvtnorm_1.4-2    jsonlite_2.0.0\
+      \  "
+  expected_analyzable_n: 130
+  expected_randomized_n: 146
+  expected_achieved_power: 0.8035119578600546
+  tolerance: 1.0e-10
+  source: PowerTOST plus frozen balanced block rounding; capture pending local R
+  validation_status: FROZEN_VALIDATED
+  observed_agent_result:
+    analysis_required_sample_size: 130
+    randomized_sample_size: 146
+    achieved_power: 0.8035119578600546
+  validation_provenance:
+    R_version: R version 4.6.1 (2026-06-24 ucrt)
+    package: PowerTOST
+    package_version: 1.5.7
+    package_function: PowerTOST::sampleN.TOST
+    package_arguments:
+      alpha: 0.05
+      targetpower: 0.8
+      theta0: 0.95
+      theta1: 0.8
+      theta2: 1.25
+      CV: 0.4
+      design: parallel
+      print: false
+    independent_reference:
+      method: independent chi-square-conditioned exact TOST integration
+      result: 0.8035119578598467
+      absolute_difference: 2.078337502098293e-13
+      status: PASS
+    validation_date: '2026-09-02'
+    basis_commit: 3c8f9ba08fbb645189f4687ec3a422fbe5870c64
+- id: ttest_one_power
+  test_key: ttest_one
+  solve_mode: power
+  inputs:
+    standardized_effect: 0.5
+    alpha: 0.05
+    alternative: two_sided
+    analyzable_sample_size: 34
+  expected_package_call: pwr::pwr.t.test(n=34,type='one.sample')
+  expected_raw_package_output:
+    achieved_power: 0.80777750127944
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.3.0
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nother attached packages:\n\
+      [1] pwr_1.3-0\n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1\
+      \ jsonlite_2.0.0"
+  expected_analyzable_n: 34
+  expected_randomized_n: null
+  expected_achieved_power: 0.80777750127944
+  tolerance: 1.0e-10
+  source: Pending pinned pwr execution and review
+  validation_status: FROZEN_VALIDATED
+  observed_agent_result:
+    analysis_required_sample_size: 34
+    randomized_sample_size: null
+    achieved_power: 0.80777750127944
+  validation_provenance:
+    R_version: R version 4.6.1 (2026-06-24 ucrt)
+    package: pwr
+    package_version: 1.3.0
+    package_function: pwr::pwr.t.test
+    package_arguments:
+      n: 34
+      d: 0.5
+      sig.level: 0.05
+      type: one.sample
+      alternative: two.sided
+    independent_reference:
+      method: SciPy noncentral distribution
+      result: 0.8077775012792738
+      absolute_difference: 1.6620038678638593e-13
+      status: PASS
+    validation_date: '2026-09-02'
+    basis_commit: 3c8f9ba08fbb645189f4687ec3a422fbe5870c64
+- id: ttest_paired_power
+  test_key: ttest_paired
+  solve_mode: power
+  inputs:
+    standardized_paired_effect: 0.5
+    alpha: 0.05
+    alternative: two_sided
+    analyzable_pairs: 34
+  expected_package_call: pwr::pwr.t.test(n=34,type='paired')
+  expected_raw_package_output:
+    achieved_power: 0.80777750127944
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.3.0
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nother attached packages:\n\
+      [1] pwr_1.3-0\n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1\
+      \ jsonlite_2.0.0"
+  expected_analyzable_n: 34
+  expected_randomized_n: null
+  expected_achieved_power: 0.80777750127944
+  tolerance: 1.0e-10
+  source: Pending pinned pwr execution and review
+  validation_status: FROZEN_VALIDATED
+  observed_agent_result:
+    analysis_required_sample_size: 34
+    randomized_sample_size: null
+    achieved_power: 0.80777750127944
+  validation_provenance:
+    R_version: R version 4.6.1 (2026-06-24 ucrt)
+    package: pwr
+    package_version: 1.3.0
+    package_function: pwr::pwr.t.test
+    package_arguments:
+      n: 34
+      d: 0.5
+      sig.level: 0.05
+      type: paired
+      alternative: two.sided
+    independent_reference:
+      method: SciPy noncentral distribution
+      result: 0.8077775012792738
+      absolute_difference: 1.6620038678638593e-13
+      status: PASS
+    validation_date: '2026-09-02'
+    basis_commit: 3c8f9ba08fbb645189f4687ec3a422fbe5870c64
+- id: ttest_ind_power
+  test_key: ttest_ind
+  solve_mode: power
+  inputs:
+    standardized_effect: 0.5
+    allocation_ratio: 1
+    alpha: 0.05
+    alternative: two_sided
+    analyzable_sample_size_per_arm: 64
+  expected_package_call: pwr::pwr.t.test(n=64,type='two.sample')
+  expected_raw_package_output:
+    achieved_power: 0.8014595579223274
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.3.0
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nother attached packages:\n\
+      [1] pwr_1.3-0\n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1\
+      \ jsonlite_2.0.0"
+  expected_analyzable_n: 128
+  expected_randomized_n: null
+  expected_achieved_power: 0.8014595579223274
+  tolerance: 1.0e-10
+  source: Pending pinned pwr execution and review
+  validation_status: FROZEN_VALIDATED
+  observed_agent_result:
+    analysis_required_sample_size: 128
+    randomized_sample_size: null
+    achieved_power: 0.8014595579223274
+  validation_provenance:
+    R_version: R version 4.6.1 (2026-06-24 ucrt)
+    package: pwr
+    package_version: 1.3.0
+    package_function: pwr::pwr.t.test
+    package_arguments:
+      n: 64
+      d: 0.5
+      sig.level: 0.05
+      type: two.sample
+      alternative: two.sided
+    independent_reference:
+      method: SciPy noncentral distribution
+      result: 0.8014595579222542
+      absolute_difference: 7.316369732279782e-14
+      status: PASS
+    validation_date: '2026-09-02'
+    basis_commit: 3c8f9ba08fbb645189f4687ec3a422fbe5870c64
+- id: anova_power
+  test_key: anova
+  solve_mode: power
+  inputs:
+    groups: 3
+    cohen_f: 0.25
+    alpha: 0.05
+    analyzable_sample_size_per_group: 32
+  expected_package_call: pwr::pwr.anova.test(k=3,n=32)
+  expected_raw_package_output:
+    achieved_power: 0.5693850692819359
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.3.0
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nother attached packages:\n\
+      [1] pwr_1.3-0\n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1\
+      \ jsonlite_2.0.0"
+  expected_analyzable_n: 96
+  expected_randomized_n: null
+  expected_achieved_power: 0.5693850692819359
+  tolerance: 1.0e-10
+  source: Pending pinned pwr execution and review
+  validation_status: FROZEN_VALIDATED
+  observed_agent_result:
+    analysis_required_sample_size: 96
+    randomized_sample_size: null
+    achieved_power: 0.5693850692819359
+  validation_provenance:
+    R_version: R version 4.6.1 (2026-06-24 ucrt)
+    package: pwr
+    package_version: 1.3.0
+    package_function: pwr::pwr.anova.test
+    package_arguments:
+      k: 3
+      n: 32
+      f: 0.25
+      sig.level: 0.05
+    independent_reference:
+      method: SciPy noncentral distribution
+      result: 0.5693850690976994
+      absolute_difference: 1.8423651493293391e-10
+      status: PASS
+    validation_date: '2026-09-02'
+    basis_commit: 3c8f9ba08fbb645189f4687ec3a422fbe5870c64
+- id: proportion_two_power
+  test_key: proportion_two
+  solve_mode: power
+  inputs:
+    control_probability: 0.2
+    treatment_probability: 0.35
+    allocation_ratio: 2
+    alpha: 0.05
+    analyzable_treatment: 100
+    analyzable_control: 50
+  expected_package_call: Documented forward inversion of TrialSize equality equation
+    with treatment=100, control=50
+  expected_raw_package_output:
+    achieved_power: 0.5268079234151215
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.4.1
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nother attached packages:\n\
+      [1] TrialSize_1.4.1\n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1\
+      \ jsonlite_2.0.0"
+  expected_analyzable_n: 150
+  expected_randomized_n: null
+  expected_achieved_power: 0.5268079234151215
+  tolerance: 1.0e-10
+  source: TrialSize official source equation; numerical capture pending pinned R
+  validation_status: FROZEN_VALIDATED
+  observed_agent_result:
+    analysis_required_sample_size: 150
+    randomized_sample_size: null
+    achieved_power: 0.5268079234151215
+  validation_provenance:
+    R_version: R version 4.6.1 (2026-06-24 ucrt)
+    package: TrialSize
+    package_version: 1.4.1
+    package_function: TrialSize::TwoSampleProportion.Equality (documented forward
+      inversion)
+    package_arguments:
+      p1: 0.35
+      p2: 0.2
+      n_treatment: 100
+      n_control: 50
+      alpha: 0.05
+    independent_reference:
+      method: independent matching normal equation
+      result: 0.5268079234151213
+      absolute_difference: 2.220446049250313e-16
+      status: PASS
+    validation_date: '2026-09-02'
+    basis_commit: 3c8f9ba08fbb645189f4687ec3a422fbe5870c64
+- id: be_tost_power
+  test_key: be_tost
+  solve_mode: power
+  inputs:
+    cv: 0.2
+    theta0: 0.95
+    lower_limit: 0.8
+    upper_limit: 1.25
+    design: 2x2
+    alpha: 0.05
+    evaluable_total: 24
+  expected_package_call: PowerTOST::power.TOST(n=24,design='2x2')
+  expected_raw_package_output:
+    achieved_power: 0.8960226147998751
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.5.7
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nother attached packages:\n\
+      [1] PowerTOST_1.5-7\n\nloaded via a namespace (and not attached):\n[1] cubature_2.1.4-1\
+      \ compiler_4.6.1   tools_4.6.1      Rcpp_1.1.2      \n[5] mvtnorm_1.4-2    jsonlite_2.0.0\
+      \  "
+  expected_analyzable_n: 24
+  expected_randomized_n: null
+  expected_achieved_power: 0.8960226147998751
+  tolerance: 1.0e-10
+  source: Pending pinned PowerTOST execution and review
+  validation_status: FROZEN_VALIDATED
+  observed_agent_result:
+    analysis_required_sample_size: 24
+    randomized_sample_size: null
+    achieved_power: 0.8960226147998751
+  validation_provenance:
+    R_version: R version 4.6.1 (2026-06-24 ucrt)
+    package: PowerTOST
+    package_version: 1.5.7
+    package_function: PowerTOST::power.TOST
+    package_arguments:
+      n: 24
+      alpha: 0.05
+      theta0: 0.95
+      theta1: 0.8
+      theta2: 1.25
+      CV: 0.2
+      design: 2x2
+    independent_reference:
+      method: independent chi-square-conditioned exact TOST integration
+      result: 0.8960226147996254
+      absolute_difference: 2.496891582381977e-13
+      status: PASS
+    validation_date: '2026-09-02'
+    basis_commit: 3c8f9ba08fbb645189f4687ec3a422fbe5870c64

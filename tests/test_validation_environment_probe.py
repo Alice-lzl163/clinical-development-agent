@@ -26,17 +26,19 @@ class ValidationEnvironmentProbeTests(unittest.TestCase):
         self.assertIn(result["scipy"]["status"],{"FOUND","NOT_FOUND"})
         self.assertEqual(0,result["live_calculations_executed"])
 
-    def test_dependency_blocked_summary_does_not_promote_methods(self):
+    def test_live_validation_summary_promotes_only_successful_methods(self):
         path=Path(__file__).resolve().parents[1]/"sample_size"/"validation"/"validation_summary.yaml"
         summary=yaml.safe_load(path.read_text(encoding="utf-8"))
-        self.assertEqual("DEPENDENCY_BLOCKED",summary["outcome"])
-        self.assertEqual({"total":24,"numerically_executed":0,"passed":0,"failed":0,"pending":24},summary["benchmarks"])
+        self.assertEqual("BENCHMARK_VALIDATED",summary["outcome"])
+        self.assertEqual({"total":24,"numerically_executed":24,"passed":24,"failed":0,"pending":0},summary["benchmarks"])
+        self.assertEqual({"executed":114,"successful":114,"failed":0},summary["live_calculations"])
         self.assertEqual(6,len(summary["methods"]))
         for method in summary["methods"]:
-            self.assertEqual("IMPLEMENTED_UNVALIDATED",method["validation_status"])
-            self.assertEqual("BLOCKED",method["package_reproduction"])
-            self.assertIsNone(method["validated_R_version"])
-            self.assertIsNone(method["validated_package_version"])
+            self.assertEqual("BENCHMARK_VALIDATED",method["validation_status"])
+            self.assertEqual("PASS",method["package_reproduction"])
+            self.assertEqual("4.6.1",method["validated_R_version"])
+            self.assertIsNotNone(method["validated_package_version"])
+            self.assertEqual(method["benchmark_count"],method["benchmark_passed"])
 
 
 if __name__ == "__main__": unittest.main()

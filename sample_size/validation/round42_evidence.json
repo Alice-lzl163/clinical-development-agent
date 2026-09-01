@@ -1,0 +1,2320 @@
+{
+  "validation_date": "2026-09-02",
+  "basis_commit": "3c8f9ba08fbb645189f4687ec3a422fbe5870c64",
+  "environment": {
+    "python": {
+      "version": "3.12.7 (tags/v3.12.7:0b05ead, Oct  1 2024, 03:06:41) [MSC v.1941 64 bit (AMD64)]",
+      "executable": "C:\\Users\\ZhuoChang\\Documents\\Codex\\2026-09-01\\you-are-working-on-a-new\\clinical-development-agent\\.venv\\Scripts\\python.exe",
+      "platform": "Windows-11-10.0.26100-SP0",
+      "architecture": "AMD64"
+    },
+    "scipy": {
+      "status": "FOUND",
+      "version": "1.18.1",
+      "path": "C:\\Users\\ZhuoChang\\Documents\\Codex\\2026-09-01\\you-are-working-on-a-new\\clinical-development-agent\\.venv\\Lib\\site-packages\\scipy\\__init__.py"
+    },
+    "rscript": {
+      "status": "FOUND",
+      "candidates": [
+        "C:\\Program Files\\R\\R-4.6.1\\bin\\Rscript.exe",
+        "C:\\Program Files\\R\\R-4.6.1\\bin\\x64\\Rscript.exe"
+      ],
+      "selected": "C:\\Program Files\\R\\R-4.6.1\\bin\\x64\\Rscript.exe"
+    },
+    "r": {
+      "version": "R version 4.6.1 (2026-06-24 ucrt)",
+      "platform": "x86_64-w64-mingw32"
+    },
+    "packages": {
+      "jsonlite": {
+        "status": "FOUND",
+        "version": "2.0.0",
+        "library_path": "C:/Users/ZhuoChang/AppData/Local/R/win-library/4.6",
+        "functions": {}
+      },
+      "pwr": {
+        "status": "FOUND",
+        "version": "1.3.0",
+        "library_path": "C:/Users/ZhuoChang/AppData/Local/R/win-library/4.6",
+        "functions": {
+          "pwr.t.test": true,
+          "pwr.anova.test": true
+        }
+      },
+      "TrialSize": {
+        "status": "FOUND",
+        "version": "1.4.1",
+        "library_path": "C:/Users/ZhuoChang/AppData/Local/R/win-library/4.6",
+        "functions": {
+          "TwoSampleProportion.Equality": true
+        }
+      },
+      "PowerTOST": {
+        "status": "FOUND",
+        "version": "1.5.7",
+        "library_path": "C:/Users/ZhuoChang/AppData/Local/R/win-library/4.6",
+        "functions": {
+          "sampleN.TOST": true,
+          "power.TOST": true
+        }
+      }
+    },
+    "live_calculations_executed": 0
+  },
+  "live_execution": {
+    "executed": 114,
+    "successful": 114,
+    "failed": 0
+  },
+  "fixtures": {
+    "ttest_one_two_sided": {
+      "status": "PASS",
+      "agent_result": {
+        "method_id": "mean_t_one_sample",
+        "test_key": "ttest_one",
+        "solve_mode": "sample_size",
+        "analysis_required_sample_size": 34,
+        "randomized_sample_size": 34,
+        "sample_size_per_group": {
+          "one_sample": 34
+        },
+        "sample_size_per_sequence": null,
+        "required_events": null,
+        "target_power": 0.8,
+        "achieved_power": 0.80777750127944,
+        "alpha": 0.05,
+        "sidedness": "two_sided",
+        "allocation": {
+          "contract": {
+            "ratio_definition": "Not applicable.",
+            "supported": false,
+            "rounding_rule": "Not applicable."
+          },
+          "realized": {
+            "one_sample": 34
+          }
+        },
+        "effect_parameters": {
+          "standardized_effect": 0.5,
+          "alternative": "two_sided"
+        },
+        "derived_parameters": {
+          "signed_standardized_effect": 0.5,
+          "analyzable_subjects": 34,
+          "randomized_subjects": 34
+        },
+        "dropout_assumption": 0.0,
+        "rounding_applied": [
+          "ceil package n",
+          "ceil dropout inflation"
+        ],
+        "engine": "pwr_t",
+        "runtime": "R",
+        "package": "pwr",
+        "package_version": "1.3.0",
+        "function": "pwr::pwr.t.test",
+        "package_arguments": {
+          "d": 0.5,
+          "sig.level": 0.05,
+          "power": 0.8,
+          "type": "one.sample",
+          "alternative": "two.sided"
+        },
+        "warnings": [],
+        "assumptions": [
+          "The continuous endpoint model and one_sample design are correctly specified.",
+          "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+          "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+        ],
+        "validation_status": "BENCHMARK_VALIDATED",
+        "reproducible_code": "library(pwr)\n\nresult <- pwr::pwr.t.test(\n  d = 0.5, sig.level = 0.05, power = 0.8,\n  type = \"one.sample\", alternative = \"two.sided\"\n)\nanalysis_n <- ceiling(result$n)\nforward <- pwr::pwr.t.test(\n  n = analysis_n, d = 0.5, sig.level = 0.05,\n  type = \"one.sample\", alternative = \"two.sided\"\n)\nlist(package_n = unname(result$n), analysis_n = analysis_n, achieved_power = unname(forward$power))",
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1 pwr_1.3-0      jsonlite_2.0.0"
+      },
+      "direct_package": {
+        "raw": {
+          "package_n": 33.367129139076646,
+          "analysis_n": 34,
+          "achieved_power": 0.80777750127944,
+          "warnings": [],
+          "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+          "package_version": "1.3.0",
+          "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nother attached packages:\n[1] pwr_1.3-0\n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1 jsonlite_2.0.0"
+        },
+        "absolute_power_difference": 0.0,
+        "status": "PASS"
+      },
+      "round_trip": {
+        "status": "PASS",
+        "power": 0.80777750127944,
+        "absolute_difference": 0.0
+      },
+      "independent_reference": {
+        "method": "SciPy noncentral distribution",
+        "result": 0.8077775012792738,
+        "absolute_difference": 1.6620038678638593e-13,
+        "status": "PASS"
+      },
+      "semantic_invariants": "PASS"
+    },
+    "ttest_one_greater": {
+      "status": "PASS",
+      "agent_result": {
+        "method_id": "mean_t_one_sample",
+        "test_key": "ttest_one",
+        "solve_mode": "sample_size",
+        "analysis_required_sample_size": 34,
+        "randomized_sample_size": 34,
+        "sample_size_per_group": {
+          "one_sample": 34
+        },
+        "sample_size_per_sequence": null,
+        "required_events": null,
+        "target_power": 0.8,
+        "achieved_power": 0.8077766855150784,
+        "alpha": 0.025,
+        "sidedness": "one_sided",
+        "allocation": {
+          "contract": {
+            "ratio_definition": "Not applicable.",
+            "supported": false,
+            "rounding_rule": "Not applicable."
+          },
+          "realized": {
+            "one_sample": 34
+          }
+        },
+        "effect_parameters": {
+          "standardized_effect": 0.5,
+          "alternative": "greater"
+        },
+        "derived_parameters": {
+          "signed_standardized_effect": 0.5,
+          "analyzable_subjects": 34,
+          "randomized_subjects": 34
+        },
+        "dropout_assumption": 0.0,
+        "rounding_applied": [
+          "ceil package n",
+          "ceil dropout inflation"
+        ],
+        "engine": "pwr_t",
+        "runtime": "R",
+        "package": "pwr",
+        "package_version": "1.3.0",
+        "function": "pwr::pwr.t.test",
+        "package_arguments": {
+          "d": 0.5,
+          "sig.level": 0.025,
+          "power": 0.8,
+          "type": "one.sample",
+          "alternative": "greater"
+        },
+        "warnings": [],
+        "assumptions": [
+          "The continuous endpoint model and one_sample design are correctly specified.",
+          "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+          "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+        ],
+        "validation_status": "BENCHMARK_VALIDATED",
+        "reproducible_code": "library(pwr)\n\nresult <- pwr::pwr.t.test(\n  d = 0.5, sig.level = 0.025, power = 0.8,\n  type = \"one.sample\", alternative = \"greater\"\n)\nanalysis_n <- ceiling(result$n)\nforward <- pwr::pwr.t.test(\n  n = analysis_n, d = 0.5, sig.level = 0.025,\n  type = \"one.sample\", alternative = \"greater\"\n)\nlist(package_n = unname(result$n), analysis_n = analysis_n, achieved_power = unname(forward$power))",
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1 pwr_1.3-0      jsonlite_2.0.0"
+      },
+      "direct_package": {
+        "raw": {
+          "package_n": 33.3672041610244,
+          "analysis_n": 34,
+          "achieved_power": 0.8077766855150784,
+          "warnings": [],
+          "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+          "package_version": "1.3.0",
+          "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nother attached packages:\n[1] pwr_1.3-0\n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1 jsonlite_2.0.0"
+        },
+        "absolute_power_difference": 0.0,
+        "status": "PASS"
+      },
+      "round_trip": {
+        "status": "PASS",
+        "power": 0.8077766855150784,
+        "absolute_difference": 0.0
+      },
+      "independent_reference": {
+        "method": "SciPy noncentral distribution",
+        "result": 0.8077766855149762,
+        "absolute_difference": 1.0225154056797692e-13,
+        "status": "PASS"
+      },
+      "semantic_invariants": "PASS"
+    },
+    "ttest_one_less": {
+      "status": "PASS",
+      "agent_result": {
+        "method_id": "mean_t_one_sample",
+        "test_key": "ttest_one",
+        "solve_mode": "sample_size",
+        "analysis_required_sample_size": 34,
+        "randomized_sample_size": 34,
+        "sample_size_per_group": {
+          "one_sample": 34
+        },
+        "sample_size_per_sequence": null,
+        "required_events": null,
+        "target_power": 0.8,
+        "achieved_power": 0.8077766855150784,
+        "alpha": 0.025,
+        "sidedness": "one_sided",
+        "allocation": {
+          "contract": {
+            "ratio_definition": "Not applicable.",
+            "supported": false,
+            "rounding_rule": "Not applicable."
+          },
+          "realized": {
+            "one_sample": 34
+          }
+        },
+        "effect_parameters": {
+          "standardized_effect": 0.5,
+          "alternative": "less"
+        },
+        "derived_parameters": {
+          "signed_standardized_effect": -0.5,
+          "analyzable_subjects": 34,
+          "randomized_subjects": 34
+        },
+        "dropout_assumption": 0.0,
+        "rounding_applied": [
+          "ceil package n",
+          "ceil dropout inflation"
+        ],
+        "engine": "pwr_t",
+        "runtime": "R",
+        "package": "pwr",
+        "package_version": "1.3.0",
+        "function": "pwr::pwr.t.test",
+        "package_arguments": {
+          "d": -0.5,
+          "sig.level": 0.025,
+          "power": 0.8,
+          "type": "one.sample",
+          "alternative": "less"
+        },
+        "warnings": [],
+        "assumptions": [
+          "The continuous endpoint model and one_sample design are correctly specified.",
+          "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+          "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+        ],
+        "validation_status": "BENCHMARK_VALIDATED",
+        "reproducible_code": "library(pwr)\n\nresult <- pwr::pwr.t.test(\n  d = -0.5, sig.level = 0.025, power = 0.8,\n  type = \"one.sample\", alternative = \"less\"\n)\nanalysis_n <- ceiling(result$n)\nforward <- pwr::pwr.t.test(\n  n = analysis_n, d = -0.5, sig.level = 0.025,\n  type = \"one.sample\", alternative = \"less\"\n)\nlist(package_n = unname(result$n), analysis_n = analysis_n, achieved_power = unname(forward$power))",
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1 pwr_1.3-0      jsonlite_2.0.0"
+      },
+      "direct_package": {
+        "raw": {
+          "package_n": 33.3672041610244,
+          "analysis_n": 34,
+          "achieved_power": 0.8077766855150784,
+          "warnings": [],
+          "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+          "package_version": "1.3.0",
+          "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nother attached packages:\n[1] pwr_1.3-0\n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1 jsonlite_2.0.0"
+        },
+        "absolute_power_difference": 0.0,
+        "status": "PASS"
+      },
+      "round_trip": {
+        "status": "PASS",
+        "power": 0.8077766855150784,
+        "absolute_difference": 0.0
+      },
+      "independent_reference": {
+        "method": "SciPy noncentral distribution",
+        "result": 0.8077766855149762,
+        "absolute_difference": 1.0225154056797692e-13,
+        "status": "PASS"
+      },
+      "semantic_invariants": "PASS"
+    },
+    "ttest_paired_standard": {
+      "status": "PASS",
+      "agent_result": {
+        "method_id": "mean_t_paired",
+        "test_key": "ttest_paired",
+        "solve_mode": "sample_size",
+        "analysis_required_sample_size": 34,
+        "randomized_sample_size": 34,
+        "sample_size_per_group": null,
+        "sample_size_per_sequence": {
+          "complete_pairs_or_participants": 34
+        },
+        "required_events": null,
+        "target_power": 0.8,
+        "achieved_power": 0.80777750127944,
+        "alpha": 0.05,
+        "sidedness": "two_sided",
+        "allocation": {
+          "contract": {
+            "ratio_definition": "Not applicable.",
+            "supported": false,
+            "rounding_rule": "Not applicable."
+          },
+          "realized": {
+            "complete_pairs_or_participants": 34
+          }
+        },
+        "effect_parameters": {
+          "standardized_paired_effect": 0.5,
+          "alternative": "two_sided"
+        },
+        "derived_parameters": {
+          "signed_standardized_effect": 0.5,
+          "complete_analyzable_pairs": 34,
+          "randomized_participants": 34
+        },
+        "dropout_assumption": 0.0,
+        "rounding_applied": [
+          "ceil package complete-pair n",
+          "ceil dropout inflation"
+        ],
+        "engine": "pwr_t",
+        "runtime": "R",
+        "package": "pwr",
+        "package_version": "1.3.0",
+        "function": "pwr::pwr.t.test",
+        "package_arguments": {
+          "d": 0.5,
+          "sig.level": 0.05,
+          "power": 0.8,
+          "type": "paired",
+          "alternative": "two.sided"
+        },
+        "warnings": [],
+        "assumptions": [
+          "The continuous endpoint model and paired design are correctly specified.",
+          "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+          "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+        ],
+        "validation_status": "BENCHMARK_VALIDATED",
+        "reproducible_code": "library(pwr)\n\nresult <- pwr::pwr.t.test(\n  d = 0.5, sig.level = 0.05, power = 0.8,\n  type = \"paired\", alternative = \"two.sided\"\n)\nanalysis_n <- ceiling(result$n)\nforward <- pwr::pwr.t.test(\n  n = analysis_n, d = 0.5, sig.level = 0.05,\n  type = \"paired\", alternative = \"two.sided\"\n)\nlist(package_n = unname(result$n), analysis_n = analysis_n, achieved_power = unname(forward$power))",
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1 pwr_1.3-0      jsonlite_2.0.0"
+      },
+      "direct_package": {
+        "raw": {
+          "package_n": 33.367129139076646,
+          "analysis_n": 34,
+          "achieved_power": 0.80777750127944,
+          "warnings": [],
+          "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+          "package_version": "1.3.0",
+          "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nother attached packages:\n[1] pwr_1.3-0\n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1 jsonlite_2.0.0"
+        },
+        "absolute_power_difference": 0.0,
+        "status": "PASS"
+      },
+      "round_trip": {
+        "status": "PASS",
+        "power": 0.80777750127944,
+        "absolute_difference": 0.0
+      },
+      "independent_reference": {
+        "method": "SciPy noncentral distribution",
+        "result": 0.8077775012792738,
+        "absolute_difference": 1.6620038678638593e-13,
+        "status": "PASS"
+      },
+      "semantic_invariants": "PASS"
+    },
+    "ttest_paired_dropout": {
+      "status": "PASS",
+      "agent_result": {
+        "method_id": "mean_t_paired",
+        "test_key": "ttest_paired",
+        "solve_mode": "sample_size",
+        "analysis_required_sample_size": 34,
+        "randomized_sample_size": 40,
+        "sample_size_per_group": null,
+        "sample_size_per_sequence": {
+          "complete_pairs_or_participants": 34
+        },
+        "required_events": null,
+        "target_power": 0.8,
+        "achieved_power": 0.80777750127944,
+        "alpha": 0.05,
+        "sidedness": "two_sided",
+        "allocation": {
+          "contract": {
+            "ratio_definition": "Not applicable.",
+            "supported": false,
+            "rounding_rule": "Not applicable."
+          },
+          "realized": {
+            "complete_pairs_or_participants": 34
+          }
+        },
+        "effect_parameters": {
+          "standardized_paired_effect": 0.5,
+          "alternative": "two_sided"
+        },
+        "derived_parameters": {
+          "signed_standardized_effect": 0.5,
+          "complete_analyzable_pairs": 34,
+          "randomized_participants": 40
+        },
+        "dropout_assumption": 0.15,
+        "rounding_applied": [
+          "ceil package complete-pair n",
+          "ceil dropout inflation"
+        ],
+        "engine": "pwr_t",
+        "runtime": "R",
+        "package": "pwr",
+        "package_version": "1.3.0",
+        "function": "pwr::pwr.t.test",
+        "package_arguments": {
+          "d": 0.5,
+          "sig.level": 0.05,
+          "power": 0.8,
+          "type": "paired",
+          "alternative": "two.sided"
+        },
+        "warnings": [],
+        "assumptions": [
+          "The continuous endpoint model and paired design are correctly specified.",
+          "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+          "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+        ],
+        "validation_status": "BENCHMARK_VALIDATED",
+        "reproducible_code": "library(pwr)\n\nresult <- pwr::pwr.t.test(\n  d = 0.5, sig.level = 0.05, power = 0.8,\n  type = \"paired\", alternative = \"two.sided\"\n)\nanalysis_n <- ceiling(result$n)\nforward <- pwr::pwr.t.test(\n  n = analysis_n, d = 0.5, sig.level = 0.05,\n  type = \"paired\", alternative = \"two.sided\"\n)\nlist(package_n = unname(result$n), analysis_n = analysis_n, achieved_power = unname(forward$power))",
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1 pwr_1.3-0      jsonlite_2.0.0"
+      },
+      "direct_package": {
+        "raw": {
+          "package_n": 33.367129139076646,
+          "analysis_n": 34,
+          "achieved_power": 0.80777750127944,
+          "warnings": [],
+          "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+          "package_version": "1.3.0",
+          "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nother attached packages:\n[1] pwr_1.3-0\n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1 jsonlite_2.0.0"
+        },
+        "absolute_power_difference": 0.0,
+        "status": "PASS"
+      },
+      "round_trip": {
+        "status": "PASS",
+        "power": 0.80777750127944,
+        "absolute_difference": 0.0
+      },
+      "independent_reference": {
+        "method": "SciPy noncentral distribution",
+        "result": 0.8077775012792738,
+        "absolute_difference": 1.6620038678638593e-13,
+        "status": "PASS"
+      },
+      "semantic_invariants": "PASS"
+    },
+    "ttest_ind_equal": {
+      "status": "PASS",
+      "agent_result": {
+        "method_id": "mean_t_two_sample",
+        "test_key": "ttest_ind",
+        "solve_mode": "sample_size",
+        "analysis_required_sample_size": 128,
+        "randomized_sample_size": 128,
+        "sample_size_per_group": {
+          "treatment": 64,
+          "control": 64
+        },
+        "sample_size_per_sequence": null,
+        "required_events": null,
+        "target_power": 0.8,
+        "achieved_power": 0.8014595579223274,
+        "alpha": 0.05,
+        "sidedness": "two_sided",
+        "allocation": {
+          "contract": {
+            "ratio_definition": "Equal allocation only: n_treatment / n_control = 1.",
+            "supported": false,
+            "rounding_rule": "Round pwr::pwr.t.test n upward independently to the same integer in both arms; do not redistribute subjects."
+          },
+          "realized": {
+            "treatment": 64,
+            "control": 64
+          }
+        },
+        "effect_parameters": {
+          "standardized_effect": 0.5,
+          "alternative": "two_sided"
+        },
+        "derived_parameters": {
+          "signed_standardized_effect": 0.5,
+          "analyzable_per_arm": 64,
+          "randomized_per_arm": 64
+        },
+        "dropout_assumption": 0.0,
+        "rounding_applied": [
+          "ceil package n per arm",
+          "ceil dropout inflation per arm"
+        ],
+        "engine": "pwr_t",
+        "runtime": "R",
+        "package": "pwr",
+        "package_version": "1.3.0",
+        "function": "pwr::pwr.t.test",
+        "package_arguments": {
+          "d": 0.5,
+          "sig.level": 0.05,
+          "power": 0.8,
+          "type": "two.sample",
+          "alternative": "two.sided"
+        },
+        "warnings": [],
+        "assumptions": [
+          "The continuous endpoint model and fixed_parallel design are correctly specified.",
+          "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+          "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+        ],
+        "validation_status": "BENCHMARK_VALIDATED",
+        "reproducible_code": "library(pwr)\n\nresult <- pwr::pwr.t.test(\n  d = 0.5, sig.level = 0.05, power = 0.8,\n  type = \"two.sample\", alternative = \"two.sided\"\n)\nanalysis_n <- ceiling(result$n)\nforward <- pwr::pwr.t.test(\n  n = analysis_n, d = 0.5, sig.level = 0.05,\n  type = \"two.sample\", alternative = \"two.sided\"\n)\nlist(package_n = unname(result$n), analysis_n = analysis_n, achieved_power = unname(forward$power))",
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1 pwr_1.3-0      jsonlite_2.0.0"
+      },
+      "direct_package": {
+        "raw": {
+          "package_n": 63.76561044414832,
+          "analysis_n": 64,
+          "achieved_power": 0.8014595579223274,
+          "warnings": [],
+          "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+          "package_version": "1.3.0",
+          "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nother attached packages:\n[1] pwr_1.3-0\n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1 jsonlite_2.0.0"
+        },
+        "absolute_power_difference": 0.0,
+        "status": "PASS"
+      },
+      "round_trip": {
+        "status": "PASS",
+        "power": 0.8014595579223274,
+        "absolute_difference": 0.0
+      },
+      "independent_reference": {
+        "method": "SciPy noncentral distribution",
+        "result": 0.8014595579222542,
+        "absolute_difference": 7.316369732279782e-14,
+        "status": "PASS"
+      },
+      "semantic_invariants": "PASS"
+    },
+    "ttest_ind_dropout": {
+      "status": "PASS",
+      "agent_result": {
+        "method_id": "mean_t_two_sample",
+        "test_key": "ttest_ind",
+        "solve_mode": "sample_size",
+        "analysis_required_sample_size": 128,
+        "randomized_sample_size": 160,
+        "sample_size_per_group": {
+          "treatment": 64,
+          "control": 64
+        },
+        "sample_size_per_sequence": null,
+        "required_events": null,
+        "target_power": 0.8,
+        "achieved_power": 0.8014595579223274,
+        "alpha": 0.05,
+        "sidedness": "two_sided",
+        "allocation": {
+          "contract": {
+            "ratio_definition": "Equal allocation only: n_treatment / n_control = 1.",
+            "supported": false,
+            "rounding_rule": "Round pwr::pwr.t.test n upward independently to the same integer in both arms; do not redistribute subjects."
+          },
+          "realized": {
+            "treatment": 64,
+            "control": 64
+          }
+        },
+        "effect_parameters": {
+          "standardized_effect": 0.5,
+          "alternative": "two_sided"
+        },
+        "derived_parameters": {
+          "signed_standardized_effect": 0.5,
+          "analyzable_per_arm": 64,
+          "randomized_per_arm": 80
+        },
+        "dropout_assumption": 0.2,
+        "rounding_applied": [
+          "ceil package n per arm",
+          "ceil dropout inflation per arm"
+        ],
+        "engine": "pwr_t",
+        "runtime": "R",
+        "package": "pwr",
+        "package_version": "1.3.0",
+        "function": "pwr::pwr.t.test",
+        "package_arguments": {
+          "d": 0.5,
+          "sig.level": 0.05,
+          "power": 0.8,
+          "type": "two.sample",
+          "alternative": "two.sided"
+        },
+        "warnings": [],
+        "assumptions": [
+          "The continuous endpoint model and fixed_parallel design are correctly specified.",
+          "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+          "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+        ],
+        "validation_status": "BENCHMARK_VALIDATED",
+        "reproducible_code": "library(pwr)\n\nresult <- pwr::pwr.t.test(\n  d = 0.5, sig.level = 0.05, power = 0.8,\n  type = \"two.sample\", alternative = \"two.sided\"\n)\nanalysis_n <- ceiling(result$n)\nforward <- pwr::pwr.t.test(\n  n = analysis_n, d = 0.5, sig.level = 0.05,\n  type = \"two.sample\", alternative = \"two.sided\"\n)\nlist(package_n = unname(result$n), analysis_n = analysis_n, achieved_power = unname(forward$power))",
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1 pwr_1.3-0      jsonlite_2.0.0"
+      },
+      "direct_package": {
+        "raw": {
+          "package_n": 63.76561044414832,
+          "analysis_n": 64,
+          "achieved_power": 0.8014595579223274,
+          "warnings": [],
+          "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+          "package_version": "1.3.0",
+          "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nother attached packages:\n[1] pwr_1.3-0\n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1 jsonlite_2.0.0"
+        },
+        "absolute_power_difference": 0.0,
+        "status": "PASS"
+      },
+      "round_trip": {
+        "status": "PASS",
+        "power": 0.8014595579223274,
+        "absolute_difference": 0.0
+      },
+      "independent_reference": {
+        "method": "SciPy noncentral distribution",
+        "result": 0.8014595579222542,
+        "absolute_difference": 7.316369732279782e-14,
+        "status": "PASS"
+      },
+      "semantic_invariants": "PASS"
+    },
+    "ttest_ind_reject_unequal": {
+      "status": "PASS",
+      "kind": "expected_error",
+      "error_type": "RequestValidationError"
+    },
+    "anova_three_groups": {
+      "status": "PASS",
+      "agent_result": {
+        "method_id": "anova_oneway_balanced",
+        "test_key": "anova",
+        "solve_mode": "sample_size",
+        "analysis_required_sample_size": 159,
+        "randomized_sample_size": 159,
+        "sample_size_per_group": {
+          "group_1": 53,
+          "group_2": 53,
+          "group_3": 53
+        },
+        "sample_size_per_sequence": null,
+        "required_events": null,
+        "target_power": 0.8,
+        "achieved_power": 0.8048872853634701,
+        "alpha": 0.05,
+        "sidedness": "not_applicable",
+        "allocation": {
+          "contract": {
+            "ratio_definition": "Equal allocation across all groups is required.",
+            "supported": false,
+            "rounding_rule": "Round total N upward to a multiple of groups; retain equal integer group sizes and re-evaluate power."
+          },
+          "realized": {
+            "group_1": 53,
+            "group_2": 53,
+            "group_3": 53
+          }
+        },
+        "effect_parameters": {
+          "groups": 3,
+          "cohen_f": 0.25
+        },
+        "derived_parameters": {
+          "analyzable_per_group": 53,
+          "analyzable_total": 159,
+          "randomized_per_group": 53,
+          "randomized_total": 159
+        },
+        "dropout_assumption": 0.0,
+        "rounding_applied": [
+          "ceil package n per group",
+          "ceil dropout inflation per group"
+        ],
+        "engine": "pwr_anova",
+        "runtime": "R",
+        "package": "pwr",
+        "package_version": "1.3.0",
+        "function": "pwr::pwr.anova.test",
+        "package_arguments": {
+          "k": 3,
+          "f": 0.25,
+          "sig.level": 0.05,
+          "power": 0.8
+        },
+        "warnings": [],
+        "assumptions": [
+          "The continuous endpoint model and fixed_multi_arm design are correctly specified.",
+          "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+          "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+        ],
+        "validation_status": "BENCHMARK_VALIDATED",
+        "reproducible_code": "library(pwr)\n\nresult <- pwr::pwr.anova.test(k = 3, f = 0.25, sig.level = 0.05, power = 0.8)\nanalysis_n <- ceiling(result$n)\nforward <- pwr::pwr.anova.test(k = 3, n = analysis_n, f = 0.25, sig.level = 0.05)\nlist(package_n = unname(result$n), analysis_n_per_group = analysis_n, achieved_power = unname(forward$power))",
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1 pwr_1.3-0      jsonlite_2.0.0"
+      },
+      "direct_package": {
+        "raw": {
+          "package_n": 52.396601605594526,
+          "analysis_n_per_group": 53,
+          "achieved_power": 0.8048872853634701,
+          "warnings": [],
+          "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+          "package_version": "1.3.0",
+          "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nother attached packages:\n[1] pwr_1.3-0\n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1 jsonlite_2.0.0"
+        },
+        "absolute_power_difference": 0.0,
+        "status": "PASS"
+      },
+      "round_trip": {
+        "status": "PASS",
+        "power": 0.8048872853634701,
+        "absolute_difference": 0.0
+      },
+      "independent_reference": {
+        "method": "SciPy noncentral distribution",
+        "result": 0.8048872853010698,
+        "absolute_difference": 6.240030714366185e-11,
+        "status": "PASS"
+      },
+      "semantic_invariants": "PASS"
+    },
+    "anova_four_groups": {
+      "status": "PASS",
+      "agent_result": {
+        "method_id": "anova_oneway_balanced",
+        "test_key": "anova",
+        "solve_mode": "sample_size",
+        "analysis_required_sample_size": 180,
+        "randomized_sample_size": 180,
+        "sample_size_per_group": {
+          "group_1": 45,
+          "group_2": 45,
+          "group_3": 45,
+          "group_4": 45
+        },
+        "sample_size_per_sequence": null,
+        "required_events": null,
+        "target_power": 0.8,
+        "achieved_power": 0.8039869130983317,
+        "alpha": 0.05,
+        "sidedness": "not_applicable",
+        "allocation": {
+          "contract": {
+            "ratio_definition": "Equal allocation across all groups is required.",
+            "supported": false,
+            "rounding_rule": "Round total N upward to a multiple of groups; retain equal integer group sizes and re-evaluate power."
+          },
+          "realized": {
+            "group_1": 45,
+            "group_2": 45,
+            "group_3": 45,
+            "group_4": 45
+          }
+        },
+        "effect_parameters": {
+          "groups": 4,
+          "cohen_f": 0.25
+        },
+        "derived_parameters": {
+          "analyzable_per_group": 45,
+          "analyzable_total": 180,
+          "randomized_per_group": 45,
+          "randomized_total": 180
+        },
+        "dropout_assumption": 0.0,
+        "rounding_applied": [
+          "ceil package n per group",
+          "ceil dropout inflation per group"
+        ],
+        "engine": "pwr_anova",
+        "runtime": "R",
+        "package": "pwr",
+        "package_version": "1.3.0",
+        "function": "pwr::pwr.anova.test",
+        "package_arguments": {
+          "k": 4,
+          "f": 0.25,
+          "sig.level": 0.05,
+          "power": 0.8
+        },
+        "warnings": [],
+        "assumptions": [
+          "The continuous endpoint model and fixed_multi_arm design are correctly specified.",
+          "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+          "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+        ],
+        "validation_status": "BENCHMARK_VALIDATED",
+        "reproducible_code": "library(pwr)\n\nresult <- pwr::pwr.anova.test(k = 4, f = 0.25, sig.level = 0.05, power = 0.8)\nanalysis_n <- ceiling(result$n)\nforward <- pwr::pwr.anova.test(k = 4, n = analysis_n, f = 0.25, sig.level = 0.05)\nlist(package_n = unname(result$n), analysis_n_per_group = analysis_n, achieved_power = unname(forward$power))",
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1 pwr_1.3-0      jsonlite_2.0.0"
+      },
+      "direct_package": {
+        "raw": {
+          "package_n": 44.599274299020145,
+          "analysis_n_per_group": 45,
+          "achieved_power": 0.8039869130983317,
+          "warnings": [],
+          "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+          "package_version": "1.3.0",
+          "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nother attached packages:\n[1] pwr_1.3-0\n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1 jsonlite_2.0.0"
+        },
+        "absolute_power_difference": 0.0,
+        "status": "PASS"
+      },
+      "round_trip": {
+        "status": "PASS",
+        "power": 0.8039869130983317,
+        "absolute_difference": 0.0
+      },
+      "independent_reference": {
+        "method": "SciPy noncentral distribution",
+        "result": 0.8039869128651759,
+        "absolute_difference": 2.3315582797778234e-10,
+        "status": "PASS"
+      },
+      "semantic_invariants": "PASS"
+    },
+    "anova_dropout": {
+      "status": "PASS",
+      "agent_result": {
+        "method_id": "anova_oneway_balanced",
+        "test_key": "anova",
+        "solve_mode": "sample_size",
+        "analysis_required_sample_size": 159,
+        "randomized_sample_size": 177,
+        "sample_size_per_group": {
+          "group_1": 53,
+          "group_2": 53,
+          "group_3": 53
+        },
+        "sample_size_per_sequence": null,
+        "required_events": null,
+        "target_power": 0.8,
+        "achieved_power": 0.8048872853634701,
+        "alpha": 0.05,
+        "sidedness": "not_applicable",
+        "allocation": {
+          "contract": {
+            "ratio_definition": "Equal allocation across all groups is required.",
+            "supported": false,
+            "rounding_rule": "Round total N upward to a multiple of groups; retain equal integer group sizes and re-evaluate power."
+          },
+          "realized": {
+            "group_1": 53,
+            "group_2": 53,
+            "group_3": 53
+          }
+        },
+        "effect_parameters": {
+          "groups": 3,
+          "cohen_f": 0.25
+        },
+        "derived_parameters": {
+          "analyzable_per_group": 53,
+          "analyzable_total": 159,
+          "randomized_per_group": 59,
+          "randomized_total": 177
+        },
+        "dropout_assumption": 0.1,
+        "rounding_applied": [
+          "ceil package n per group",
+          "ceil dropout inflation per group"
+        ],
+        "engine": "pwr_anova",
+        "runtime": "R",
+        "package": "pwr",
+        "package_version": "1.3.0",
+        "function": "pwr::pwr.anova.test",
+        "package_arguments": {
+          "k": 3,
+          "f": 0.25,
+          "sig.level": 0.05,
+          "power": 0.8
+        },
+        "warnings": [],
+        "assumptions": [
+          "The continuous endpoint model and fixed_multi_arm design are correctly specified.",
+          "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+          "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+        ],
+        "validation_status": "BENCHMARK_VALIDATED",
+        "reproducible_code": "library(pwr)\n\nresult <- pwr::pwr.anova.test(k = 3, f = 0.25, sig.level = 0.05, power = 0.8)\nanalysis_n <- ceiling(result$n)\nforward <- pwr::pwr.anova.test(k = 3, n = analysis_n, f = 0.25, sig.level = 0.05)\nlist(package_n = unname(result$n), analysis_n_per_group = analysis_n, achieved_power = unname(forward$power))",
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1 pwr_1.3-0      jsonlite_2.0.0"
+      },
+      "direct_package": {
+        "raw": {
+          "package_n": 52.396601605594526,
+          "analysis_n_per_group": 53,
+          "achieved_power": 0.8048872853634701,
+          "warnings": [],
+          "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+          "package_version": "1.3.0",
+          "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nother attached packages:\n[1] pwr_1.3-0\n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1 jsonlite_2.0.0"
+        },
+        "absolute_power_difference": 0.0,
+        "status": "PASS"
+      },
+      "round_trip": {
+        "status": "PASS",
+        "power": 0.8048872853634701,
+        "absolute_difference": 0.0
+      },
+      "independent_reference": {
+        "method": "SciPy noncentral distribution",
+        "result": 0.8048872853010698,
+        "absolute_difference": 6.240030714366185e-11,
+        "status": "PASS"
+      },
+      "semantic_invariants": "PASS"
+    },
+    "anova_per_group_semantic_regression": {
+      "status": "PASS",
+      "kind": "semantic_invariant",
+      "observed_total": 96
+    },
+    "proportion_equal": {
+      "status": "PASS",
+      "agent_result": {
+        "method_id": "binary_two_sample_difference",
+        "test_key": "proportion_two",
+        "solve_mode": "sample_size",
+        "analysis_required_sample_size": 272,
+        "randomized_sample_size": 272,
+        "sample_size_per_group": {
+          "treatment": 136,
+          "control": 136
+        },
+        "sample_size_per_sequence": null,
+        "required_events": null,
+        "target_power": 0.8,
+        "achieved_power": 0.8023808130192349,
+        "alpha": 0.05,
+        "sidedness": "one_or_two_sided",
+        "allocation": {
+          "contract": {
+            "ratio_definition": "n_treatment / n_control; passed unchanged as TrialSize k.",
+            "supported": true,
+            "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power."
+          },
+          "realized": {
+            "treatment": 136,
+            "control": 136
+          }
+        },
+        "effect_parameters": {
+          "control_probability": 0.2,
+          "treatment_probability": 0.35
+        },
+        "derived_parameters": {
+          "beta": 0.19999999999999996,
+          "analyzable_treatment": 136,
+          "analyzable_control": 136,
+          "randomized_treatment": 136,
+          "randomized_control": 136
+        },
+        "dropout_assumption": 0.0,
+        "rounding_applied": [
+          "ceil TrialSize treatment n",
+          "ceil implied control n",
+          "ceil dropout inflation per arm"
+        ],
+        "engine": "trialsize",
+        "runtime": "R",
+        "package": "TrialSize",
+        "package_version": "1.4.1",
+        "function": "TrialSize::TwoSampleProportion.Equality",
+        "package_arguments": {
+          "alpha": 0.05,
+          "beta": 0.19999999999999996,
+          "p1": 0.35,
+          "p2": 0.2,
+          "k": 1
+        },
+        "warnings": [],
+        "assumptions": [
+          "The binary endpoint model and fixed_parallel design are correctly specified.",
+          "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+          "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+        ],
+        "validation_status": "BENCHMARK_VALIDATED",
+        "reproducible_code": "library(TrialSize)\n\npackage_n1 <- TrialSize::TwoSampleProportion.Equality(\n  alpha = 0.05, beta = 0.19999999999999996, p1 = 0.35,\n  p2 = 0.2, k = 1\n)\nn_treatment <- ceiling(as.numeric(package_n1))\nn_control <- ceiling(as.numeric(package_n1) / 1)\nz_alpha <- stats::qnorm(1 - 0.05 / 2)\nvariance <- 0.35 * (1 - 0.35) / n_treatment +\n  0.2 * (1 - 0.2) / n_control\nz_beta <- abs(0.35 - 0.2) / sqrt(variance) - z_alpha\nachieved_power <- stats::pnorm(z_beta)\nlist(package_n_treatment = as.numeric(package_n1), analysis_n_treatment = n_treatment,\n     analysis_n_control = n_control, achieved_power = achieved_power)",
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1  TrialSize_1.4.1 jsonlite_2.0.0 "
+      },
+      "direct_package": {
+        "raw": {
+          "package_n_treatment": 135.17515098045655,
+          "analysis_n_treatment": 136,
+          "analysis_n_control": 136,
+          "achieved_power": 0.8023808130192349,
+          "warnings": [],
+          "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+          "package_version": "1.4.1",
+          "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nother attached packages:\n[1] TrialSize_1.4.1\n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1 jsonlite_2.0.0"
+        },
+        "absolute_power_difference": 0.0,
+        "status": "PASS"
+      },
+      "round_trip": {
+        "status": "PASS",
+        "power": 0.8023808130192349,
+        "absolute_difference": 0.0
+      },
+      "independent_reference": {
+        "method": "independent matching normal equation",
+        "result": 0.8023808130192348,
+        "absolute_difference": 1.1102230246251565e-16,
+        "status": "PASS"
+      },
+      "semantic_invariants": "PASS"
+    },
+    "proportion_asymmetric_orientation": {
+      "status": "PASS",
+      "agent_result": {
+        "method_id": "binary_two_sample_difference",
+        "test_key": "proportion_two",
+        "solve_mode": "sample_size",
+        "analysis_required_sample_size": 287,
+        "randomized_sample_size": 287,
+        "sample_size_per_group": {
+          "treatment": 191,
+          "control": 96
+        },
+        "sample_size_per_sequence": null,
+        "required_events": null,
+        "target_power": 0.8,
+        "achieved_power": 0.8012161007368315,
+        "alpha": 0.05,
+        "sidedness": "one_or_two_sided",
+        "allocation": {
+          "contract": {
+            "ratio_definition": "n_treatment / n_control; passed unchanged as TrialSize k.",
+            "supported": true,
+            "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power."
+          },
+          "realized": {
+            "treatment": 191,
+            "control": 96
+          }
+        },
+        "effect_parameters": {
+          "control_probability": 0.2,
+          "treatment_probability": 0.35
+        },
+        "derived_parameters": {
+          "beta": 0.19999999999999996,
+          "analyzable_treatment": 191,
+          "analyzable_control": 96,
+          "randomized_treatment": 191,
+          "randomized_control": 96
+        },
+        "dropout_assumption": 0.0,
+        "rounding_applied": [
+          "ceil TrialSize treatment n",
+          "ceil implied control n",
+          "ceil dropout inflation per arm"
+        ],
+        "engine": "trialsize",
+        "runtime": "R",
+        "package": "TrialSize",
+        "package_version": "1.4.1",
+        "function": "TrialSize::TwoSampleProportion.Equality",
+        "package_arguments": {
+          "alpha": 0.05,
+          "beta": 0.19999999999999996,
+          "p1": 0.35,
+          "p2": 0.2,
+          "k": 2
+        },
+        "warnings": [],
+        "assumptions": [
+          "The binary endpoint model and fixed_parallel design are correctly specified.",
+          "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+          "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+        ],
+        "validation_status": "BENCHMARK_VALIDATED",
+        "reproducible_code": "library(TrialSize)\n\npackage_n1 <- TrialSize::TwoSampleProportion.Equality(\n  alpha = 0.05, beta = 0.19999999999999996, p1 = 0.35,\n  p2 = 0.2, k = 2\n)\nn_treatment <- ceiling(as.numeric(package_n1))\nn_control <- ceiling(as.numeric(package_n1) / 2)\nz_alpha <- stats::qnorm(1 - 0.05 / 2)\nvariance <- 0.35 * (1 - 0.35) / n_treatment +\n  0.2 * (1 - 0.2) / n_control\nz_beta <- abs(0.35 - 0.2) / sqrt(variance) - z_alpha\nachieved_power <- stats::pnorm(z_beta)\nlist(package_n_treatment = as.numeric(package_n1), analysis_n_treatment = n_treatment,\n     analysis_n_control = n_control, achieved_power = achieved_power)",
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1  TrialSize_1.4.1 jsonlite_2.0.0 "
+      },
+      "direct_package": {
+        "raw": {
+          "package_n_treatment": 190.98940686916123,
+          "analysis_n_treatment": 191,
+          "analysis_n_control": 96,
+          "achieved_power": 0.8012161007368315,
+          "warnings": [],
+          "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+          "package_version": "1.4.1",
+          "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nother attached packages:\n[1] TrialSize_1.4.1\n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1 jsonlite_2.0.0"
+        },
+        "absolute_power_difference": 0.0,
+        "status": "PASS"
+      },
+      "round_trip": {
+        "status": "PASS",
+        "power": 0.8012161007368315,
+        "absolute_difference": 0.0
+      },
+      "independent_reference": {
+        "method": "independent matching normal equation",
+        "result": 0.8012161007368312,
+        "absolute_difference": 2.220446049250313e-16,
+        "status": "PASS"
+      },
+      "semantic_invariants": "PASS"
+    },
+    "be_2x2_standard": {
+      "status": "PASS",
+      "agent_result": {
+        "method_id": "bioequivalence_tost",
+        "test_key": "be_tost",
+        "solve_mode": "sample_size",
+        "analysis_required_sample_size": 20,
+        "randomized_sample_size": 20,
+        "sample_size_per_group": null,
+        "sample_size_per_sequence": {
+          "TR": 10,
+          "RT": 10
+        },
+        "required_events": null,
+        "target_power": 0.8,
+        "achieved_power": 0.8346801908570284,
+        "alpha": 0.05,
+        "sidedness": "two_one_sided_tests",
+        "allocation": {
+          "contract": {
+            "ratio_definition": "Balanced 1:1 TR/RT sequences for 2x2 and balanced 1:1 treatment/control arms for parallel.",
+            "supported": false,
+            "rounding_rule": "Round randomized total upward to a multiple of 2 and assign half to each sequence or arm."
+          },
+          "realized": {
+            "TR": 10,
+            "RT": 10
+          }
+        },
+        "effect_parameters": {
+          "cv": 0.2,
+          "theta0": 0.95,
+          "lower_limit": 0.8,
+          "upper_limit": 1.25,
+          "design": "2x2"
+        },
+        "derived_parameters": {
+          "evaluable_total": 20,
+          "randomization_block_size": 2,
+          "randomized_total": 20,
+          "randomized_per_sequence_or_arm": 10
+        },
+        "dropout_assumption": 0.0,
+        "rounding_applied": [
+          "PowerTOST evaluable total",
+          "ceil dropout inflation",
+          "ceil to two-subject randomization block"
+        ],
+        "engine": "powertost",
+        "runtime": "R",
+        "package": "PowerTOST",
+        "package_version": "1.5.7",
+        "function": "PowerTOST::sampleN.TOST",
+        "package_arguments": {
+          "alpha": 0.05,
+          "targetpower": 0.8,
+          "theta0": 0.95,
+          "theta1": 0.8,
+          "theta2": 1.25,
+          "CV": 0.2,
+          "design": "2x2",
+          "print": false
+        },
+        "warnings": [],
+        "assumptions": [
+          "The continuous_pk endpoint model and bioequivalence design are correctly specified.",
+          "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+          "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+        ],
+        "validation_status": "BENCHMARK_VALIDATED",
+        "reproducible_code": "library(PowerTOST)\n\nresult <- PowerTOST::sampleN.TOST(\n  alpha = 0.05, targetpower = 0.8, theta0 = 0.95,\n  theta1 = 0.8, theta2 = 1.25, CV = 0.2,\n  design = \"2x2\", print = FALSE\n)\nevaluable_total <- as.integer(result[[\"Sample size\"]][1])\nforward_power <- PowerTOST::power.TOST(\n  alpha = 0.05, theta0 = 0.95, theta1 = 0.8,\n  theta2 = 1.25, CV = 0.2, design = \"2x2\", n = evaluable_total\n)\nlist(package_n = as.numeric(result[[\"Sample size\"]][1]), evaluable_total = evaluable_total,\n     package_achieved_power = as.numeric(result[[\"Achieved power\"]][1]), achieved_power = as.numeric(forward_power))",
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] cubature_2.1.4-1 compiler_4.6.1   tools_4.6.1      PowerTOST_1.5-7 \n[5] Rcpp_1.1.2       mvtnorm_1.4-2    jsonlite_2.0.0  "
+      },
+      "direct_package": {
+        "raw": {
+          "package_n": 20,
+          "evaluable_total": 20,
+          "package_achieved_power": 0.8346801908570284,
+          "achieved_power": 0.8346801908570284,
+          "warnings": [],
+          "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+          "package_version": "1.5.7",
+          "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nother attached packages:\n[1] PowerTOST_1.5-7\n\nloaded via a namespace (and not attached):\n[1] cubature_2.1.4-1 compiler_4.6.1   tools_4.6.1      Rcpp_1.1.2      \n[5] mvtnorm_1.4-2    jsonlite_2.0.0  "
+        },
+        "absolute_power_difference": 0.0,
+        "status": "PASS"
+      },
+      "round_trip": {
+        "status": "PASS",
+        "power": 0.8346801908570284,
+        "absolute_difference": 0.0
+      },
+      "independent_reference": {
+        "method": "independent chi-square-conditioned exact TOST integration",
+        "result": 0.8346801908568989,
+        "absolute_difference": 1.2945200467129325e-13,
+        "status": "PASS"
+      },
+      "semantic_invariants": "PASS"
+    },
+    "be_2x2_gmr": {
+      "status": "PASS",
+      "agent_result": {
+        "method_id": "bioequivalence_tost",
+        "test_key": "be_tost",
+        "solve_mode": "sample_size",
+        "analysis_required_sample_size": 56,
+        "randomized_sample_size": 56,
+        "sample_size_per_group": null,
+        "sample_size_per_sequence": {
+          "TR": 28,
+          "RT": 28
+        },
+        "required_events": null,
+        "target_power": 0.8,
+        "achieved_power": 0.8035824365081963,
+        "alpha": 0.05,
+        "sidedness": "two_one_sided_tests",
+        "allocation": {
+          "contract": {
+            "ratio_definition": "Balanced 1:1 TR/RT sequences for 2x2 and balanced 1:1 treatment/control arms for parallel.",
+            "supported": false,
+            "rounding_rule": "Round randomized total upward to a multiple of 2 and assign half to each sequence or arm."
+          },
+          "realized": {
+            "TR": 28,
+            "RT": 28
+          }
+        },
+        "effect_parameters": {
+          "cv": 0.25,
+          "theta0": 0.9,
+          "lower_limit": 0.8,
+          "upper_limit": 1.25,
+          "design": "2x2"
+        },
+        "derived_parameters": {
+          "evaluable_total": 56,
+          "randomization_block_size": 2,
+          "randomized_total": 56,
+          "randomized_per_sequence_or_arm": 28
+        },
+        "dropout_assumption": 0.0,
+        "rounding_applied": [
+          "PowerTOST evaluable total",
+          "ceil dropout inflation",
+          "ceil to two-subject randomization block"
+        ],
+        "engine": "powertost",
+        "runtime": "R",
+        "package": "PowerTOST",
+        "package_version": "1.5.7",
+        "function": "PowerTOST::sampleN.TOST",
+        "package_arguments": {
+          "alpha": 0.05,
+          "targetpower": 0.8,
+          "theta0": 0.9,
+          "theta1": 0.8,
+          "theta2": 1.25,
+          "CV": 0.25,
+          "design": "2x2",
+          "print": false
+        },
+        "warnings": [],
+        "assumptions": [
+          "The continuous_pk endpoint model and bioequivalence design are correctly specified.",
+          "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+          "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+        ],
+        "validation_status": "BENCHMARK_VALIDATED",
+        "reproducible_code": "library(PowerTOST)\n\nresult <- PowerTOST::sampleN.TOST(\n  alpha = 0.05, targetpower = 0.8, theta0 = 0.9,\n  theta1 = 0.8, theta2 = 1.25, CV = 0.25,\n  design = \"2x2\", print = FALSE\n)\nevaluable_total <- as.integer(result[[\"Sample size\"]][1])\nforward_power <- PowerTOST::power.TOST(\n  alpha = 0.05, theta0 = 0.9, theta1 = 0.8,\n  theta2 = 1.25, CV = 0.25, design = \"2x2\", n = evaluable_total\n)\nlist(package_n = as.numeric(result[[\"Sample size\"]][1]), evaluable_total = evaluable_total,\n     package_achieved_power = as.numeric(result[[\"Achieved power\"]][1]), achieved_power = as.numeric(forward_power))",
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] cubature_2.1.4-1 compiler_4.6.1   tools_4.6.1      PowerTOST_1.5-7 \n[5] Rcpp_1.1.2       mvtnorm_1.4-2    jsonlite_2.0.0  "
+      },
+      "direct_package": {
+        "raw": {
+          "package_n": 56,
+          "evaluable_total": 56,
+          "package_achieved_power": 0.8035824365081963,
+          "achieved_power": 0.8035824365081963,
+          "warnings": [],
+          "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+          "package_version": "1.5.7",
+          "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nother attached packages:\n[1] PowerTOST_1.5-7\n\nloaded via a namespace (and not attached):\n[1] cubature_2.1.4-1 compiler_4.6.1   tools_4.6.1      Rcpp_1.1.2      \n[5] mvtnorm_1.4-2    jsonlite_2.0.0  "
+        },
+        "absolute_power_difference": 0.0,
+        "status": "PASS"
+      },
+      "round_trip": {
+        "status": "PASS",
+        "power": 0.8035824365081963,
+        "absolute_difference": 0.0
+      },
+      "independent_reference": {
+        "method": "independent chi-square-conditioned exact TOST integration",
+        "result": 0.8035824365080513,
+        "absolute_difference": 1.4499512701604544e-13,
+        "status": "PASS"
+      },
+      "semantic_invariants": "PASS"
+    },
+    "be_2x2_dropout": {
+      "status": "PASS",
+      "agent_result": {
+        "method_id": "bioequivalence_tost",
+        "test_key": "be_tost",
+        "solve_mode": "sample_size",
+        "analysis_required_sample_size": 20,
+        "randomized_sample_size": 24,
+        "sample_size_per_group": null,
+        "sample_size_per_sequence": {
+          "TR": 12,
+          "RT": 12
+        },
+        "required_events": null,
+        "target_power": 0.8,
+        "achieved_power": 0.8346801908570284,
+        "alpha": 0.05,
+        "sidedness": "two_one_sided_tests",
+        "allocation": {
+          "contract": {
+            "ratio_definition": "Balanced 1:1 TR/RT sequences for 2x2 and balanced 1:1 treatment/control arms for parallel.",
+            "supported": false,
+            "rounding_rule": "Round randomized total upward to a multiple of 2 and assign half to each sequence or arm."
+          },
+          "realized": {
+            "TR": 12,
+            "RT": 12
+          }
+        },
+        "effect_parameters": {
+          "cv": 0.2,
+          "theta0": 0.95,
+          "lower_limit": 0.8,
+          "upper_limit": 1.25,
+          "design": "2x2"
+        },
+        "derived_parameters": {
+          "evaluable_total": 20,
+          "randomization_block_size": 2,
+          "randomized_total": 24,
+          "randomized_per_sequence_or_arm": 12
+        },
+        "dropout_assumption": 0.1,
+        "rounding_applied": [
+          "PowerTOST evaluable total",
+          "ceil dropout inflation",
+          "ceil to two-subject randomization block"
+        ],
+        "engine": "powertost",
+        "runtime": "R",
+        "package": "PowerTOST",
+        "package_version": "1.5.7",
+        "function": "PowerTOST::sampleN.TOST",
+        "package_arguments": {
+          "alpha": 0.05,
+          "targetpower": 0.8,
+          "theta0": 0.95,
+          "theta1": 0.8,
+          "theta2": 1.25,
+          "CV": 0.2,
+          "design": "2x2",
+          "print": false
+        },
+        "warnings": [],
+        "assumptions": [
+          "The continuous_pk endpoint model and bioequivalence design are correctly specified.",
+          "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+          "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+        ],
+        "validation_status": "BENCHMARK_VALIDATED",
+        "reproducible_code": "library(PowerTOST)\n\nresult <- PowerTOST::sampleN.TOST(\n  alpha = 0.05, targetpower = 0.8, theta0 = 0.95,\n  theta1 = 0.8, theta2 = 1.25, CV = 0.2,\n  design = \"2x2\", print = FALSE\n)\nevaluable_total <- as.integer(result[[\"Sample size\"]][1])\nforward_power <- PowerTOST::power.TOST(\n  alpha = 0.05, theta0 = 0.95, theta1 = 0.8,\n  theta2 = 1.25, CV = 0.2, design = \"2x2\", n = evaluable_total\n)\nlist(package_n = as.numeric(result[[\"Sample size\"]][1]), evaluable_total = evaluable_total,\n     package_achieved_power = as.numeric(result[[\"Achieved power\"]][1]), achieved_power = as.numeric(forward_power))",
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] cubature_2.1.4-1 compiler_4.6.1   tools_4.6.1      PowerTOST_1.5-7 \n[5] Rcpp_1.1.2       mvtnorm_1.4-2    jsonlite_2.0.0  "
+      },
+      "direct_package": {
+        "raw": {
+          "package_n": 20,
+          "evaluable_total": 20,
+          "package_achieved_power": 0.8346801908570284,
+          "achieved_power": 0.8346801908570284,
+          "warnings": [],
+          "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+          "package_version": "1.5.7",
+          "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nother attached packages:\n[1] PowerTOST_1.5-7\n\nloaded via a namespace (and not attached):\n[1] cubature_2.1.4-1 compiler_4.6.1   tools_4.6.1      Rcpp_1.1.2      \n[5] mvtnorm_1.4-2    jsonlite_2.0.0  "
+        },
+        "absolute_power_difference": 0.0,
+        "status": "PASS"
+      },
+      "round_trip": {
+        "status": "PASS",
+        "power": 0.8346801908570284,
+        "absolute_difference": 0.0
+      },
+      "independent_reference": {
+        "method": "independent chi-square-conditioned exact TOST integration",
+        "result": 0.8346801908568989,
+        "absolute_difference": 1.2945200467129325e-13,
+        "status": "PASS"
+      },
+      "semantic_invariants": "PASS"
+    },
+    "be_parallel_balanced": {
+      "status": "PASS",
+      "agent_result": {
+        "method_id": "bioequivalence_tost",
+        "test_key": "be_tost",
+        "solve_mode": "sample_size",
+        "analysis_required_sample_size": 130,
+        "randomized_sample_size": 146,
+        "sample_size_per_group": {
+          "treatment": 73,
+          "control": 73
+        },
+        "sample_size_per_sequence": null,
+        "required_events": null,
+        "target_power": 0.8,
+        "achieved_power": 0.8035119578600546,
+        "alpha": 0.05,
+        "sidedness": "two_one_sided_tests",
+        "allocation": {
+          "contract": {
+            "ratio_definition": "Balanced 1:1 TR/RT sequences for 2x2 and balanced 1:1 treatment/control arms for parallel.",
+            "supported": false,
+            "rounding_rule": "Round randomized total upward to a multiple of 2 and assign half to each sequence or arm."
+          },
+          "realized": {
+            "treatment": 73,
+            "control": 73
+          }
+        },
+        "effect_parameters": {
+          "cv": 0.4,
+          "theta0": 0.95,
+          "lower_limit": 0.8,
+          "upper_limit": 1.25,
+          "design": "parallel"
+        },
+        "derived_parameters": {
+          "evaluable_total": 130,
+          "randomization_block_size": 2,
+          "randomized_total": 146,
+          "randomized_per_sequence_or_arm": 73
+        },
+        "dropout_assumption": 0.1,
+        "rounding_applied": [
+          "PowerTOST evaluable total",
+          "ceil dropout inflation",
+          "ceil to two-subject randomization block"
+        ],
+        "engine": "powertost",
+        "runtime": "R",
+        "package": "PowerTOST",
+        "package_version": "1.5.7",
+        "function": "PowerTOST::sampleN.TOST",
+        "package_arguments": {
+          "alpha": 0.05,
+          "targetpower": 0.8,
+          "theta0": 0.95,
+          "theta1": 0.8,
+          "theta2": 1.25,
+          "CV": 0.4,
+          "design": "parallel",
+          "print": false
+        },
+        "warnings": [],
+        "assumptions": [
+          "The continuous_pk endpoint model and bioequivalence design are correctly specified.",
+          "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+          "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+        ],
+        "validation_status": "BENCHMARK_VALIDATED",
+        "reproducible_code": "library(PowerTOST)\n\nresult <- PowerTOST::sampleN.TOST(\n  alpha = 0.05, targetpower = 0.8, theta0 = 0.95,\n  theta1 = 0.8, theta2 = 1.25, CV = 0.4,\n  design = \"parallel\", print = FALSE\n)\nevaluable_total <- as.integer(result[[\"Sample size\"]][1])\nforward_power <- PowerTOST::power.TOST(\n  alpha = 0.05, theta0 = 0.95, theta1 = 0.8,\n  theta2 = 1.25, CV = 0.4, design = \"parallel\", n = evaluable_total\n)\nlist(package_n = as.numeric(result[[\"Sample size\"]][1]), evaluable_total = evaluable_total,\n     package_achieved_power = as.numeric(result[[\"Achieved power\"]][1]), achieved_power = as.numeric(forward_power))",
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] cubature_2.1.4-1 compiler_4.6.1   tools_4.6.1      PowerTOST_1.5-7 \n[5] Rcpp_1.1.2       mvtnorm_1.4-2    jsonlite_2.0.0  "
+      },
+      "direct_package": {
+        "raw": {
+          "package_n": 130,
+          "evaluable_total": 130,
+          "package_achieved_power": 0.8035119578600546,
+          "achieved_power": 0.8035119578600546,
+          "warnings": [],
+          "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+          "package_version": "1.5.7",
+          "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nother attached packages:\n[1] PowerTOST_1.5-7\n\nloaded via a namespace (and not attached):\n[1] cubature_2.1.4-1 compiler_4.6.1   tools_4.6.1      Rcpp_1.1.2      \n[5] mvtnorm_1.4-2    jsonlite_2.0.0  "
+        },
+        "absolute_power_difference": 0.0,
+        "status": "PASS"
+      },
+      "round_trip": {
+        "status": "PASS",
+        "power": 0.8035119578600546,
+        "absolute_difference": 0.0
+      },
+      "independent_reference": {
+        "method": "independent chi-square-conditioned exact TOST integration",
+        "result": 0.8035119578598467,
+        "absolute_difference": 2.078337502098293e-13,
+        "status": "PASS"
+      },
+      "semantic_invariants": "PASS"
+    },
+    "ttest_one_power": {
+      "status": "PASS",
+      "agent_result": {
+        "method_id": "mean_t_one_sample",
+        "test_key": "ttest_one",
+        "solve_mode": "power",
+        "analysis_required_sample_size": 34,
+        "randomized_sample_size": null,
+        "sample_size_per_group": {
+          "one_sample": 34
+        },
+        "sample_size_per_sequence": null,
+        "required_events": null,
+        "target_power": null,
+        "achieved_power": 0.80777750127944,
+        "alpha": 0.05,
+        "sidedness": "two_sided",
+        "allocation": {
+          "contract": {
+            "ratio_definition": "Not applicable.",
+            "supported": false,
+            "rounding_rule": "Not applicable."
+          },
+          "realized": {
+            "one_sample": 34
+          }
+        },
+        "effect_parameters": {
+          "standardized_effect": 0.5,
+          "alternative": "two_sided",
+          "analyzable_sample_size": 34
+        },
+        "derived_parameters": {
+          "signed_standardized_effect": 0.5,
+          "analyzable_subjects": 34,
+          "randomized_subjects": null
+        },
+        "dropout_assumption": null,
+        "rounding_applied": [],
+        "engine": "pwr_t",
+        "runtime": "R",
+        "package": "pwr",
+        "package_version": "1.3.0",
+        "function": "pwr::pwr.t.test",
+        "package_arguments": {
+          "n": 34,
+          "d": 0.5,
+          "sig.level": 0.05,
+          "type": "one.sample",
+          "alternative": "two.sided"
+        },
+        "warnings": [],
+        "assumptions": [
+          "The continuous endpoint model and one_sample design are correctly specified.",
+          "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+          "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+        ],
+        "validation_status": "BENCHMARK_VALIDATED",
+        "reproducible_code": "library(pwr)\n\nresult <- pwr::pwr.t.test(\n  n = 34, d = 0.5, sig.level = 0.05,\n  type = \"one.sample\", alternative = \"two.sided\"\n)\nlist(achieved_power = unname(result$power))",
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1 pwr_1.3-0      jsonlite_2.0.0"
+      },
+      "direct_package": {
+        "raw": {
+          "achieved_power": 0.80777750127944,
+          "warnings": [],
+          "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+          "package_version": "1.3.0",
+          "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nother attached packages:\n[1] pwr_1.3-0\n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1 jsonlite_2.0.0"
+        },
+        "absolute_power_difference": 0.0,
+        "status": "PASS"
+      },
+      "round_trip": {
+        "status": "NOT_APPLICABLE"
+      },
+      "independent_reference": {
+        "method": "SciPy noncentral distribution",
+        "result": 0.8077775012792738,
+        "absolute_difference": 1.6620038678638593e-13,
+        "status": "PASS"
+      },
+      "semantic_invariants": "PASS"
+    },
+    "ttest_paired_power": {
+      "status": "PASS",
+      "agent_result": {
+        "method_id": "mean_t_paired",
+        "test_key": "ttest_paired",
+        "solve_mode": "power",
+        "analysis_required_sample_size": 34,
+        "randomized_sample_size": null,
+        "sample_size_per_group": null,
+        "sample_size_per_sequence": {
+          "complete_pairs_or_participants": 34
+        },
+        "required_events": null,
+        "target_power": null,
+        "achieved_power": 0.80777750127944,
+        "alpha": 0.05,
+        "sidedness": "two_sided",
+        "allocation": {
+          "contract": {
+            "ratio_definition": "Not applicable.",
+            "supported": false,
+            "rounding_rule": "Not applicable."
+          },
+          "realized": {
+            "complete_pairs_or_participants": 34
+          }
+        },
+        "effect_parameters": {
+          "standardized_paired_effect": 0.5,
+          "alternative": "two_sided",
+          "analyzable_pairs": 34
+        },
+        "derived_parameters": {
+          "signed_standardized_effect": 0.5,
+          "complete_analyzable_pairs": 34,
+          "randomized_participants": null
+        },
+        "dropout_assumption": null,
+        "rounding_applied": [],
+        "engine": "pwr_t",
+        "runtime": "R",
+        "package": "pwr",
+        "package_version": "1.3.0",
+        "function": "pwr::pwr.t.test",
+        "package_arguments": {
+          "n": 34,
+          "d": 0.5,
+          "sig.level": 0.05,
+          "type": "paired",
+          "alternative": "two.sided"
+        },
+        "warnings": [],
+        "assumptions": [
+          "The continuous endpoint model and paired design are correctly specified.",
+          "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+          "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+        ],
+        "validation_status": "BENCHMARK_VALIDATED",
+        "reproducible_code": "library(pwr)\n\nresult <- pwr::pwr.t.test(\n  n = 34, d = 0.5, sig.level = 0.05,\n  type = \"paired\", alternative = \"two.sided\"\n)\nlist(achieved_power = unname(result$power))",
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1 pwr_1.3-0      jsonlite_2.0.0"
+      },
+      "direct_package": {
+        "raw": {
+          "achieved_power": 0.80777750127944,
+          "warnings": [],
+          "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+          "package_version": "1.3.0",
+          "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nother attached packages:\n[1] pwr_1.3-0\n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1 jsonlite_2.0.0"
+        },
+        "absolute_power_difference": 0.0,
+        "status": "PASS"
+      },
+      "round_trip": {
+        "status": "NOT_APPLICABLE"
+      },
+      "independent_reference": {
+        "method": "SciPy noncentral distribution",
+        "result": 0.8077775012792738,
+        "absolute_difference": 1.6620038678638593e-13,
+        "status": "PASS"
+      },
+      "semantic_invariants": "PASS"
+    },
+    "ttest_ind_power": {
+      "status": "PASS",
+      "agent_result": {
+        "method_id": "mean_t_two_sample",
+        "test_key": "ttest_ind",
+        "solve_mode": "power",
+        "analysis_required_sample_size": 128,
+        "randomized_sample_size": null,
+        "sample_size_per_group": {
+          "treatment": 64,
+          "control": 64
+        },
+        "sample_size_per_sequence": null,
+        "required_events": null,
+        "target_power": null,
+        "achieved_power": 0.8014595579223274,
+        "alpha": 0.05,
+        "sidedness": "two_sided",
+        "allocation": {
+          "contract": {
+            "ratio_definition": "Equal allocation only: n_treatment / n_control = 1.",
+            "supported": false,
+            "rounding_rule": "Round pwr::pwr.t.test n upward independently to the same integer in both arms; do not redistribute subjects."
+          },
+          "realized": {
+            "treatment": 64,
+            "control": 64
+          }
+        },
+        "effect_parameters": {
+          "standardized_effect": 0.5,
+          "alternative": "two_sided",
+          "analyzable_sample_size_per_arm": 64
+        },
+        "derived_parameters": {
+          "signed_standardized_effect": 0.5,
+          "analyzable_per_arm": 64,
+          "randomized_per_arm": null
+        },
+        "dropout_assumption": null,
+        "rounding_applied": [],
+        "engine": "pwr_t",
+        "runtime": "R",
+        "package": "pwr",
+        "package_version": "1.3.0",
+        "function": "pwr::pwr.t.test",
+        "package_arguments": {
+          "n": 64,
+          "d": 0.5,
+          "sig.level": 0.05,
+          "type": "two.sample",
+          "alternative": "two.sided"
+        },
+        "warnings": [],
+        "assumptions": [
+          "The continuous endpoint model and fixed_parallel design are correctly specified.",
+          "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+          "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+        ],
+        "validation_status": "BENCHMARK_VALIDATED",
+        "reproducible_code": "library(pwr)\n\nresult <- pwr::pwr.t.test(\n  n = 64, d = 0.5, sig.level = 0.05,\n  type = \"two.sample\", alternative = \"two.sided\"\n)\nlist(achieved_power = unname(result$power))",
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1 pwr_1.3-0      jsonlite_2.0.0"
+      },
+      "direct_package": {
+        "raw": {
+          "achieved_power": 0.8014595579223274,
+          "warnings": [],
+          "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+          "package_version": "1.3.0",
+          "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nother attached packages:\n[1] pwr_1.3-0\n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1 jsonlite_2.0.0"
+        },
+        "absolute_power_difference": 0.0,
+        "status": "PASS"
+      },
+      "round_trip": {
+        "status": "NOT_APPLICABLE"
+      },
+      "independent_reference": {
+        "method": "SciPy noncentral distribution",
+        "result": 0.8014595579222542,
+        "absolute_difference": 7.316369732279782e-14,
+        "status": "PASS"
+      },
+      "semantic_invariants": "PASS"
+    },
+    "anova_power": {
+      "status": "PASS",
+      "agent_result": {
+        "method_id": "anova_oneway_balanced",
+        "test_key": "anova",
+        "solve_mode": "power",
+        "analysis_required_sample_size": 96,
+        "randomized_sample_size": null,
+        "sample_size_per_group": {
+          "group_1": 32,
+          "group_2": 32,
+          "group_3": 32
+        },
+        "sample_size_per_sequence": null,
+        "required_events": null,
+        "target_power": null,
+        "achieved_power": 0.5693850692819359,
+        "alpha": 0.05,
+        "sidedness": "not_applicable",
+        "allocation": {
+          "contract": {
+            "ratio_definition": "Equal allocation across all groups is required.",
+            "supported": false,
+            "rounding_rule": "Round total N upward to a multiple of groups; retain equal integer group sizes and re-evaluate power."
+          },
+          "realized": {
+            "group_1": 32,
+            "group_2": 32,
+            "group_3": 32
+          }
+        },
+        "effect_parameters": {
+          "groups": 3,
+          "cohen_f": 0.25,
+          "analyzable_sample_size_per_group": 32
+        },
+        "derived_parameters": {
+          "analyzable_per_group": 32,
+          "analyzable_total": 96,
+          "randomized_per_group": null,
+          "randomized_total": null
+        },
+        "dropout_assumption": null,
+        "rounding_applied": [],
+        "engine": "pwr_anova",
+        "runtime": "R",
+        "package": "pwr",
+        "package_version": "1.3.0",
+        "function": "pwr::pwr.anova.test",
+        "package_arguments": {
+          "k": 3,
+          "n": 32,
+          "f": 0.25,
+          "sig.level": 0.05
+        },
+        "warnings": [],
+        "assumptions": [
+          "The continuous endpoint model and fixed_multi_arm design are correctly specified.",
+          "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+          "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+        ],
+        "validation_status": "BENCHMARK_VALIDATED",
+        "reproducible_code": "library(pwr)\n\nresult <- pwr::pwr.anova.test(k = 3, n = 32, f = 0.25, sig.level = 0.05)\nlist(achieved_power = unname(result$power))",
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1 pwr_1.3-0      jsonlite_2.0.0"
+      },
+      "direct_package": {
+        "raw": {
+          "achieved_power": 0.5693850692819359,
+          "warnings": [],
+          "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+          "package_version": "1.3.0",
+          "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nother attached packages:\n[1] pwr_1.3-0\n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1 jsonlite_2.0.0"
+        },
+        "absolute_power_difference": 0.0,
+        "status": "PASS"
+      },
+      "round_trip": {
+        "status": "NOT_APPLICABLE"
+      },
+      "independent_reference": {
+        "method": "SciPy noncentral distribution",
+        "result": 0.5693850690976994,
+        "absolute_difference": 1.8423651493293391e-10,
+        "status": "PASS"
+      },
+      "semantic_invariants": "PASS"
+    },
+    "proportion_two_power": {
+      "status": "PASS",
+      "agent_result": {
+        "method_id": "binary_two_sample_difference",
+        "test_key": "proportion_two",
+        "solve_mode": "power",
+        "analysis_required_sample_size": 150,
+        "randomized_sample_size": null,
+        "sample_size_per_group": {
+          "treatment": 100,
+          "control": 50
+        },
+        "sample_size_per_sequence": null,
+        "required_events": null,
+        "target_power": null,
+        "achieved_power": 0.5268079234151215,
+        "alpha": 0.05,
+        "sidedness": "one_or_two_sided",
+        "allocation": {
+          "contract": {
+            "ratio_definition": "n_treatment / n_control; passed unchanged as TrialSize k.",
+            "supported": true,
+            "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power."
+          },
+          "realized": {
+            "treatment": 100,
+            "control": 50
+          }
+        },
+        "effect_parameters": {
+          "control_probability": 0.2,
+          "treatment_probability": 0.35,
+          "analyzable_treatment": 100,
+          "analyzable_control": 50
+        },
+        "derived_parameters": {
+          "beta": null,
+          "analyzable_treatment": 100,
+          "analyzable_control": 50,
+          "randomized_treatment": null,
+          "randomized_control": null
+        },
+        "dropout_assumption": null,
+        "rounding_applied": [],
+        "engine": "trialsize",
+        "runtime": "R",
+        "package": "TrialSize",
+        "package_version": "1.4.1",
+        "function": "TrialSize::TwoSampleProportion.Equality (documented forward inversion)",
+        "package_arguments": {
+          "p1": 0.35,
+          "p2": 0.2,
+          "n_treatment": 100,
+          "n_control": 50,
+          "alpha": 0.05
+        },
+        "warnings": [],
+        "assumptions": [
+          "The binary endpoint model and fixed_parallel design are correctly specified.",
+          "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+          "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+        ],
+        "validation_status": "BENCHMARK_VALIDATED",
+        "reproducible_code": "library(TrialSize)\n\n# Forward form algebraically inverts the published TrialSize::TwoSampleProportion.Equality equation.\nz_alpha <- stats::qnorm(1 - 0.05 / 2)\nvariance <- 0.35 * (1 - 0.35) / 100 +\n  0.2 * (1 - 0.2) / 50\nz_beta <- abs(0.35 - 0.2) / sqrt(variance) - z_alpha\nlist(achieved_power = stats::pnorm(z_beta))",
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1  TrialSize_1.4.1 jsonlite_2.0.0 "
+      },
+      "direct_package": {
+        "raw": {
+          "achieved_power": 0.5268079234151215,
+          "warnings": [],
+          "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+          "package_version": "1.4.1",
+          "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nother attached packages:\n[1] TrialSize_1.4.1\n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1 jsonlite_2.0.0"
+        },
+        "absolute_power_difference": 0.0,
+        "status": "PASS"
+      },
+      "round_trip": {
+        "status": "NOT_APPLICABLE"
+      },
+      "independent_reference": {
+        "method": "independent matching normal equation",
+        "result": 0.5268079234151213,
+        "absolute_difference": 2.220446049250313e-16,
+        "status": "PASS"
+      },
+      "semantic_invariants": "PASS"
+    },
+    "be_tost_power": {
+      "status": "PASS",
+      "agent_result": {
+        "method_id": "bioequivalence_tost",
+        "test_key": "be_tost",
+        "solve_mode": "power",
+        "analysis_required_sample_size": 24,
+        "randomized_sample_size": null,
+        "sample_size_per_group": null,
+        "sample_size_per_sequence": {
+          "TR": 12,
+          "RT": 12
+        },
+        "required_events": null,
+        "target_power": null,
+        "achieved_power": 0.8960226147998751,
+        "alpha": 0.05,
+        "sidedness": "two_one_sided_tests",
+        "allocation": {
+          "contract": {
+            "ratio_definition": "Balanced 1:1 TR/RT sequences for 2x2 and balanced 1:1 treatment/control arms for parallel.",
+            "supported": false,
+            "rounding_rule": "Round randomized total upward to a multiple of 2 and assign half to each sequence or arm."
+          },
+          "realized": {
+            "TR": 12,
+            "RT": 12
+          }
+        },
+        "effect_parameters": {
+          "cv": 0.2,
+          "theta0": 0.95,
+          "lower_limit": 0.8,
+          "upper_limit": 1.25,
+          "design": "2x2",
+          "evaluable_total": 24
+        },
+        "derived_parameters": {
+          "evaluable_total": 24,
+          "randomization_block_size": 2,
+          "randomized_total": null,
+          "randomized_per_sequence_or_arm": 12
+        },
+        "dropout_assumption": null,
+        "rounding_applied": [],
+        "engine": "powertost",
+        "runtime": "R",
+        "package": "PowerTOST",
+        "package_version": "1.5.7",
+        "function": "PowerTOST::power.TOST",
+        "package_arguments": {
+          "n": 24,
+          "alpha": 0.05,
+          "theta0": 0.95,
+          "theta1": 0.8,
+          "theta2": 1.25,
+          "CV": 0.2,
+          "design": "2x2"
+        },
+        "warnings": [],
+        "assumptions": [
+          "The continuous_pk endpoint model and bioequivalence design are correctly specified.",
+          "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
+          "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+        ],
+        "validation_status": "BENCHMARK_VALIDATED",
+        "reproducible_code": "library(PowerTOST)\n\nresult <- PowerTOST::power.TOST(\n  n = 24, alpha = 0.05, theta0 = 0.95,\n  theta1 = 0.8, theta2 = 1.25, CV = 0.2, design = \"2x2\"\n)\nlist(achieved_power = as.numeric(result))",
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] cubature_2.1.4-1 compiler_4.6.1   tools_4.6.1      PowerTOST_1.5-7 \n[5] Rcpp_1.1.2       mvtnorm_1.4-2    jsonlite_2.0.0  "
+      },
+      "direct_package": {
+        "raw": {
+          "achieved_power": 0.8960226147998751,
+          "warnings": [],
+          "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+          "package_version": "1.5.7",
+          "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nother attached packages:\n[1] PowerTOST_1.5-7\n\nloaded via a namespace (and not attached):\n[1] cubature_2.1.4-1 compiler_4.6.1   tools_4.6.1      Rcpp_1.1.2      \n[5] mvtnorm_1.4-2    jsonlite_2.0.0  "
+        },
+        "absolute_power_difference": 0.0,
+        "status": "PASS"
+      },
+      "round_trip": {
+        "status": "NOT_APPLICABLE"
+      },
+      "independent_reference": {
+        "method": "independent chi-square-conditioned exact TOST integration",
+        "result": 0.8960226147996254,
+        "absolute_difference": 2.496891582381977e-13,
+        "status": "PASS"
+      },
+      "semantic_invariants": "PASS"
+    }
+  },
+  "monotonicity": {
+    "ttest_one": {
+      "status": "PASS",
+      "checks": {
+        "higher_target_power": true,
+        "smaller_effect_or_higher_cv": true,
+        "smaller_alpha": true,
+        "dropout_analyzable_constant": true,
+        "dropout_randomized_monotone": true,
+        "power_increases_with_n": true
+      },
+      "observed": {
+        "n_power_80": 34,
+        "n_power_90": 44,
+        "n_stricter_alpha": 41,
+        "n_harder_effect": 52,
+        "dropout_randomized": [
+          34,
+          38,
+          43
+        ],
+        "power_n_base": 0.80777750127944,
+        "power_n_larger": 0.8777568437147535
+      }
+    },
+    "ttest_paired": {
+      "status": "PASS",
+      "checks": {
+        "higher_target_power": true,
+        "smaller_effect_or_higher_cv": true,
+        "smaller_alpha": true,
+        "dropout_analyzable_constant": true,
+        "dropout_randomized_monotone": true,
+        "power_increases_with_n": true
+      },
+      "observed": {
+        "n_power_80": 34,
+        "n_power_90": 44,
+        "n_stricter_alpha": 41,
+        "n_harder_effect": 52,
+        "dropout_randomized": [
+          34,
+          38,
+          43
+        ],
+        "power_n_base": 0.80777750127944,
+        "power_n_larger": 0.8777568437147535
+      }
+    },
+    "ttest_ind": {
+      "status": "PASS",
+      "checks": {
+        "higher_target_power": true,
+        "smaller_effect_or_higher_cv": true,
+        "smaller_alpha": true,
+        "dropout_analyzable_constant": true,
+        "dropout_randomized_monotone": true,
+        "power_increases_with_n": true
+      },
+      "observed": {
+        "n_power_80": 128,
+        "n_power_90": 172,
+        "n_stricter_alpha": 156,
+        "n_harder_effect": 200,
+        "dropout_randomized": [
+          128,
+          144,
+          160
+        ],
+        "power_n_base": 0.8014595579223274,
+        "power_n_larger": 0.8692377661576901
+      }
+    },
+    "anova": {
+      "status": "PASS",
+      "checks": {
+        "higher_target_power": true,
+        "smaller_effect_or_higher_cv": true,
+        "smaller_alpha": true,
+        "dropout_analyzable_constant": true,
+        "dropout_randomized_monotone": true,
+        "power_increases_with_n": true
+      },
+      "observed": {
+        "n_power_80": 159,
+        "n_power_90": 207,
+        "n_stricter_alpha": 189,
+        "n_harder_effect": 246,
+        "dropout_randomized": [
+          159,
+          177,
+          201
+        ],
+        "power_n_base": 0.8048872853634701,
+        "power_n_larger": 0.8778432962148648
+      }
+    },
+    "proportion_two": {
+      "status": "PASS",
+      "checks": {
+        "higher_target_power": true,
+        "smaller_effect_or_higher_cv": true,
+        "smaller_alpha": true,
+        "dropout_analyzable_constant": true,
+        "dropout_randomized_monotone": true,
+        "power_increases_with_n": true
+      },
+      "observed": {
+        "n_power_80": 272,
+        "n_power_90": 362,
+        "n_stricter_alpha": 328,
+        "n_harder_effect": 412,
+        "dropout_randomized": [
+          272,
+          304,
+          340
+        ],
+        "power_n_base": 0.8023808130192349,
+        "power_n_larger": 0.9780028846378624
+      }
+    },
+    "be_tost": {
+      "status": "PASS",
+      "checks": {
+        "higher_target_power": true,
+        "smaller_effect_or_higher_cv": true,
+        "smaller_alpha": true,
+        "dropout_analyzable_constant": true,
+        "dropout_randomized_monotone": true,
+        "power_increases_with_n": true
+      },
+      "observed": {
+        "n_power_80": 20,
+        "n_power_90": 26,
+        "n_stricter_alpha": 24,
+        "n_harder_effect": 26,
+        "dropout_randomized": [
+          20,
+          24,
+          26
+        ],
+        "power_n_base": 0.8346801908570284,
+        "power_n_larger": 0.8960226147998751
+      }
+    }
+  },
+  "method_gates": {
+    "ttest_one": {
+      "direct_package_reproduction": "PASS",
+      "round_trip": "PASS",
+      "independent_reference": "PASS",
+      "allocation_dropout_rounding": "PASS",
+      "edge_cases_monotonicity": "PASS",
+      "reproducibility": "PASS",
+      "validation_status": "BENCHMARK_VALIDATED"
+    },
+    "ttest_paired": {
+      "direct_package_reproduction": "PASS",
+      "round_trip": "PASS",
+      "independent_reference": "PASS",
+      "allocation_dropout_rounding": "PASS",
+      "edge_cases_monotonicity": "PASS",
+      "reproducibility": "PASS",
+      "validation_status": "BENCHMARK_VALIDATED"
+    },
+    "ttest_ind": {
+      "direct_package_reproduction": "PASS",
+      "round_trip": "PASS",
+      "independent_reference": "PASS",
+      "allocation_dropout_rounding": "PASS",
+      "edge_cases_monotonicity": "PASS",
+      "reproducibility": "PASS",
+      "validation_status": "BENCHMARK_VALIDATED"
+    },
+    "anova": {
+      "direct_package_reproduction": "PASS",
+      "round_trip": "PASS",
+      "independent_reference": "PASS",
+      "allocation_dropout_rounding": "PASS",
+      "edge_cases_monotonicity": "PASS",
+      "reproducibility": "PASS",
+      "validation_status": "BENCHMARK_VALIDATED"
+    },
+    "proportion_two": {
+      "direct_package_reproduction": "PASS",
+      "round_trip": "PASS",
+      "independent_reference": "PASS",
+      "allocation_dropout_rounding": "PASS",
+      "edge_cases_monotonicity": "PASS",
+      "reproducibility": "PASS",
+      "validation_status": "BENCHMARK_VALIDATED"
+    },
+    "be_tost": {
+      "direct_package_reproduction": "PASS",
+      "round_trip": "PASS",
+      "independent_reference": "PASS",
+      "allocation_dropout_rounding": "PASS",
+      "edge_cases_monotonicity": "PASS",
+      "reproducibility": "PASS",
+      "validation_status": "BENCHMARK_VALIDATED"
+    }
+  }
+}

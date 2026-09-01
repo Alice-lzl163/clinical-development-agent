@@ -5,6 +5,10 @@ from sample_size.agent.result import SampleSizeResult
 from sample_size.engines.errors import PackageExecutionError, RequestValidationError
 
 
+_VALIDATED_PACKAGE_VERSIONS = {"pwr": "1.3.0", "TrialSize": "1.4.1", "PowerTOST": "1.5.7"}
+_VALIDATED_R_VERSION = "R version 4.6.1"
+
+
 def _ceil_dropout(n: int, dropout: float) -> int:
     return math.ceil(n / (1 - dropout))
 
@@ -19,7 +23,18 @@ def _result(spec, values, adapter_result, *, solve_mode, analysis_total, randomi
     achieved = float(raw["achieved_power"])
     if solve_mode == "sample_size":
         _check_power(achieved, values["power"])
-    package_warning = "Package version is recorded at runtime but no numerically validated exact version is pinned yet."
+    package = spec["engine"]["package"]
+    package_version = str(raw["package_version"])
+    r_version = str(raw["r_version"])
+    version_validated = (
+        package_version == _VALIDATED_PACKAGE_VERSIONS.get(package)
+        and r_version.startswith(_VALIDATED_R_VERSION)
+    )
+    validation_status = "BENCHMARK_VALIDATED" if version_validated else "IMPLEMENTED_UNVALIDATED"
+    version_warnings = [] if version_validated else [
+        f"Runtime versions differ from the validated R 4.6.1 / {package} "
+        f"{_VALIDATED_PACKAGE_VERSIONS.get(package)} environment; numerical validation status is not inherited."
+    ]
     return SampleSizeResult(
         method_id=spec["method_id"], test_key=spec["test_key"], solve_mode=solve_mode,
         analysis_required_sample_size=int(analysis_total) if analysis_total is not None else None, randomized_sample_size=int(randomized_total) if randomized_total is not None else None,
@@ -28,11 +43,11 @@ def _result(spec, values, adapter_result, *, solve_mode, analysis_total, randomi
         sidedness=sidedness or spec["alpha"]["sidedness"], allocation={"contract": spec["allocation"], "realized": per_group or per_sequence},
         effect_parameters={key: value for key, value in values.items() if key not in {"alpha", "power", "dropout_rate", "allocation_ratio"}},
         derived_parameters=derived or {}, dropout_assumption=float(values["dropout_rate"]) if solve_mode == "sample_size" else None, rounding_applied=rounding or [],
-        engine=spec["engine"]["engine_family"], runtime="R", package=spec["engine"]["package"],
-        package_version=str(raw["package_version"]), function=adapter_result.function, package_arguments=adapter_result.package_arguments,
-        warnings=list(spec["warnings"]) + list(raw.get("warnings", [])) + [package_warning], assumptions=list(spec["assumptions"]),
-        validation_status="IMPLEMENTED_UNVALIDATED", reproducible_code=adapter_result.reproducible_code,
-        r_version=str(raw["r_version"]), session_info=str(raw["session_info"]),
+        engine=spec["engine"]["engine_family"], runtime="R", package=package,
+        package_version=package_version, function=adapter_result.function, package_arguments=adapter_result.package_arguments,
+        warnings=list(spec["warnings"]) + list(raw.get("warnings", [])) + version_warnings, assumptions=list(spec["assumptions"]),
+        validation_status=validation_status, reproducible_code=adapter_result.reproducible_code,
+        r_version=r_version, session_info=str(raw["session_info"]),
     )
 
 

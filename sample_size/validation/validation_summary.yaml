@@ -1,52 +1,66 @@
 schema_version: 1
 validation_round: "4.2"
-validation_date: "2026-09-01"
-validation_basis_commit: fb9ed65
-outcome: DEPENDENCY_BLOCKED
+validation_date: "2026-09-02"
+validation_basis_commit: 3c8f9ba08fbb645189f4687ec3a422fbe5870c64
+outcome: BENCHMARK_VALIDATED
 environment:
-  Rscript: NOT_FOUND
-  R_version: null
-  R_platform: null
-  Python_version: "3.12.13"
-  Python_platform: "Windows-11-10.0.26100-SP0 AMD64"
-  SciPy_status: NOT_FOUND
-  SciPy_version: null
+  Rscript: FOUND
+  R_version: "4.6.1"
+  R_platform: x86_64-w64-mingw32
+  Python_version: "3.12.7"
+  Python_platform: Windows-11-10.0.26100-SP0 AMD64
+  SciPy_status: FOUND
+  SciPy_version: "1.18.1"
   packages:
-    jsonlite: {status: NOT_AUDITABLE_WITHOUT_R, version: null, library_path: null}
-    pwr: {status: NOT_AUDITABLE_WITHOUT_R, version: null, library_path: null}
-    TrialSize: {status: NOT_AUDITABLE_WITHOUT_R, version: null, library_path: null}
-    PowerTOST: {status: NOT_AUDITABLE_WITHOUT_R, version: null, library_path: null}
-benchmarks: {total: 24, numerically_executed: 0, passed: 0, failed: 0, pending: 24}
+    jsonlite: {status: FOUND, version: "2.0.0"}
+    pwr: {status: FOUND, version: "1.3.0"}
+    TrialSize: {status: FOUND, version: "1.4.1"}
+    PowerTOST: {status: FOUND, version: "1.5.7"}
+live_calculations: {executed: 114, successful: 114, failed: 0}
+benchmarks: {total: 24, numerically_executed: 24, passed: 24, failed: 0, pending: 0}
 methods:
-  - &blocked
+  - &validated
     test_key: ttest_one
-    implementation_status: IMPLEMENTED_UNVALIDATED
+    implementation_status: BENCHMARK_VALIDATED
     specification_status: SPEC_FROZEN
-    package_reproduction: BLOCKED
-    round_trip_validation: BLOCKED
-    independent_reference_validation: BLOCKED
-    monotonicity_validation: BLOCKED
-    dropout_rounding_validation: BLOCKED
-    reproducibility_validation: BLOCKED
-    validated_R_version: null
-    validated_package_version: null
+    package_reproduction: PASS
+    round_trip_validation: PASS
+    independent_reference_validation: PASS
+    monotonicity_validation: PASS
+    dropout_rounding_validation: PASS
+    reproducibility_validation: PASS
+    validated_R_version: "4.6.1"
+    validated_package: pwr
+    validated_package_version: "1.3.0"
     benchmark_count: 4
-    benchmark_passed: 0
+    benchmark_passed: 4
     benchmark_failed: 0
-    validation_status: IMPLEMENTED_UNVALIDATED
-    remaining_issues: [DEPENDENCY_MISSING_R_RUNTIME, DEPENDENCY_MISSING_VALIDATION_REFERENCE]
-  - <<: *blocked
+    validation_status: BENCHMARK_VALIDATED
+    remaining_issues: []
+  - <<: *validated
     test_key: ttest_paired
     benchmark_count: 3
-  - <<: *blocked
+    benchmark_passed: 3
+  - <<: *validated
     test_key: ttest_ind
-    benchmark_count: 4
-  - <<: *blocked
+  - <<: *validated
     test_key: anova
     benchmark_count: 5
-  - <<: *blocked
+    benchmark_passed: 5
+  - <<: *validated
     test_key: proportion_two
+    validated_package: TrialSize
+    validated_package_version: "1.4.1"
     benchmark_count: 3
-  - <<: *blocked
+    benchmark_passed: 3
+  - <<: *validated
     test_key: be_tost
+    validated_package: PowerTOST
+    validated_package_version: "1.5.7"
     benchmark_count: 5
+    benchmark_passed: 5
+discrepancies:
+  - method: proportion_two
+    classification: implementation defect
+    status: RESOLVED_AND_REVALIDATED
+    description: Rounded 2:1 allocation can yield 191 treatment and 96 control; exact post-rounding equality was an invalid invariant.

@@ -1,20 +1,30 @@
 schema_version: 1
 runtime:
   executable: Rscript
+  validated_version: 4.6.1
+  validated_platform: x86_64-w64-mingw32
   automatic_install: false
 helper_packages:
   jsonlite:
-    version_policy: exact_version_must_be_pinned_after_benchmark_validation
+    version_policy: exact
+    validated_version: 2.0.0
 statistical_packages:
   pwr:
     functions: [pwr.t.test, pwr.anova.test]
     methods: [ttest_one, ttest_paired, ttest_ind, anova]
-    version_policy: exact_version_must_be_pinned_after_benchmark_validation
+    version_policy: exact
+    validated_version: 1.3.0
   TrialSize:
     functions: [TwoSampleProportion.Equality]
     methods: [proportion_two]
-    version_policy: exact_version_must_be_pinned_after_benchmark_validation
+    version_policy: exact
+    validated_version: 1.4.1
   PowerTOST:
     functions: [sampleN.TOST, power.TOST]
     methods: [be_tost]
-    version_policy: exact_version_must_be_pinned_after_benchmark_validation
+    version_policy: exact
+    validated_version: 1.5.7
+validation_provenance:
+  round: "4.2"
+  date: "2026-09-02"
+  basis_commit: 3c8f9ba08fbb645189f4687ec3a422fbe5870c64
