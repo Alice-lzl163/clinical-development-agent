@@ -1,0 +1,69 @@
+# ── 发布包剔除项（ClawHub / SkillHub）──────────────────────────────────────
+# v4.0 架构：R 相关的模板、运行时、参考文档全部迁往 coze 端，
+# 本地发布包只保留 Python 编排层 + 5 个基础检验的兜底实现。
+adapters/r-assets/
+dist/
+outputs/
+
+# coze 工作流代码包镜像（adapters/coze）——独立部署到 coze 运行时，
+# 不随「本地技能发布包」分发；其源码仍随技能 git 仓库版本控制。
+adapters/coze/
+
+# 开发产物
+__pycache__/
+*.pyc
+*.pyo
+.Rhistory
+.RData
+*.png
+*.zip
+
+# 测试源码与夹具整体不发布（ct-base §16.8 测试内容红线：tests/ 整目录不进发布包，
+# 含 test_*.py、夹具数据、运行产物；测试只服务本地回归）
+tests/
+
+# Coze 接口契约文档（ct-base §16.7 ② 文件级排除；r-assets/ 镜像同）
+**/coze_contract.md
+**/refiner_contract.md
+**/coze_system_prompt_v*.md
+**/ops.md
+
+# ── 补 .gitignore 已有项（ClawHub 不读 .gitignore，须自列） ──
+*.Rproj
+*.bak
+*.bak_*
+*.egg-info/
+*.sav
+*.spv
+.Rapp.history
+.Rproj.user/
+build/
+scripts/outputs/
+
+# ── 本地测试/临时目录不进发布包 ──
+coze_cases/
+_stash_tmp/
+
+# ── ct-base 统一基线（ClawHub 不读 .gitignore，须自列全量）──
+.env
+*.env
+.env.*
+*.key
+*.secret
+*.token
+secrets.json
+credentials.json
+config.local.json
+out/
+out_live/
+*.cache
+adapters/coze_project/
+scripts/tests/
+
+# ── 补齐双份 ignore 差异项（2026-08-29）──
+*.py[cod]
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+*.so

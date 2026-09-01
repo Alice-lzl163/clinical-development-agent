@@ -1,0 +1,56 @@
+name: Rebuild R Mirror (coze 端 R 环境镜像重建)
+
+# 无本机 Docker 时的云端重建方案:
+#   在 GitHub Actions 的 ubuntu runner (自带 docker) 上执行
+#   r-assets/sync_to_coze.py --rebuild-image 全流程:
+#   docker build -> save(标准镜像) -> export(扁平FS) -> 双重校验
+# 触发: 仓库 Actions 页面 -> Run workflow (手动)
+# 产物: Artifact "r-mirror" 内两个 tar.gz (下载后上传 coze 平台)
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "镜像 tag (默认 ct-samplesize-r:4.6.1)"
+        required: false
+        default: "ct-samplesize-r:4.6.1"
+      no_func_check:
+        description: "跳过 docker run 功能校验 (仅结构校验)"
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Verify docker
+        run: docker version --format '{{.Server.Version}}'
+
+      - name: Rebuild R mirror (build -> save -> export -> double check)
+        run: |
+          ARGS="--out dist --tag ${{ inputs.tag }}"
+          if [ "${{ inputs.no_func_check }}" = "true" ]; then
+            ARGS="$ARGS --no-func-check"
+          fi
+          python r-assets/sync_to_coze.py --rebuild-image $ARGS
+
+      - name: List artifacts
+        run: ls -lh dist/r_environment*.tar.gz
+
+      - name: Upload R mirror artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: r-mirror
+          path: dist/r_environment*.tar.gz
+          if-no-files-found: error
+          retention-days: 14

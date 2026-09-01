@@ -1,0 +1,72 @@
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+*.spv
+*.sav
+.Rhistory
+.RData
+.Rapp.history
+*.Rproj
+.Rproj.user/
+# generated figure / curve outputs (also excluded from publish via .clawhubignore)
+outputs/
+scripts/outputs/
+
+# Coze 私有工作流镜像：整体不随技能发布（ct-base §16.7 ① 目录级排除；GitHub / ClawHub / SkillHub 均不入库）
+adapters/coze/
+
+# 测试源码与夹具整体不发布（ct-base §16.8 测试内容红线：tests/ 整目录不进发布包；
+# 仅服务本地回归，对安装用户无意义。ClawHub 侧由 .clawhubignore 同步排除）
+tests/
+
+# adapters/r-assets/：本地 R 运行后端（legacy backend / 模板 / 运行时），不随发布包分发
+# （ct-base §16.4/§16.3 配套）。ClawHub 侧由 .clawhubignore 排除，此处对齐 GitHub。
+adapters/r-assets/
+
+# Coze 接口契约文档（ct-base §16.7 ② 文件级排除：接口文档不随任何平台发布；
+# r-assets/ 与 adapters/coze/ 镜像内同样适用）
+**/coze_contract.md
+**/refiner_contract.md
+**/coze_system_prompt_v*.md
+**/ops.md
+
+# 本地编辑备份文件（如 i18n.py.bak_YYYYMMDD），不入仓库、不随发布包分发
+*.bak
+*.bak_*
+
+# ── 本地测试/临时目录不进发布包 ──
+coze_cases/
+_stash_tmp/
+tests/outputs/
+tests/scratch/
+
+# ── 构建产物 / 归档（本地，不入库）──
+archives/
+ct-samplesize_*.zip
+
+# ── ct-base 统一基线（§16.7 / §16.8，2026-08-29 全库回填）──
+.env
+*.env
+.env.*
+*.key
+*.secret
+*.token
+secrets.json
+credentials.json
+config.local.json
+out/
+out_live/
+*.cache
+adapters/coze_project/
+scripts/tests/
+
+# ── 补齐双份 ignore 差异项（2026-08-29）──
+*.py[cod]
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+*.so
