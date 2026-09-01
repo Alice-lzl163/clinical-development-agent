@@ -31,17 +31,16 @@ def load_frozen_spec(test_key: str) -> dict[str, Any]:
 def validate_request(spec: dict[str, Any], solve_mode: str, parameters: Any) -> dict[str, Any]:
     if solve_mode not in spec["solve_modes"] or not spec["solve_modes"].get(solve_mode):
         raise UnsupportedSolveModeError(f"solve mode {solve_mode!r} is not enabled by {spec['test_key']}")
-    if solve_mode != "sample_size":
-        raise UnsupportedSolveModeError(
-            f"{spec['test_key']} declares {solve_mode!r}, but its frozen clinical-input contract has no forward-solve sample-size input; refusing to infer one"
-        )
     if not isinstance(parameters, dict):
         raise RequestValidationError("parameters must be an object")
     contracts = {item["name"]: item for item in spec["inputs"]}
     unknown = set(parameters) - set(contracts)
     if unknown:
         raise RequestValidationError(f"unknown clinical parameters: {sorted(unknown)}")
-    missing = [name for name, item in contracts.items() if item["required"] and name not in parameters]
+    disallowed = [name for name in parameters if solve_mode not in contracts[name].get("allowed_for_solve_modes", ["sample_size", "power", "events", "operating_characteristics"])]
+    if disallowed:
+        raise RequestValidationError(f"clinical parameters not allowed for solve mode {solve_mode!r}: {disallowed}")
+    missing = [name for name, item in contracts.items() if solve_mode in item.get("required_for_solve_modes", (["sample_size", "power"] if item["required"] else [])) and name not in parameters]
     if missing:
         raise RequestValidationError(f"missing required clinical parameters: {missing}")
     values = dict(parameters)
@@ -68,6 +67,8 @@ def validate_request(spec: dict[str, Any], solve_mode: str, parameters: Any) -> 
         if "allowed_values" in limits and value not in limits["allowed_values"]: raise RequestValidationError(f"{name} must be one of {limits['allowed_values']}")
     if spec["test_key"] == "be_tost" and not (values["lower_limit"] < values["theta0"] < values["upper_limit"]):
         raise RequestValidationError("bioequivalence requires lower_limit < theta0 < upper_limit")
+    if spec["test_key"] == "be_tost" and solve_mode == "power" and values["evaluable_total"] % 2:
+        raise RequestValidationError("bioequivalence power mode requires an even evaluable_total for balanced sequences/arms")
     if spec["test_key"] == "proportion_two" and values["treatment_probability"] == values["control_probability"]:
         raise RequestValidationError("treatment and control probabilities must differ for sample-size inversion")
     return values

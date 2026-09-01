@@ -7,19 +7,19 @@ class SampleSizeResult:
     method_id: str
     test_key: str
     solve_mode: str
-    analysis_required_sample_size: int
-    randomized_sample_size: int
+    analysis_required_sample_size: int | None
+    randomized_sample_size: int | None
     sample_size_per_group: dict[str, int] | None
     sample_size_per_sequence: dict[str, int] | None
     required_events: int | None
-    target_power: float
+    target_power: float | None
     achieved_power: float
     alpha: float
     sidedness: str
     allocation: dict[str, Any]
     effect_parameters: dict[str, Any]
     derived_parameters: dict[str, Any]
-    dropout_assumption: float
+    dropout_assumption: float | None
     rounding_applied: list[str]
     engine: str
     runtime: str

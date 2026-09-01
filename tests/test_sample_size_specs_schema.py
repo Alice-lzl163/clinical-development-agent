@@ -72,6 +72,14 @@ def semantic_errors(spec):
             ratio = next(i for i in spec["inputs"] if i["name"] == "allocation_ratio")
             if ratio["valid_range"] != {"allowed_values": [1]} or spec["allocation"]["supported"]:
                 errors.append("independent t test must use equal allocation")
+        if key in {"ttest_one", "ttest_paired", "ttest_ind"}:
+            signed = next((item for item in spec["derived_parameters"] if item["name"] == "signed_standardized_effect"), None)
+            expected_cases = {"greater": {"multiplier": 1}, "less": {"multiplier": -1}, "two_sided": {"multiplier": 1}}
+            d_mapping = next((item for item in spec["engine"]["parameter_mapping"] if item["package_argument"] == "d"), None)
+            if signed is None or signed.get("transformation_type") != "conditional" or signed.get("cases") != expected_cases:
+                errors.append("t-test signed effect transformation is incomplete")
+            if d_mapping is None or d_mapping["source_type"] != "derived_parameter" or d_mapping["source"] != "signed_standardized_effect":
+                errors.append("pwr d must map from signed_standardized_effect")
         if key == "ttest_paired" and ("paired" not in spec["display_name"].lower() or "crossover" in spec["display_name"].lower()):
             errors.append("paired design mislabeled")
         if key == "anova" and (spec["alpha"]["sidedness"] != "not_applicable" or spec["allocation"]["supported"]):
@@ -249,6 +257,34 @@ class SpecSchemaTests(unittest.TestCase):
                 text = yaml.safe_dump(spec["engine"]["parameter_mapping"]).lower()
                 self.assertFalse(any(term in text for term in vague), spec["test_key"])
                 self.assertFalse(any(m["source_type"] == "unresolved" for m in spec["engine"]["parameter_mapping"]), spec["test_key"])
+
+    def test_ttest_signed_effect_contract_is_structured(self):
+        for key in ("ttest_one", "ttest_paired", "ttest_ind"):
+            with self.subTest(key=key):
+                spec=self.by_key[key]; derived=next(item for item in spec["derived_parameters"] if item["name"]=="signed_standardized_effect")
+                self.assertEqual({"greater":{"multiplier":1},"less":{"multiplier":-1},"two_sided":{"multiplier":1}},derived["cases"])
+                mapping=next(item for item in spec["engine"]["parameter_mapping"] if item["package_argument"]=="d")
+                self.assertEqual(("derived_parameter","signed_standardized_effect"),(mapping["source_type"],mapping["source"]))
+
+    def test_conditional_derived_parameter_requires_cases(self):
+        spec=copy.deepcopy(self.by_key["ttest_one"]); derived=next(item for item in spec["derived_parameters"] if item["name"]=="signed_standardized_effect"); del derived["cases"]
+        self.assert_invalid(spec)
+
+    def test_six_power_contracts_use_method_specific_analyzable_inputs(self):
+        expected={
+            "ttest_one":{"analyzable_sample_size"},
+            "ttest_paired":{"analyzable_pairs"},
+            "ttest_ind":{"analyzable_sample_size_per_arm"},
+            "anova":{"analyzable_sample_size_per_group"},
+            "proportion_two":{"analyzable_treatment","analyzable_control"},
+            "be_tost":{"evaluable_total"},
+        }
+        for key,names in expected.items():
+            with self.subTest(key=key):
+                spec=self.by_key[key]; power_required={item["name"] for item in spec["inputs"] if "power" in item.get("required_for_solve_modes",[])}
+                self.assertLessEqual(names,power_required); self.assertNotIn("power",power_required); self.assertNotIn("dropout_rate",power_required)
+                for name in names:
+                    item=next(item for item in spec["inputs"] if item["name"]==name); self.assertEqual(["power"],item["allowed_for_solve_modes"])
 
     def test_anova_package_n_is_per_group(self):
         spec = self.by_key["anova"]

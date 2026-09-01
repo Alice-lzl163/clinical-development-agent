@@ -39,6 +39,37 @@ result = calculate_sample_size({
 print(result.to_dict())
 ```
 
+Public power calculation uses the same adapters' forward-power path and method-specific analyzable sizes. It does not require target power or dropout:
+
+```python
+power_result = calculate_sample_size({
+    "test_key": "ttest_ind",
+    "solve_mode": "power",
+    "parameters": {
+        "standardized_effect": 0.5,
+        "allocation_ratio": 1,
+        "alpha": 0.05,
+        "alternative": "less",
+        "analyzable_sample_size_per_arm": 64,
+    },
+})
+```
+
+The public t-test effect is always a strictly positive magnitude. The specification and adapter derive package `d` as follows: `greater → +magnitude`, `less → -magnitude`, and `two_sided → +magnitude` as the canonical symmetric representation. Users never enter a package-specific negative magnitude.
+
+### Power-mode analyzable sizes
+
+| Method | Public input | Package/statistical meaning |
+|---|---|---|
+| `ttest_one` | `analyzable_sample_size` | `pwr.t.test(n=...)` participants |
+| `ttest_paired` | `analyzable_pairs` | `pwr.t.test(n=...)` complete participant pairs, not measurements |
+| `ttest_ind` | `analyzable_sample_size_per_arm` | Equal-allocation `pwr.t.test(n=...)` per arm |
+| `anova` | `analyzable_sample_size_per_group` | `pwr.anova.test(n=...)` per group |
+| `proportion_two` | `analyzable_treatment`, `analyzable_control` | Explicit treatment (`p1`) and control (`p2`) arm sizes; their ratio must equal `allocation_ratio` |
+| `be_tost` | `evaluable_total` | Balanced evaluable N passed to `PowerTOST::power.TOST(n=...)` |
+
+Power mode never derives analyzable N from randomized enrollment or dropout. `randomized_sample_size`, `dropout_assumption`, and `target_power` are not applicable and are returned as null. Sample-size mode continues to invert target power, round analyzable N, calculate achieved power at analyzable N, and only then inflate enrollment for dropout.
+
 Failures are typed: unknown/unimplemented method, invalid request, unsupported solve mode, runtime dependency, package contract, or package execution. No remote service is used.
 
 ## Result semantics
@@ -59,9 +90,8 @@ Non-R tests cover validation, routing, adapter code generation, output semantics
 
 ## Known blockers and unsupported cases
 
-- Public `power` solve mode is declared by the frozen specs but lacks an analyzable-sample-size clinical input. The API fails closed instead of inventing one. Internal forward power calculation after sample-size inversion is implemented.
-- The t-test specifications permit only a positive absolute standardized effect while advertising `alternative: less`. Since `pwr` requires a signed lower-direction effect, that combination fails closed; the adapter does not silently negate it.
 - `ttest_ind` supports 1:1 allocation only. ANOVA is balanced. Bioequivalence supports balanced `2x2` and `parallel` only.
+- TrialSize exposes sample-size inversion but no distinct forward-power function for this method. The power adapter executes in R and algebraically inverts the official `TwoSampleProportion.Equality` equation with explicit treatment/control sizes; live validation remains pending.
 - Numerical package benchmarks, independent noncentral-distribution comparisons, version pinning, and round-trip grids remain validation pending until an R runtime and packages are available.
 
 No method is marked production or regulatory validated.

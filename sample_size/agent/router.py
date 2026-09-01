@@ -18,4 +18,4 @@ def calculate_sample_size(request: SampleSizeRequest | Mapping[str, Any], *, eng
     values = validate_request(spec, parsed.solve_mode, dict(parsed.parameters))
     execution_engine = engine or RExecutionEngine()
     method = get_method(parsed.test_key, execution_engine)
-    return method.calculate(spec, values)
+    return method.calculate(spec, values, parsed.solve_mode)

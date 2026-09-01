@@ -22,7 +22,15 @@
         "exclusive_minimum": 0
       },
       "default": null,
-      "clinical_interpretation": "Within-subject coefficient of variation."
+      "clinical_interpretation": "Within-subject coefficient of variation.",
+      "required_for_solve_modes": [
+        "sample_size",
+        "power"
+      ],
+      "allowed_for_solve_modes": [
+        "sample_size",
+        "power"
+      ]
     },
     {
       "name": "theta0",
@@ -34,7 +42,15 @@
         "exclusive_minimum": 0
       },
       "default": null,
-      "clinical_interpretation": "Expected geometric mean ratio."
+      "clinical_interpretation": "Expected geometric mean ratio.",
+      "required_for_solve_modes": [
+        "sample_size",
+        "power"
+      ],
+      "allowed_for_solve_modes": [
+        "sample_size",
+        "power"
+      ]
     },
     {
       "name": "lower_limit",
@@ -46,7 +62,15 @@
         "exclusive_minimum": 0
       },
       "default": null,
-      "clinical_interpretation": "Lower bioequivalence limit."
+      "clinical_interpretation": "Lower bioequivalence limit.",
+      "required_for_solve_modes": [
+        "sample_size",
+        "power"
+      ],
+      "allowed_for_solve_modes": [
+        "sample_size",
+        "power"
+      ]
     },
     {
       "name": "upper_limit",
@@ -58,7 +82,15 @@
         "exclusive_minimum": 0
       },
       "default": null,
-      "clinical_interpretation": "Upper bioequivalence limit."
+      "clinical_interpretation": "Upper bioequivalence limit.",
+      "required_for_solve_modes": [
+        "sample_size",
+        "power"
+      ],
+      "allowed_for_solve_modes": [
+        "sample_size",
+        "power"
+      ]
     },
     {
       "name": "design",
@@ -73,7 +105,15 @@
         ]
       },
       "default": null,
-      "clinical_interpretation": "PowerTOST design code."
+      "clinical_interpretation": "PowerTOST design code.",
+      "required_for_solve_modes": [
+        "sample_size",
+        "power"
+      ],
+      "allowed_for_solve_modes": [
+        "sample_size",
+        "power"
+      ]
     },
     {
       "name": "alpha",
@@ -86,33 +126,71 @@
         "exclusive_maximum": 1
       },
       "default": 0.05,
-      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis."
+      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis.",
+      "required_for_solve_modes": [
+        "sample_size",
+        "power"
+      ],
+      "allowed_for_solve_modes": [
+        "sample_size",
+        "power"
+      ]
     },
     {
       "name": "power",
       "definition": "Target probability of rejecting the null under the design alternative.",
       "type": "number",
       "unit": "dimensionless",
-      "required": true,
+      "required": false,
       "valid_range": {
         "exclusive_minimum": 0,
         "exclusive_maximum": 1
       },
       "default": 0.8,
-      "clinical_interpretation": "Target probability of rejecting the null under the design alternative."
+      "clinical_interpretation": "Target probability of rejecting the null under the design alternative.",
+      "required_for_solve_modes": [
+        "sample_size"
+      ],
+      "allowed_for_solve_modes": [
+        "sample_size"
+      ]
     },
     {
       "name": "dropout_rate",
       "definition": "Expected proportion without an analyzable primary endpoint.",
       "type": "number",
       "unit": "dimensionless",
-      "required": true,
+      "required": false,
       "valid_range": {
         "minimum": 0,
         "exclusive_maximum": 1
       },
       "default": 0,
-      "clinical_interpretation": "Anticipated loss applied only after the analysis-required sample size is obtained."
+      "clinical_interpretation": "Anticipated loss applied only after the analysis-required sample size is obtained.",
+      "required_for_solve_modes": [
+        "sample_size"
+      ],
+      "allowed_for_solve_modes": [
+        "sample_size"
+      ]
+    },
+    {
+      "name": "evaluable_total",
+      "definition": "Total evaluable participants passed to PowerTOST::power.TOST; must be even for balanced 2x2 and parallel designs.",
+      "type": "integer",
+      "unit": "participants",
+      "required": false,
+      "valid_range": {
+        "minimum": 2
+      },
+      "default": null,
+      "clinical_interpretation": "Total evaluable participants passed to PowerTOST::power.TOST; must be even for balanced 2x2 and parallel designs.",
+      "required_for_solve_modes": [
+        "power"
+      ],
+      "allowed_for_solve_modes": [
+        "power"
+      ]
     }
   ],
   "alpha": {

@@ -12,4 +12,11 @@ analysis_n <- ceiling(result$n)
 forward <- pwr::pwr.anova.test(k = {groups}, n = analysis_n, f = {r_literal(cohen_f)}, sig.level = {r_literal(alpha)})
 list(package_n = unname(result$n), analysis_n_per_group = analysis_n, achieved_power = unname(forward$power))'''
         raw = self.engine.execute(package=self.package, function=self.function, calculation_code=code)
-        return AdapterResult(raw, arguments, "library(pwr)\n\n" + code)
+        return AdapterResult(raw, arguments, "library(pwr)\n\n" + code, self.function)
+
+    def power(self, *, groups: int, n_per_group: int, cohen_f: float, alpha: float) -> AdapterResult:
+        arguments = {"k": groups, "n": n_per_group, "f": cohen_f, "sig.level": alpha}
+        code = f'''result <- pwr::pwr.anova.test(k = {groups}, n = {n_per_group}, f = {r_literal(cohen_f)}, sig.level = {r_literal(alpha)})
+list(achieved_power = unname(result$power))'''
+        raw = self.engine.execute(package=self.package, function=self.function, calculation_code=code)
+        return AdapterResult(raw, arguments, "library(pwr)\n\n" + code, self.function)

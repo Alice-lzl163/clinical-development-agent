@@ -22,6 +22,7 @@ class AdapterResult:
     raw: dict[str, Any]
     package_arguments: dict[str, Any]
     reproducible_code: str
+    function: str
 
 
 class PackageAdapter:

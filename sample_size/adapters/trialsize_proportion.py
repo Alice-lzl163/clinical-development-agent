@@ -22,4 +22,15 @@ achieved_power <- stats::pnorm(z_beta)
 list(package_n_treatment = as.numeric(package_n1), analysis_n_treatment = n_treatment,
      analysis_n_control = n_control, achieved_power = achieved_power)'''
         raw = self.engine.execute(package=self.package, function=self.function, calculation_code=code)
-        return AdapterResult(raw, arguments, "library(TrialSize)\n\n" + code)
+        return AdapterResult(raw, arguments, "library(TrialSize)\n\n" + code, self.function)
+
+    def power(self, *, treatment_probability: float, control_probability: float, n_treatment: int, n_control: int, alpha: float) -> AdapterResult:
+        arguments = {"p1": treatment_probability, "p2": control_probability, "n_treatment": n_treatment, "n_control": n_control, "alpha": alpha}
+        code = f'''# Forward form algebraically inverts the published TrialSize::TwoSampleProportion.Equality equation.
+z_alpha <- stats::qnorm(1 - {r_literal(alpha)} / 2)
+variance <- {r_literal(treatment_probability)} * (1 - {r_literal(treatment_probability)}) / {n_treatment} +
+  {r_literal(control_probability)} * (1 - {r_literal(control_probability)}) / {n_control}
+z_beta <- abs({r_literal(treatment_probability)} - {r_literal(control_probability)}) / sqrt(variance) - z_alpha
+list(achieved_power = stats::pnorm(z_beta))'''
+        raw = self.engine.execute(package=self.package, function=self.function, calculation_code=code)
+        return AdapterResult(raw, arguments, "library(TrialSize)\n\n" + code, "TrialSize::TwoSampleProportion.Equality (documented forward inversion)")

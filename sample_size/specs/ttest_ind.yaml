@@ -22,7 +22,15 @@
         "exclusive_minimum": 0
       },
       "default": null,
-      "clinical_interpretation": "Absolute mean difference divided by the relevant SD."
+      "clinical_interpretation": "Absolute mean difference divided by the relevant SD.",
+      "required_for_solve_modes": [
+        "sample_size",
+        "power"
+      ],
+      "allowed_for_solve_modes": [
+        "sample_size",
+        "power"
+      ]
     },
     {
       "name": "allocation_ratio",
@@ -36,7 +44,15 @@
         ]
       },
       "default": 1,
-      "clinical_interpretation": "Planned treatment-to-control sample-size ratio n_treatment / n_control."
+      "clinical_interpretation": "Planned treatment-to-control sample-size ratio n_treatment / n_control.",
+      "required_for_solve_modes": [
+        "sample_size",
+        "power"
+      ],
+      "allowed_for_solve_modes": [
+        "sample_size",
+        "power"
+      ]
     },
     {
       "name": "alpha",
@@ -49,33 +65,53 @@
         "exclusive_maximum": 1
       },
       "default": 0.05,
-      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis."
+      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis.",
+      "required_for_solve_modes": [
+        "sample_size",
+        "power"
+      ],
+      "allowed_for_solve_modes": [
+        "sample_size",
+        "power"
+      ]
     },
     {
       "name": "power",
       "definition": "Target probability of rejecting the null under the design alternative.",
       "type": "number",
       "unit": "dimensionless",
-      "required": true,
+      "required": false,
       "valid_range": {
         "exclusive_minimum": 0,
         "exclusive_maximum": 1
       },
       "default": 0.8,
-      "clinical_interpretation": "Target probability of rejecting the null under the design alternative."
+      "clinical_interpretation": "Target probability of rejecting the null under the design alternative.",
+      "required_for_solve_modes": [
+        "sample_size"
+      ],
+      "allowed_for_solve_modes": [
+        "sample_size"
+      ]
     },
     {
       "name": "dropout_rate",
       "definition": "Expected proportion without an analyzable primary endpoint.",
       "type": "number",
       "unit": "dimensionless",
-      "required": true,
+      "required": false,
       "valid_range": {
         "minimum": 0,
         "exclusive_maximum": 1
       },
       "default": 0,
-      "clinical_interpretation": "Anticipated loss applied only after the analysis-required sample size is obtained."
+      "clinical_interpretation": "Anticipated loss applied only after the analysis-required sample size is obtained.",
+      "required_for_solve_modes": [
+        "sample_size"
+      ],
+      "allowed_for_solve_modes": [
+        "sample_size"
+      ]
     },
     {
       "name": "alternative",
@@ -91,7 +127,33 @@
         ]
       },
       "default": "two_sided",
-      "clinical_interpretation": "Direction of the prespecified alternative hypothesis."
+      "clinical_interpretation": "Direction of the prespecified alternative hypothesis.",
+      "required_for_solve_modes": [
+        "sample_size",
+        "power"
+      ],
+      "allowed_for_solve_modes": [
+        "sample_size",
+        "power"
+      ]
+    },
+    {
+      "name": "analyzable_sample_size_per_arm",
+      "definition": "Number of analyzable participants in each arm under frozen equal allocation.",
+      "type": "integer",
+      "unit": "participants per arm",
+      "required": false,
+      "valid_range": {
+        "minimum": 2
+      },
+      "default": null,
+      "clinical_interpretation": "Number of analyzable participants in each arm under frozen equal allocation.",
+      "required_for_solve_modes": [
+        "power"
+      ],
+      "allowed_for_solve_modes": [
+        "power"
+      ]
     }
   ],
   "alpha": {
@@ -117,8 +179,8 @@
     "parameter_mapping": [
       {
         "package_argument": "d",
-        "source_type": "clinical_input",
-        "source": "standardized_effect",
+        "source_type": "derived_parameter",
+        "source": "signed_standardized_effect",
         "transformation": null
       },
       {
@@ -213,9 +275,35 @@
     "Reproduce package examples; compare pwr, rpact t-test, and noncentral-t inversion over a parameter grid",
     "Reproduce official package examples for the pinned version.",
     "Compare forward power and inverse sample-size results on a prespecified grid.",
-    "Verify null-boundary type-I error and clinically relevant alternatives independently."
+    "Verify null-boundary type-I error and clinically relevant alternatives independently.",
+    "Verify magnitude 0.5 maps to d=+0.5 for greater/two_sided and d=-0.5 for less in both inverse and forward calls."
   ],
   "specification_status": "SPEC_FROZEN",
   "design_components": [],
-  "derived_parameters": []
+  "derived_parameters": [
+    {
+      "name": "signed_standardized_effect",
+      "formula": "standardized effect magnitude * multiplier selected by alternative",
+      "inputs": [
+        "standardized_effect",
+        "alternative"
+      ],
+      "output_unit": "dimensionless",
+      "assumptions": [
+        "Two-sided power is symmetric; positive magnitude is the canonical representation."
+      ],
+      "transformation_type": "conditional",
+      "cases": {
+        "greater": {
+          "multiplier": 1
+        },
+        "less": {
+          "multiplier": -1
+        },
+        "two_sided": {
+          "multiplier": 1
+        }
+      }
+    }
+  ]
 }

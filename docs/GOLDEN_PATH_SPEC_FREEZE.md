@@ -58,3 +58,9 @@ The shared invariant found the same missing `followUpTime` declaration in `gsd_s
 - Every active frozen package mapping names a declared formal; unmapped formals must be an inverse-solve output or document intentional reliance on a package default.
 
 Round 3.7 result: **PASS 1**, **MODIFIED_AND_FROZEN 4**, **BLOCKED 0**. No remaining specification blocker prevents calculator implementation for these five methods; numerical validation remains mandatory before lifecycle promotion.
+
+## Round 4.1 direction and power contract repair
+
+The three t-test contracts now retain a positive clinical effect magnitude and derive `signed_standardized_effect` through structured conditional cases: `greater: +1`, `less: -1`, and canonical `two_sided: +1`. Package `d` maps only from that derived parameter.
+
+All six implemented fixed methods now declare solve-mode-specific inputs. Target `power` and `dropout_rate` are sample-size-only inputs; each public power mode instead requires its explicit analyzable size. Known analyzable sizes are rejected in sample-size mode, and target power/dropout are rejected in power mode. All six specifications were rechecked and remain `SPEC_FROZEN` and `VALIDATION_PENDING`.

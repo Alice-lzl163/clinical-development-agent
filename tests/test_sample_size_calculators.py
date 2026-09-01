@@ -24,6 +24,10 @@ class CalculatorTests(unittest.TestCase):
         engine = StubEngine(raw)
         return calculate_sample_size({"test_key": key, "parameters": parameters}, engine=engine), engine
 
+    def power(self, key, parameters, raw=None):
+        engine=StubEngine(raw or response(achieved_power=.75))
+        return calculate_sample_size({"test_key":key,"solve_mode":"power","parameters":parameters},engine=engine),engine
+
     def test_one_sample_rounding_dropout_and_code(self):
         params={"standardized_effect":.5,"alpha":.05,"power":.8,"dropout_rate":.1,"alternative":"two_sided"}
         result, engine=self.calculate("ttest_one",params,response(package_n=33.2,analysis_n=34,achieved_power=.81))
@@ -78,9 +82,20 @@ class CalculatorTests(unittest.TestCase):
         p={"standardized_effect":.5,"alpha":.05,"power":.8,"dropout_rate":0,"alternative":"up"}
         with self.assertRaises(RequestValidationError): calculate_sample_size({"test_key":"ttest_one","parameters":p})
 
-    def test_less_alternative_does_not_silently_negate_effect(self):
-        p={"standardized_effect":.5,"alpha":.05,"power":.8,"dropout_rate":0,"alternative":"less"}
-        with self.assertRaises(PackageContractError): calculate_sample_size({"test_key":"ttest_one","parameters":p}, engine=StubEngine({}))
+    def test_ttest_direction_mapping_for_all_three_methods(self):
+        configurations=[("ttest_one","standardized_effect",{}),("ttest_paired","standardized_paired_effect",{}),("ttest_ind","standardized_effect",{"allocation_ratio":1})]
+        for key,effect_name,extra in configurations:
+            for alternative,expected in [("greater",.5),("less",-.5),("two_sided",.5)]:
+                with self.subTest(key=key,alternative=alternative):
+                    p={effect_name:.5,"alpha":.05,"power":.8,"dropout_rate":0,"alternative":alternative,**extra}
+                    result,engine=self.calculate(key,p,response(package_n=20,analysis_n=20,achieved_power=.81))
+                    self.assertEqual(expected,result.package_arguments["d"]); self.assertIn(f"d = {expected}",engine.calls[0]["calculation_code"])
+
+    def test_negative_effect_magnitude_rejected_for_all_ttests(self):
+        configurations=[("ttest_one","standardized_effect",{}),("ttest_paired","standardized_paired_effect",{}),("ttest_ind","standardized_effect",{"allocation_ratio":1})]
+        for key,effect_name,extra in configurations:
+            p={effect_name:-.5,"alpha":.05,"power":.8,"dropout_rate":0,"alternative":"less",**extra}
+            with self.subTest(key=key),self.assertRaises(RequestValidationError): calculate_sample_size({"test_key":key,"parameters":p})
 
     def test_independent_unequal_allocation_fails_closed(self):
         p={"standardized_effect":.5,"allocation_ratio":2,"alpha":.05,"power":.8,"dropout_rate":0,"alternative":"two_sided"}
@@ -90,9 +105,44 @@ class CalculatorTests(unittest.TestCase):
         p={"cv":.2,"theta0":.95,"lower_limit":.8,"upper_limit":1.25,"design":"3x3","alpha":.05,"power":.8,"dropout_rate":0}
         with self.assertRaises(RequestValidationError): calculate_sample_size({"test_key":"be_tost","parameters":p})
 
-    def test_public_power_mode_fails_on_underidentified_frozen_contract(self):
-        p={"standardized_effect":.5,"alpha":.05,"power":.8,"dropout_rate":0,"alternative":"two_sided"}
-        with self.assertRaises(UnsupportedSolveModeError): calculate_sample_size({"test_key":"ttest_one","solve_mode":"power","parameters":p})
+    def test_public_power_modes_accept_method_specific_analyzable_sizes(self):
+        cases=[
+          ("ttest_one",{"standardized_effect":.5,"alpha":.05,"alternative":"two_sided","analyzable_sample_size":34},34,"n = 34"),
+          ("ttest_paired",{"standardized_paired_effect":.5,"alpha":.05,"alternative":"two_sided","analyzable_pairs":34},34,"n = 34"),
+          ("ttest_ind",{"standardized_effect":.5,"allocation_ratio":1,"alpha":.05,"alternative":"two_sided","analyzable_sample_size_per_arm":64},128,"n = 64"),
+          ("anova",{"groups":3,"cohen_f":.25,"alpha":.05,"analyzable_sample_size_per_group":32},96,"n = 32"),
+          ("proportion_two",{"control_probability":.2,"treatment_probability":.35,"allocation_ratio":2.,"alpha":.05,"analyzable_treatment":100,"analyzable_control":50},150,"/ 100"),
+          ("be_tost",{"cv":.2,"theta0":.95,"lower_limit":.8,"upper_limit":1.25,"design":"2x2","alpha":.05,"evaluable_total":24},24,"n = 24"),
+        ]
+        for key,parameters,total,needle in cases:
+            with self.subTest(key=key):
+                result,engine=self.power(key,parameters); self.assertEqual("power",result.solve_mode); self.assertIsNone(result.target_power); self.assertEqual(total,result.analysis_required_sample_size); self.assertIsNone(result.randomized_sample_size); self.assertIn(needle,engine.calls[0]["calculation_code"])
+
+    def test_power_mode_requires_analyzable_size_but_not_target_power(self):
+        base={"standardized_effect":.5,"alpha":.05,"alternative":"two_sided"}
+        with self.assertRaises(RequestValidationError): self.power("ttest_one",base)
+        result,_=self.power("ttest_one",{**base,"analyzable_sample_size":34}); self.assertIsNone(result.target_power)
+
+    def test_power_mode_rejects_target_power_dropout_and_invalid_n(self):
+        base={"standardized_effect":.5,"alpha":.05,"alternative":"two_sided","analyzable_sample_size":34}
+        for extra in ({"power":.8},{"dropout_rate":.1}):
+            with self.assertRaises(RequestValidationError): self.power("ttest_one",{**base,**extra})
+        with self.assertRaises(RequestValidationError): self.power("ttest_one",{**base,"analyzable_sample_size":1})
+
+    def test_sample_size_mode_requires_power_and_rejects_known_n(self):
+        base={"standardized_effect":.5,"alpha":.05,"dropout_rate":0,"alternative":"two_sided"}
+        with self.assertRaises(RequestValidationError): calculate_sample_size({"test_key":"ttest_one","parameters":base})
+        with self.assertRaises(RequestValidationError): calculate_sample_size({"test_key":"ttest_one","parameters":{**base,"power":.8,"analyzable_sample_size":34}})
+
+    def test_be_power_uses_evaluable_even_n(self):
+        base={"cv":.2,"theta0":.95,"lower_limit":.8,"upper_limit":1.25,"design":"2x2","alpha":.05}
+        result,engine=self.power("be_tost",{**base,"evaluable_total":24}); self.assertIn("n = 24",engine.calls[0]["calculation_code"]); self.assertIsNone(result.randomized_sample_size)
+        with self.assertRaises(RequestValidationError): self.power("be_tost",{**base,"evaluable_total":25})
+
+    def test_proportion_power_orientation_and_ratio_are_explicit(self):
+        p={"control_probability":.2,"treatment_probability":.35,"allocation_ratio":2.,"alpha":.05,"analyzable_treatment":100,"analyzable_control":50}
+        result,engine=self.power("proportion_two",p); self.assertEqual({"treatment":100,"control":50},result.sample_size_per_group); self.assertIn("0.35",engine.calls[0]["calculation_code"])
+        with self.assertRaises(RequestValidationError): self.power("proportion_two",{**p,"analyzable_treatment":99})
 
     def test_missing_r_is_dependency_error(self):
         if shutil.which("Rscript"): self.skipTest("Rscript is installed")

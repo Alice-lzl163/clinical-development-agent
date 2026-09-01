@@ -23,7 +23,15 @@
         "maximum": 1
       },
       "default": null,
-      "clinical_interpretation": "Control-arm event probability."
+      "clinical_interpretation": "Control-arm event probability.",
+      "required_for_solve_modes": [
+        "sample_size",
+        "power"
+      ],
+      "allowed_for_solve_modes": [
+        "sample_size",
+        "power"
+      ]
     },
     {
       "name": "treatment_probability",
@@ -36,7 +44,15 @@
         "maximum": 1
       },
       "default": null,
-      "clinical_interpretation": "Treatment-arm event probability."
+      "clinical_interpretation": "Treatment-arm event probability.",
+      "required_for_solve_modes": [
+        "sample_size",
+        "power"
+      ],
+      "allowed_for_solve_modes": [
+        "sample_size",
+        "power"
+      ]
     },
     {
       "name": "allocation_ratio",
@@ -48,7 +64,15 @@
         "exclusive_minimum": 0
       },
       "default": 1,
-      "clinical_interpretation": "Planned treatment-to-control sample-size ratio n_treatment / n_control."
+      "clinical_interpretation": "Planned treatment-to-control sample-size ratio n_treatment / n_control.",
+      "required_for_solve_modes": [
+        "sample_size",
+        "power"
+      ],
+      "allowed_for_solve_modes": [
+        "sample_size",
+        "power"
+      ]
     },
     {
       "name": "alpha",
@@ -61,33 +85,89 @@
         "exclusive_maximum": 1
       },
       "default": 0.05,
-      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis."
+      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis.",
+      "required_for_solve_modes": [
+        "sample_size",
+        "power"
+      ],
+      "allowed_for_solve_modes": [
+        "sample_size",
+        "power"
+      ]
     },
     {
       "name": "power",
       "definition": "Target probability of rejecting the null under the design alternative.",
       "type": "number",
       "unit": "dimensionless",
-      "required": true,
+      "required": false,
       "valid_range": {
         "exclusive_minimum": 0,
         "exclusive_maximum": 1
       },
       "default": 0.8,
-      "clinical_interpretation": "Target probability of rejecting the null under the design alternative."
+      "clinical_interpretation": "Target probability of rejecting the null under the design alternative.",
+      "required_for_solve_modes": [
+        "sample_size"
+      ],
+      "allowed_for_solve_modes": [
+        "sample_size"
+      ]
     },
     {
       "name": "dropout_rate",
       "definition": "Expected proportion without an analyzable primary endpoint.",
       "type": "number",
       "unit": "dimensionless",
-      "required": true,
+      "required": false,
       "valid_range": {
         "minimum": 0,
         "exclusive_maximum": 1
       },
       "default": 0,
-      "clinical_interpretation": "Anticipated loss applied only after the analysis-required sample size is obtained."
+      "clinical_interpretation": "Anticipated loss applied only after the analysis-required sample size is obtained.",
+      "required_for_solve_modes": [
+        "sample_size"
+      ],
+      "allowed_for_solve_modes": [
+        "sample_size"
+      ]
+    },
+    {
+      "name": "analyzable_treatment",
+      "definition": "Analyzable participants in the treatment arm (TrialSize p1 orientation).",
+      "type": "integer",
+      "unit": "participants",
+      "required": false,
+      "valid_range": {
+        "minimum": 2
+      },
+      "default": null,
+      "clinical_interpretation": "Analyzable participants in the treatment arm (TrialSize p1 orientation).",
+      "required_for_solve_modes": [
+        "power"
+      ],
+      "allowed_for_solve_modes": [
+        "power"
+      ]
+    },
+    {
+      "name": "analyzable_control",
+      "definition": "Analyzable participants in the control arm (TrialSize p2 orientation).",
+      "type": "integer",
+      "unit": "participants",
+      "required": false,
+      "valid_range": {
+        "minimum": 2
+      },
+      "default": null,
+      "clinical_interpretation": "Analyzable participants in the control arm (TrialSize p2 orientation).",
+      "required_for_solve_modes": [
+        "power"
+      ],
+      "allowed_for_solve_modes": [
+        "power"
+      ]
     }
   ],
   "alpha": {

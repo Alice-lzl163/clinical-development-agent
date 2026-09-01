@@ -22,7 +22,15 @@
         "minimum": 2
       },
       "default": null,
-      "clinical_interpretation": "Number of randomized groups."
+      "clinical_interpretation": "Number of randomized groups.",
+      "required_for_solve_modes": [
+        "sample_size",
+        "power"
+      ],
+      "allowed_for_solve_modes": [
+        "sample_size",
+        "power"
+      ]
     },
     {
       "name": "cohen_f",
@@ -34,7 +42,15 @@
         "exclusive_minimum": 0
       },
       "default": null,
-      "clinical_interpretation": "Cohen's omnibus f effect size."
+      "clinical_interpretation": "Cohen's omnibus f effect size.",
+      "required_for_solve_modes": [
+        "sample_size",
+        "power"
+      ],
+      "allowed_for_solve_modes": [
+        "sample_size",
+        "power"
+      ]
     },
     {
       "name": "alpha",
@@ -47,33 +63,71 @@
         "exclusive_maximum": 1
       },
       "default": 0.05,
-      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis."
+      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis.",
+      "required_for_solve_modes": [
+        "sample_size",
+        "power"
+      ],
+      "allowed_for_solve_modes": [
+        "sample_size",
+        "power"
+      ]
     },
     {
       "name": "power",
       "definition": "Target probability of rejecting the null under the design alternative.",
       "type": "number",
       "unit": "dimensionless",
-      "required": true,
+      "required": false,
       "valid_range": {
         "exclusive_minimum": 0,
         "exclusive_maximum": 1
       },
       "default": 0.8,
-      "clinical_interpretation": "Target probability of rejecting the null under the design alternative."
+      "clinical_interpretation": "Target probability of rejecting the null under the design alternative.",
+      "required_for_solve_modes": [
+        "sample_size"
+      ],
+      "allowed_for_solve_modes": [
+        "sample_size"
+      ]
     },
     {
       "name": "dropout_rate",
       "definition": "Expected proportion without an analyzable primary endpoint.",
       "type": "number",
       "unit": "dimensionless",
-      "required": true,
+      "required": false,
       "valid_range": {
         "minimum": 0,
         "exclusive_maximum": 1
       },
       "default": 0,
-      "clinical_interpretation": "Anticipated loss applied only after the analysis-required sample size is obtained."
+      "clinical_interpretation": "Anticipated loss applied only after the analysis-required sample size is obtained.",
+      "required_for_solve_modes": [
+        "sample_size"
+      ],
+      "allowed_for_solve_modes": [
+        "sample_size"
+      ]
+    },
+    {
+      "name": "analyzable_sample_size_per_group",
+      "definition": "Number of analyzable participants in each equally sized ANOVA group.",
+      "type": "integer",
+      "unit": "participants per group",
+      "required": false,
+      "valid_range": {
+        "minimum": 2
+      },
+      "default": null,
+      "clinical_interpretation": "Number of analyzable participants in each equally sized ANOVA group.",
+      "required_for_solve_modes": [
+        "power"
+      ],
+      "allowed_for_solve_modes": [
+        "power"
+      ]
     }
   ],
   "alpha": {
