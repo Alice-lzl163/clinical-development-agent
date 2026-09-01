@@ -13,6 +13,17 @@
   },
   "inputs": [
     {
+      "name": "sequential_design",
+      "definition": "Complete user-facing sequential design fields; the adapter constructs the rpact object.",
+      "type": "object",
+      "unit": "design",
+      "required": true,
+      "valid_range": null,
+      "default": null,
+      "clinical_interpretation": "Complete user-facing sequential design fields; the adapter constructs the rpact object.",
+      "component_ref": "SequentialDesignSpec"
+    },
+    {
       "name": "control_probability",
       "definition": "Control rate.",
       "type": "number",
@@ -37,42 +48,6 @@
       },
       "default": null,
       "clinical_interpretation": "Treatment rate."
-    },
-    {
-      "name": "design_specification",
-      "definition": "Prespecified rpact group-sequential design including information rates and boundaries.",
-      "type": "object",
-      "unit": "design",
-      "required": true,
-      "valid_range": null,
-      "default": null,
-      "clinical_interpretation": "Prespecified rpact group-sequential design including information rates and boundaries."
-    },
-    {
-      "name": "alpha",
-      "definition": "Overall type-I error probability.",
-      "type": "number",
-      "unit": "dimensionless",
-      "required": true,
-      "valid_range": {
-        "exclusive_minimum": 0,
-        "exclusive_maximum": 1
-      },
-      "default": 0.05,
-      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis."
-    },
-    {
-      "name": "power",
-      "definition": "Target probability of rejecting the null under the design alternative.",
-      "type": "number",
-      "unit": "dimensionless",
-      "required": true,
-      "valid_range": {
-        "exclusive_minimum": 0,
-        "exclusive_maximum": 1
-      },
-      "default": 0.8,
-      "clinical_interpretation": "Target probability of rejecting the null under the design alternative."
     },
     {
       "name": "allocation_ratio",
@@ -120,16 +95,39 @@
     "package": "rpact",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "rpact::getSampleSizeRates",
-    "parameter_mapping": {
-      "design_specification": "design",
-      "treatment_probability": "pi1",
-      "control_probability": "pi2",
-      "allocation_ratio": "allocationRatioPlanned"
-    },
-    "output_mapping": {
-      "sample_size": "maxNumberOfSubjects",
-      "power": "overallReject"
-    },
+    "parameter_mapping": [
+      {
+        "package_argument": "design",
+        "source_type": "design_component",
+        "source": "sequential_design.rpact_design",
+        "transformation": null
+      },
+      {
+        "package_argument": "pi1",
+        "source_type": "clinical_input",
+        "source": "treatment_probability",
+        "transformation": null
+      },
+      {
+        "package_argument": "pi2",
+        "source_type": "clinical_input",
+        "source": "control_probability",
+        "transformation": null
+      },
+      {
+        "package_argument": "allocationRatioPlanned",
+        "source_type": "clinical_input",
+        "source": "allocation_ratio",
+        "transformation": null
+      }
+    ],
+    "output_mapping": [
+      {
+        "package_output": "maxNumberOfSubjects",
+        "semantic_output": "maximum_analyzable_subjects",
+        "unit": "subjects"
+      }
+    ],
     "runtime": "R",
     "formal_arguments": [
       {
@@ -209,5 +207,259 @@
     "Reproduce official package examples for the pinned version.",
     "Compare forward power and inverse sample-size results on a prespecified grid.",
     "Verify null-boundary type-I error and clinically relevant alternatives independently."
-  ]
+  ],
+  "specification_status": "SPEC_FROZEN",
+  "design_components": [
+    {
+      "name": "sequential_design",
+      "component_type": "SequentialDesignSpec",
+      "required": true,
+      "fields": [
+        {
+          "name": "number_of_looks",
+          "definition": "Number of planned analyses including the final analysis.",
+          "type": "integer",
+          "unit": "looks",
+          "required": true,
+          "valid_range": {
+            "minimum": 1
+          },
+          "default": null,
+          "clinical_interpretation": "Number of planned analyses including the final analysis."
+        },
+        {
+          "name": "information_rates",
+          "definition": "Cumulative information fractions, strictly increasing and ending at 1.",
+          "type": "array",
+          "unit": "fraction",
+          "required": true,
+          "valid_range": null,
+          "default": null,
+          "clinical_interpretation": "Cumulative information fractions, strictly increasing and ending at 1."
+        },
+        {
+          "name": "overall_alpha",
+          "definition": "Overall familywise type-I error used to construct efficacy boundaries.",
+          "type": "number",
+          "unit": "probability",
+          "required": true,
+          "valid_range": {
+            "exclusive_minimum": 0,
+            "exclusive_maximum": 1
+          },
+          "default": null,
+          "clinical_interpretation": "Overall familywise type-I error used to construct efficacy boundaries."
+        },
+        {
+          "name": "target_power",
+          "definition": "Target power; beta = 1 - target_power is used for beta spending.",
+          "type": "number",
+          "unit": "probability",
+          "required": true,
+          "valid_range": {
+            "exclusive_minimum": 0,
+            "exclusive_maximum": 1
+          },
+          "default": null,
+          "clinical_interpretation": "Target power; beta = 1 - target_power is used for beta spending."
+        },
+        {
+          "name": "sidedness",
+          "definition": "Number of test sides used by rpact.",
+          "type": "integer",
+          "unit": "sides",
+          "required": true,
+          "valid_range": {
+            "allowed_values": [
+              1,
+              2
+            ]
+          },
+          "default": null,
+          "clinical_interpretation": "Number of test sides used by rpact."
+        },
+        {
+          "name": "efficacy_boundary_type",
+          "definition": "Efficacy-boundary or alpha-spending family.",
+          "type": "string",
+          "unit": "category",
+          "required": true,
+          "valid_range": null,
+          "default": null,
+          "clinical_interpretation": "Efficacy-boundary or alpha-spending family."
+        },
+        {
+          "name": "futility_boundary_type",
+          "definition": "Futility-boundary or beta-spending family; use none when absent.",
+          "type": "string",
+          "unit": "category",
+          "required": true,
+          "valid_range": null,
+          "default": "none",
+          "clinical_interpretation": "Futility-boundary or beta-spending family; use none when absent."
+        },
+        {
+          "name": "binding_futility",
+          "definition": "Whether futility boundaries are binding for type-I-error calculations.",
+          "type": "boolean",
+          "unit": "boolean",
+          "required": true,
+          "valid_range": null,
+          "default": false,
+          "clinical_interpretation": "Whether futility boundaries are binding for type-I-error calculations."
+        },
+        {
+          "name": "alpha_spending_parameters",
+          "definition": "Named parameters required by the selected efficacy spending family.",
+          "type": "object",
+          "unit": "parameters",
+          "required": false,
+          "valid_range": null,
+          "default": {},
+          "clinical_interpretation": "Named parameters required by the selected efficacy spending family."
+        },
+        {
+          "name": "beta_spending_parameters",
+          "definition": "Named parameters required by the selected futility spending family.",
+          "type": "object",
+          "unit": "parameters",
+          "required": false,
+          "valid_range": null,
+          "default": {},
+          "clinical_interpretation": "Named parameters required by the selected futility spending family."
+        }
+      ],
+      "adapter": {
+        "runtime": "R",
+        "package": "rpact",
+        "function": "rpact::getDesignGroupSequential",
+        "formal_arguments": [
+          {
+            "name": "kMax",
+            "required": false,
+            "package_default": "NA",
+            "semantic_role": "Package argument populated by the declared adapter mapping."
+          },
+          {
+            "name": "alpha",
+            "required": false,
+            "package_default": "NA",
+            "semantic_role": "Package argument populated by the declared adapter mapping."
+          },
+          {
+            "name": "beta",
+            "required": false,
+            "package_default": "NA",
+            "semantic_role": "Package argument populated by the declared adapter mapping."
+          },
+          {
+            "name": "sided",
+            "required": false,
+            "package_default": "NA",
+            "semantic_role": "Package argument populated by the declared adapter mapping."
+          },
+          {
+            "name": "informationRates",
+            "required": false,
+            "package_default": "NA",
+            "semantic_role": "Package argument populated by the declared adapter mapping."
+          },
+          {
+            "name": "typeOfDesign",
+            "required": false,
+            "package_default": "NA",
+            "semantic_role": "Package argument populated by the declared adapter mapping."
+          },
+          {
+            "name": "typeBetaSpending",
+            "required": false,
+            "package_default": "NA",
+            "semantic_role": "Package argument populated by the declared adapter mapping."
+          },
+          {
+            "name": "bindingFutility",
+            "required": false,
+            "package_default": "NA",
+            "semantic_role": "Package argument populated by the declared adapter mapping."
+          },
+          {
+            "name": "gammaA",
+            "required": false,
+            "package_default": "NA",
+            "semantic_role": "Package argument populated by the declared adapter mapping."
+          },
+          {
+            "name": "gammaB",
+            "required": false,
+            "package_default": "NA",
+            "semantic_role": "Package argument populated by the declared adapter mapping."
+          }
+        ],
+        "parameter_mapping": [
+          {
+            "package_argument": "kMax",
+            "source_type": "design_component",
+            "source": "sequential_design.number_of_looks",
+            "transformation": null
+          },
+          {
+            "package_argument": "informationRates",
+            "source_type": "design_component",
+            "source": "sequential_design.information_rates",
+            "transformation": null
+          },
+          {
+            "package_argument": "alpha",
+            "source_type": "design_component",
+            "source": "sequential_design.overall_alpha",
+            "transformation": null
+          },
+          {
+            "package_argument": "beta",
+            "source_type": "design_component",
+            "source": "sequential_design.target_power",
+            "transformation": "1 - target_power"
+          },
+          {
+            "package_argument": "sided",
+            "source_type": "design_component",
+            "source": "sequential_design.sidedness",
+            "transformation": null
+          },
+          {
+            "package_argument": "typeOfDesign",
+            "source_type": "design_component",
+            "source": "sequential_design.efficacy_boundary_type",
+            "transformation": null
+          },
+          {
+            "package_argument": "typeBetaSpending",
+            "source_type": "design_component",
+            "source": "sequential_design.futility_boundary_type",
+            "transformation": null
+          },
+          {
+            "package_argument": "bindingFutility",
+            "source_type": "design_component",
+            "source": "sequential_design.binding_futility",
+            "transformation": null
+          },
+          {
+            "package_argument": "gammaA",
+            "source_type": "design_component",
+            "source": "sequential_design.alpha_spending_parameters.gammaA",
+            "transformation": "Present only when required by efficacy_boundary_type"
+          },
+          {
+            "package_argument": "gammaB",
+            "source_type": "design_component",
+            "source": "sequential_design.beta_spending_parameters.gammaB",
+            "transformation": "Present only when required by futility_boundary_type"
+          }
+        ],
+        "output": "rpact_design"
+      }
+    }
+  ],
+  "derived_parameters": []
 }

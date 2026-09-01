@@ -1,7 +1,7 @@
 {
   "test_key": "bland_altman",
   "method_id": "bland_altman_precision",
-  "display_name": "Bland–Altman method-comparison sample size",
+  "display_name": "Bland\u2013Altman method-comparison sample size",
   "endpoint_family": "method_comparison",
   "design_family": "paired_precision",
   "estimand": "Confidence-interval precision for mean bias or limits of agreement.",
@@ -100,8 +100,8 @@
     "package": null,
     "package_version_policy": "Not applicable; pin the specification and implementation commit.",
     "function": null,
-    "parameter_mapping": {},
-    "output_mapping": {},
+    "parameter_mapping": [],
+    "output_mapping": [],
     "runtime": "NONE",
     "formal_arguments": []
   },
@@ -128,5 +128,8 @@
     "Reproduce official package examples for the pinned version.",
     "Compare forward power and inverse sample-size results on a prespecified grid.",
     "Verify null-boundary type-I error and clinically relevant alternatives independently."
-  ]
+  ],
+  "specification_status": "DRAFT",
+  "design_components": [],
+  "derived_parameters": []
 }

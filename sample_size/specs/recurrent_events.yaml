@@ -1,7 +1,7 @@
 {
   "test_key": "recurrent_events",
   "method_id": "recurrent_event_design",
-  "display_name": "Andersen–Gill recurrent events",
+  "display_name": "Andersen\u2013Gill recurrent events",
   "endpoint_family": "recurrent_count",
   "design_family": "fixed_parallel",
   "estimand": "Rate ratio from the prespecified recurrent-event model.",
@@ -147,22 +147,79 @@
     "package": "gsDesignNB",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "gsDesignNB::sample_size_nbinom",
-    "parameter_mapping": {
-      "control_rate": "lambda1",
-      "treatment_rate": "lambda2",
-      "dispersion": "dispersion",
-      "power": "power",
-      "alpha": "alpha",
-      "allocation_ratio": "ratio",
-      "null rate ratio": "rr0",
-      "accrual/follow-up/dropout": "accrual_rate, accrual_duration, trial_duration, max_followup, dropout_rate",
-      "analysis test": "test_type"
-    },
-    "output_mapping": {
-      "sample_size": "n1, n2, n_total",
-      "events": "events_n1, events_n2, total_events",
-      "power": "power"
-    },
+    "parameter_mapping": [
+      {
+        "package_argument": "lambda1",
+        "source_type": "clinical_input",
+        "source": "control_rate",
+        "transformation": null
+      },
+      {
+        "package_argument": "lambda2",
+        "source_type": "clinical_input",
+        "source": "treatment_rate",
+        "transformation": null
+      },
+      {
+        "package_argument": "dispersion",
+        "source_type": "clinical_input",
+        "source": "dispersion",
+        "transformation": null
+      },
+      {
+        "package_argument": "power",
+        "source_type": "clinical_input",
+        "source": "power",
+        "transformation": null
+      },
+      {
+        "package_argument": "alpha",
+        "source_type": "clinical_input",
+        "source": "alpha",
+        "transformation": null
+      },
+      {
+        "package_argument": "ratio",
+        "source_type": "clinical_input",
+        "source": "allocation_ratio",
+        "transformation": null
+      },
+      {
+        "package_argument": "rr0",
+        "source_type": "unresolved",
+        "source": null,
+        "transformation": "Historical prose requires adapter specification"
+      },
+      {
+        "package_argument": "accrual_rate",
+        "source_type": "unresolved",
+        "source": null,
+        "transformation": "Historical prose requires adapter specification"
+      },
+      {
+        "package_argument": "test_type",
+        "source_type": "unresolved",
+        "source": null,
+        "transformation": "Historical prose requires adapter specification"
+      }
+    ],
+    "output_mapping": [
+      {
+        "package_output": "n1, n2, n_total",
+        "semantic_output": "sample_size",
+        "unit": "package-defined"
+      },
+      {
+        "package_output": "events_n1, events_n2, total_events",
+        "semantic_output": "events",
+        "unit": "package-defined"
+      },
+      {
+        "package_output": "power",
+        "semantic_output": "power",
+        "unit": "package-defined"
+      }
+    ],
     "runtime": "R",
     "formal_arguments": [
       {
@@ -269,7 +326,7 @@
     "Requests without dependence/dispersion, censoring, terminal-event handling, follow-up, and primary analysis model."
   ],
   "warnings": [
-    "DO_NOT_REPRODUCE_HISTORICAL_BEHAVIOR: Do not label an independent Poisson-rate formula as Andersen–Gill recurrent-event planning."
+    "DO_NOT_REPRODUCE_HISTORICAL_BEHAVIOR: Do not label an independent Poisson-rate formula as Andersen\u2013Gill recurrent-event planning."
   ],
   "validation_grade": "V4",
   "migration_action": "REPLACE",
@@ -282,5 +339,8 @@
     "Reproduce official package examples for the pinned version.",
     "Compare forward power and inverse sample-size results on a prespecified grid.",
     "Verify null-boundary type-I error and clinically relevant alternatives independently."
-  ]
+  ],
+  "specification_status": "DRAFT",
+  "design_components": [],
+  "derived_parameters": []
 }

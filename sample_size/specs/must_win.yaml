@@ -119,18 +119,56 @@
     "package": "MKpower",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "MKpower::power.mpe.known.var",
-    "parameter_mapping": {
-      "number of endpoints": "K",
-      "candidate or solved sample size": "n",
-      "endpoint effects": "delta",
-      "correlation/variances": "Sigma or SD and rho",
-      "alpha": "sig.level",
-      "target power": "power"
-    },
-    "output_mapping": {
-      "power": "conjunctive power",
-      "sample_size": "n"
-    },
+    "parameter_mapping": [
+      {
+        "package_argument": "K",
+        "source_type": "unresolved",
+        "source": null,
+        "transformation": "Historical prose requires adapter specification"
+      },
+      {
+        "package_argument": "n",
+        "source_type": "unresolved",
+        "source": null,
+        "transformation": "Historical prose requires adapter specification"
+      },
+      {
+        "package_argument": "delta",
+        "source_type": "unresolved",
+        "source": null,
+        "transformation": "Historical prose requires adapter specification"
+      },
+      {
+        "package_argument": "Sigma",
+        "source_type": "unresolved",
+        "source": null,
+        "transformation": "Historical prose requires adapter specification"
+      },
+      {
+        "package_argument": "sig.level",
+        "source_type": "clinical_input",
+        "source": "alpha",
+        "transformation": null
+      },
+      {
+        "package_argument": "power",
+        "source_type": "unresolved",
+        "source": null,
+        "transformation": "Historical prose requires adapter specification"
+      }
+    ],
+    "output_mapping": [
+      {
+        "package_output": "conjunctive power",
+        "semantic_output": "power",
+        "unit": "package-defined"
+      },
+      {
+        "package_output": "n",
+        "semantic_output": "sample_size",
+        "unit": "package-defined"
+      }
+    ],
     "runtime": "R",
     "formal_arguments": [
       {
@@ -220,5 +258,8 @@
     "Reproduce official package examples for the pinned version.",
     "Compare forward power and inverse sample-size results on a prespecified grid.",
     "Verify null-boundary type-I error and clinically relevant alternatives independently."
-  ]
+  ],
+  "specification_status": "DRAFT",
+  "design_components": [],
+  "derived_parameters": []
 }

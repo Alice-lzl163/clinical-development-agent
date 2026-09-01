@@ -128,18 +128,57 @@
     "package": "powerMediation",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "powerMediation::ssMediation.Sobel",
-    "parameter_mapping": {
-      "power": "power",
-      "path_a": "theta.1a",
-      "path_b": "lambda.a",
-      "sigma_x": "sigma.x",
-      "sigma_m": "sigma.m",
-      "sigma_y": "sigma.epsilon",
-      "alpha": "alpha"
-    },
-    "output_mapping": {
-      "sample_size": "n"
-    },
+    "parameter_mapping": [
+      {
+        "package_argument": "power",
+        "source_type": "clinical_input",
+        "source": "power",
+        "transformation": null
+      },
+      {
+        "package_argument": "theta.1a",
+        "source_type": "clinical_input",
+        "source": "path_a",
+        "transformation": null
+      },
+      {
+        "package_argument": "lambda.a",
+        "source_type": "clinical_input",
+        "source": "path_b",
+        "transformation": null
+      },
+      {
+        "package_argument": "sigma.x",
+        "source_type": "clinical_input",
+        "source": "sigma_x",
+        "transformation": null
+      },
+      {
+        "package_argument": "sigma.m",
+        "source_type": "clinical_input",
+        "source": "sigma_m",
+        "transformation": null
+      },
+      {
+        "package_argument": "sigma.epsilon",
+        "source_type": "clinical_input",
+        "source": "sigma_y",
+        "transformation": null
+      },
+      {
+        "package_argument": "alpha",
+        "source_type": "clinical_input",
+        "source": "alpha",
+        "transformation": null
+      }
+    ],
+    "output_mapping": [
+      {
+        "package_output": "n",
+        "semantic_output": "sample_size",
+        "unit": "package-defined"
+      }
+    ],
     "runtime": "R",
     "formal_arguments": [
       {
@@ -227,5 +266,8 @@
     "Reproduce official package examples for the pinned version.",
     "Compare forward power and inverse sample-size results on a prespecified grid.",
     "Verify null-boundary type-I error and clinically relevant alternatives independently."
-  ]
+  ],
+  "specification_status": "DRAFT",
+  "design_components": [],
+  "derived_parameters": []
 }

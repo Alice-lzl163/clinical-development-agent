@@ -132,17 +132,50 @@
     "package": "powerSurvEpi",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "powerSurvEpi::ssizeCT",
-    "parameter_mapping": {
-      "power": "power",
-      "allocation_ratio": "k",
-      "event probabilities": "pE and pC",
-      "alternative_hazard_ratio": "RR",
-      "alpha": "alpha"
-    },
-    "output_mapping": {
-      "events": "required events",
-      "sample_size": "subjects after event-probability conversion"
-    },
+    "parameter_mapping": [
+      {
+        "package_argument": "power",
+        "source_type": "clinical_input",
+        "source": "power",
+        "transformation": null
+      },
+      {
+        "package_argument": "k",
+        "source_type": "clinical_input",
+        "source": "allocation_ratio",
+        "transformation": null
+      },
+      {
+        "package_argument": "pE",
+        "source_type": "unresolved",
+        "source": null,
+        "transformation": "Historical prose requires adapter specification"
+      },
+      {
+        "package_argument": "RR",
+        "source_type": "clinical_input",
+        "source": "alternative_hazard_ratio",
+        "transformation": null
+      },
+      {
+        "package_argument": "alpha",
+        "source_type": "clinical_input",
+        "source": "alpha",
+        "transformation": null
+      }
+    ],
+    "output_mapping": [
+      {
+        "package_output": "required events",
+        "semantic_output": "events",
+        "unit": "package-defined"
+      },
+      {
+        "package_output": "subjects after event-probability conversion",
+        "semantic_output": "sample_size",
+        "unit": "package-defined"
+      }
+    ],
     "runtime": "R",
     "formal_arguments": [
       {
@@ -206,5 +239,8 @@
     "Reproduce official package examples for the pinned version.",
     "Compare forward power and inverse sample-size results on a prespecified grid.",
     "Verify null-boundary type-I error and clinically relevant alternatives independently."
-  ]
+  ],
+  "specification_status": "DRAFT",
+  "design_components": [],
+  "derived_parameters": []
 }

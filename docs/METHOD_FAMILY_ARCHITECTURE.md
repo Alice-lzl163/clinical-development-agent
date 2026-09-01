@@ -6,19 +6,34 @@ The 49 test keys are stable user-facing routing names, not a mandate for 49 inde
 
 No calculator is implemented in this phase. Every method remains `EXPERIMENTAL` or `VALIDATION_PENDING` and must pass `VALIDATION_PLAN.md` before exposure.
 
-## Layering
+## Normative execution boundary
 
 ```text
-user-facing test_key
-        ↓
-statistical specification + shared method_id
-        ↓
-calculation engine family
-        ↓
-pinned R package/function OR validated analytical/simulation implementation
+ClinicalInput
+    ↓ validated against the user-facing input contract
+StatisticalDesignSpec
+    ↓ explicit component adapter (when a package-native design object is needed)
+DerivedParameters
+    ↓ named formulas with declared inputs, units, and assumptions
+PackageAdapter
+    ↓ structured parameter_mapping and output_mapping
+PackageFunction
 ```
 
-The separation prevents aliases such as `gsd_survival` and `gsd_hazard` from becoming duplicate calculators. It also prevents historically broad labels such as `adaptive`, `bayesian`, and `multiple_endpoints` from running until design-identifying inputs are complete.
+Package-native objects are not clinical inputs. For example, `SequentialDesignSpec` is a user-facing statistical design and its adapter alone may construct the object returned by `rpact::getDesignGroupSequential`. Similarly, survival inputs are split into `SurvivalEndpointSpec`, `AccrualSpec`, and `DropoutSpec`; their declared derivations produce hazards and package arguments.
+
+Every transformation crossing a layer is represented as structured data. A `derived_parameters` entry declares its formula, dependencies, output unit, and assumptions. A parameter mapping declares one package argument, its source type, its source, and any transformation. Combined prose placeholders are not executable contracts and are forbidden in `SPEC_FROZEN` specifications.
+
+This separation prevents aliases such as `gsd_survival` and `gsd_hazard` from becoming duplicate calculators. It also prevents historically broad labels such as `adaptive`, `bayesian`, and `multiple_endpoints` from running until design-identifying inputs are complete.
+
+## Reusable statistical design components
+
+- `SequentialDesignSpec` declares looks, information rates, overall alpha, target power, sidedness, efficacy and futility boundary families, binding behavior, and spending parameters. Its R adapter constructs an `rpact` design; the object is internal and never supplied by a user.
+- `SurvivalEndpointSpec` currently permits exponential event times only and declares control median and alternative hazard ratio.
+- `AccrualSpec` declares uniform accrual duration, additional follow-up, and the event-time horizon.
+- `DropoutSpec` declares exponential independent dropout, cumulative dropout probability, and its defining horizon. A positive cumulative probability without a horizon is invalid.
+
+`specification_status` is independent of `lifecycle_status`. `SPEC_FROZEN` means the statistical and adapter contract is ready for calculator implementation; it does not mean the method is validated or production-ready.
 
 ## Consolidation summary
 

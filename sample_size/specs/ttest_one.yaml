@@ -62,6 +62,22 @@
       },
       "default": 0,
       "clinical_interpretation": "Anticipated loss applied only after the analysis-required sample size is obtained."
+    },
+    {
+      "name": "alternative",
+      "definition": "Direction of the prespecified alternative hypothesis.",
+      "type": "string",
+      "unit": "category",
+      "required": true,
+      "valid_range": {
+        "allowed_values": [
+          "two_sided",
+          "greater",
+          "less"
+        ]
+      },
+      "default": "two_sided",
+      "clinical_interpretation": "Direction of the prespecified alternative hypothesis."
     }
   ],
   "alpha": {
@@ -84,13 +100,45 @@
     "package": "pwr",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "pwr::pwr.t.test",
-    "parameter_mapping": {
-      "standardized_effect": "d",
-      "design_constant": "type = one.sample"
-    },
-    "output_mapping": {
-      "n": "number of analyzable subjects"
-    },
+    "parameter_mapping": [
+      {
+        "package_argument": "d",
+        "source_type": "clinical_input",
+        "source": "standardized_effect",
+        "transformation": null
+      },
+      {
+        "package_argument": "sig.level",
+        "source_type": "clinical_input",
+        "source": "alpha",
+        "transformation": null
+      },
+      {
+        "package_argument": "power",
+        "source_type": "clinical_input",
+        "source": "power",
+        "transformation": null
+      },
+      {
+        "package_argument": "type",
+        "source_type": "constant",
+        "source": "one.sample",
+        "transformation": null
+      },
+      {
+        "package_argument": "alternative",
+        "source_type": "clinical_input",
+        "source": "alternative",
+        "transformation": "two_sided -> two.sided; greater -> greater; less -> less"
+      }
+    ],
+    "output_mapping": [
+      {
+        "package_output": "n",
+        "semantic_output": "analyzable_sample_size",
+        "unit": "subjects"
+      }
+    ],
     "runtime": "R",
     "formal_arguments": [
       {
@@ -152,5 +200,8 @@
     "Reproduce official package examples for the pinned version.",
     "Compare forward power and inverse sample-size results on a prespecified grid.",
     "Verify null-boundary type-I error and clinically relevant alternatives independently."
-  ]
+  ],
+  "specification_status": "SPEC_FROZEN",
+  "design_components": [],
+  "derived_parameters": []
 }

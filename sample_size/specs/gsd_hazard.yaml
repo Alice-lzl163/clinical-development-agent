@@ -142,16 +142,44 @@
     "package": "rpact",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "rpact::getSampleSizeSurvival",
-    "parameter_mapping": {
-      "design_specification": "design",
-      "alternative_hazard_ratio": "theta/lambda/median mapping",
-      "allocation_ratio": "allocationRatioPlanned",
-      "accrual/dropout inputs": "documented survival arguments"
-    },
-    "output_mapping": {
-      "events": "maxNumberOfEvents",
-      "sample_size": "maxNumberOfSubjects"
-    },
+    "parameter_mapping": [
+      {
+        "package_argument": "design",
+        "source_type": "clinical_input",
+        "source": "design_specification",
+        "transformation": null
+      },
+      {
+        "package_argument": "theta",
+        "source_type": "clinical_input",
+        "source": "alternative_hazard_ratio",
+        "transformation": null
+      },
+      {
+        "package_argument": "allocationRatioPlanned",
+        "source_type": "clinical_input",
+        "source": "allocation_ratio",
+        "transformation": null
+      },
+      {
+        "package_argument": "documented",
+        "source_type": "unresolved",
+        "source": null,
+        "transformation": "Historical prose requires adapter specification"
+      }
+    ],
+    "output_mapping": [
+      {
+        "package_output": "maxNumberOfEvents",
+        "semantic_output": "events",
+        "unit": "package-defined"
+      },
+      {
+        "package_output": "maxNumberOfSubjects",
+        "semantic_output": "sample_size",
+        "unit": "package-defined"
+      }
+    ],
     "runtime": "R",
     "formal_arguments": [
       {
@@ -285,5 +313,8 @@
     "Reproduce official package examples for the pinned version.",
     "Compare forward power and inverse sample-size results on a prespecified grid.",
     "Verify null-boundary type-I error and clinically relevant alternatives independently."
-  ]
+  ],
+  "specification_status": "DRAFT",
+  "design_components": [],
+  "derived_parameters": []
 }

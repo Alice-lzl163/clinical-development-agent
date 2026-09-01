@@ -31,7 +31,9 @@
       "unit": "dimensionless",
       "required": true,
       "valid_range": {
-        "exclusive_minimum": 0
+        "allowed_values": [
+          1
+        ]
       },
       "default": 1,
       "clinical_interpretation": "Planned treatment-to-control sample-size ratio n_treatment / n_control."
@@ -74,6 +76,22 @@
       },
       "default": 0,
       "clinical_interpretation": "Anticipated loss applied only after the analysis-required sample size is obtained."
+    },
+    {
+      "name": "alternative",
+      "definition": "Direction of the prespecified alternative hypothesis.",
+      "type": "string",
+      "unit": "category",
+      "required": true,
+      "valid_range": {
+        "allowed_values": [
+          "two_sided",
+          "greater",
+          "less"
+        ]
+      },
+      "default": "two_sided",
+      "clinical_interpretation": "Direction of the prespecified alternative hypothesis."
     }
   ],
   "alpha": {
@@ -81,9 +99,9 @@
     "convention": "Overall alpha; one-sided uses alpha and two-sided divides alpha equally between tails."
   },
   "allocation": {
-    "ratio_definition": "n_treatment / n_control",
-    "supported": true,
-    "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power."
+    "ratio_definition": "Equal allocation only: n_treatment / n_control = 1.",
+    "supported": false,
+    "rounding_rule": "Round pwr::pwr.t.test n upward independently to the same integer in both arms; do not redistribute subjects."
   },
   "solve_modes": {
     "sample_size": true,
@@ -96,16 +114,45 @@
     "package": "pwr",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "pwr::pwr.t.test",
-    "parameter_mapping": {
-      "standardized_effect": "d",
-      "alpha": "sig.level",
-      "power": "power",
-      "alternative": "alternative",
-      "design_constant": "type = two.sample"
-    },
-    "output_mapping": {
-      "n": "per-arm sample size before allocation/dropout"
-    },
+    "parameter_mapping": [
+      {
+        "package_argument": "d",
+        "source_type": "clinical_input",
+        "source": "standardized_effect",
+        "transformation": null
+      },
+      {
+        "package_argument": "sig.level",
+        "source_type": "clinical_input",
+        "source": "alpha",
+        "transformation": null
+      },
+      {
+        "package_argument": "power",
+        "source_type": "clinical_input",
+        "source": "power",
+        "transformation": null
+      },
+      {
+        "package_argument": "type",
+        "source_type": "constant",
+        "source": "two.sample",
+        "transformation": null
+      },
+      {
+        "package_argument": "alternative",
+        "source_type": "clinical_input",
+        "source": "alternative",
+        "transformation": "two_sided -> two.sided; greater -> greater; less -> less"
+      }
+    ],
+    "output_mapping": [
+      {
+        "package_output": "n",
+        "semantic_output": "analyzable_sample_size",
+        "unit": "subjects per arm"
+      }
+    ],
     "runtime": "R",
     "formal_arguments": [
       {
@@ -147,7 +194,7 @@
     ]
   },
   "method_type": "analytical_exact",
-  "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
+  "dropout_handling": "Inflate each arm independently as ceil(analyzable_per_arm / (1 - dropout_rate)); preserve equal randomized arm sizes.",
   "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
   "assumptions": [
     "The continuous endpoint model and fixed_parallel design are correctly specified.",
@@ -167,5 +214,8 @@
     "Reproduce official package examples for the pinned version.",
     "Compare forward power and inverse sample-size results on a prespecified grid.",
     "Verify null-boundary type-I error and clinically relevant alternatives independently."
-  ]
+  ],
+  "specification_status": "SPEC_FROZEN",
+  "design_components": [],
+  "derived_parameters": []
 }

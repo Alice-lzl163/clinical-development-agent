@@ -1,7 +1,7 @@
 {
   "test_key": "cox_covariate",
   "method_id": "cox_covariate_effect",
-  "display_name": "Cox regression with covariate R²",
+  "display_name": "Cox regression with covariate R\u00b2",
   "endpoint_family": "time_to_event",
   "design_family": "regression",
   "estimand": "Target Cox regression coefficient/hazard ratio.",
@@ -147,19 +147,63 @@
     "package": "powerSurvEpi",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "powerSurvEpi::ssizeEpi / powerSurvEpi::ssizeEpiCont",
-    "parameter_mapping": {
-      "covariate_type": "selects function",
-      "binary_pilot_data.X1, X2, failureFlag": "X1, X2, failureFlag for ssizeEpi",
-      "alternative_hazard_ratio": "theta",
-      "covariate_variance": "sigma2 for ssizeEpiCont.default",
-      "event_probability": "psi for ssizeEpiCont.default",
-      "r_squared_other_covariates": "rho2 for ssizeEpiCont.default",
-      "alpha": "alpha",
-      "power": "power"
-    },
-    "output_mapping": {
-      "sample_size": "subjects"
-    },
+    "parameter_mapping": [
+      {
+        "package_argument": "selects",
+        "source_type": "clinical_input",
+        "source": "covariate_type",
+        "transformation": null
+      },
+      {
+        "package_argument": "X1",
+        "source_type": "unresolved",
+        "source": null,
+        "transformation": "Historical prose requires adapter specification"
+      },
+      {
+        "package_argument": "theta",
+        "source_type": "clinical_input",
+        "source": "alternative_hazard_ratio",
+        "transformation": null
+      },
+      {
+        "package_argument": "sigma2",
+        "source_type": "clinical_input",
+        "source": "covariate_variance",
+        "transformation": null
+      },
+      {
+        "package_argument": "psi",
+        "source_type": "clinical_input",
+        "source": "event_probability",
+        "transformation": null
+      },
+      {
+        "package_argument": "rho2",
+        "source_type": "clinical_input",
+        "source": "r_squared_other_covariates",
+        "transformation": null
+      },
+      {
+        "package_argument": "alpha",
+        "source_type": "clinical_input",
+        "source": "alpha",
+        "transformation": null
+      },
+      {
+        "package_argument": "power",
+        "source_type": "clinical_input",
+        "source": "power",
+        "transformation": null
+      }
+    ],
+    "output_mapping": [
+      {
+        "package_output": "subjects",
+        "semantic_output": "sample_size",
+        "unit": "package-defined"
+      }
+    ],
     "runtime": "R",
     "formal_arguments": [
       {
@@ -242,5 +286,8 @@
     "Reproduce official package examples for the pinned version.",
     "Compare forward power and inverse sample-size results on a prespecified grid.",
     "Verify null-boundary type-I error and clinically relevant alternatives independently."
-  ]
+  ],
+  "specification_status": "DRAFT",
+  "design_components": [],
+  "derived_parameters": []
 }

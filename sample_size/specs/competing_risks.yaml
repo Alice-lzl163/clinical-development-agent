@@ -4,7 +4,7 @@
   "display_name": "Gray test on cumulative incidence",
   "endpoint_family": "time_to_event_competing",
   "design_family": "fixed_parallel",
-  "estimand": "Cumulative-incidence distribution or Fine–Gray effect for the target cause under the prespecified analysis.",
+  "estimand": "Cumulative-incidence distribution or Fine\u2013Gray effect for the target cause under the prespecified analysis.",
   "hypothesis": {
     "null": "No arm effect under the selected Gray/Fine-Gray test",
     "alternative": "Prespecified competing-risk alternative",
@@ -140,16 +140,44 @@
     "package": "cmprsk",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "cmprsk::cuminc",
-    "parameter_mapping": {
-      "simulated event/censor times": "ftime",
-      "simulated cause": "fstatus",
-      "arm": "group",
-      "gray weight": "rho"
-    },
-    "output_mapping": {
-      "operating_characteristics": "empirical rejection probability",
-      "sample_size": "smallest candidate meeting power"
-    },
+    "parameter_mapping": [
+      {
+        "package_argument": "ftime",
+        "source_type": "unresolved",
+        "source": null,
+        "transformation": "Historical prose requires adapter specification"
+      },
+      {
+        "package_argument": "fstatus",
+        "source_type": "unresolved",
+        "source": null,
+        "transformation": "Historical prose requires adapter specification"
+      },
+      {
+        "package_argument": "group",
+        "source_type": "unresolved",
+        "source": null,
+        "transformation": "Historical prose requires adapter specification"
+      },
+      {
+        "package_argument": "rho",
+        "source_type": "unresolved",
+        "source": null,
+        "transformation": "Historical prose requires adapter specification"
+      }
+    ],
+    "output_mapping": [
+      {
+        "package_output": "empirical rejection probability",
+        "semantic_output": "operating_characteristics",
+        "unit": "package-defined"
+      },
+      {
+        "package_output": "smallest candidate meeting power",
+        "semantic_output": "sample_size",
+        "unit": "package-defined"
+      }
+    ],
     "runtime": "R",
     "formal_arguments": [
       {
@@ -227,5 +255,8 @@
     "Reproduce official package examples for the pinned version.",
     "Compare forward power and inverse sample-size results on a prespecified grid.",
     "Verify null-boundary type-I error and clinically relevant alternatives independently."
-  ]
+  ],
+  "specification_status": "DRAFT",
+  "design_components": [],
+  "derived_parameters": []
 }

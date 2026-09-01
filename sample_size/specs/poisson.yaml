@@ -120,15 +120,39 @@
     "package": "rpact",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "rpact::getSampleSizeCounts",
-    "parameter_mapping": {
-      "treatment_rate": "lambda1",
-      "control_rate": "lambda2",
-      "allocation_ratio": "allocationRatioPlanned",
-      "fixed design": "design"
-    },
-    "output_mapping": {
-      "sample_size": "maxNumberOfSubjects"
-    },
+    "parameter_mapping": [
+      {
+        "package_argument": "lambda1",
+        "source_type": "clinical_input",
+        "source": "treatment_rate",
+        "transformation": null
+      },
+      {
+        "package_argument": "lambda2",
+        "source_type": "clinical_input",
+        "source": "control_rate",
+        "transformation": null
+      },
+      {
+        "package_argument": "allocationRatioPlanned",
+        "source_type": "clinical_input",
+        "source": "allocation_ratio",
+        "transformation": null
+      },
+      {
+        "package_argument": "design",
+        "source_type": "unresolved",
+        "source": null,
+        "transformation": "Historical prose requires adapter specification"
+      }
+    ],
+    "output_mapping": [
+      {
+        "package_output": "maxNumberOfSubjects",
+        "semantic_output": "sample_size",
+        "unit": "package-defined"
+      }
+    ],
     "runtime": "R",
     "formal_arguments": [
       {
@@ -208,5 +232,8 @@
     "Reproduce official package examples for the pinned version.",
     "Compare forward power and inverse sample-size results on a prespecified grid.",
     "Verify null-boundary type-I error and clinically relevant alternatives independently."
-  ]
+  ],
+  "specification_status": "DRAFT",
+  "design_components": [],
+  "derived_parameters": []
 }

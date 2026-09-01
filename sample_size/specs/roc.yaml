@@ -141,17 +141,51 @@
     "package": "pROC",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "pROC::power.roc.test",
-    "parameter_mapping": {
-      "roc_design": "selects one- or two-curve invocation and pairing",
-      "auc_null/auc_alternative": "auc or roc objects",
-      "case_control_ratio": "kappa",
-      "alpha": "sig.level",
-      "power": "power",
-      "variance_method": "method"
-    },
-    "output_mapping": {
-      "sample_size": "ncases and ncontrols"
-    },
+    "parameter_mapping": [
+      {
+        "package_argument": "selects",
+        "source_type": "clinical_input",
+        "source": "roc_design",
+        "transformation": null
+      },
+      {
+        "package_argument": "auc",
+        "source_type": "unresolved",
+        "source": null,
+        "transformation": "Historical prose requires adapter specification"
+      },
+      {
+        "package_argument": "kappa",
+        "source_type": "clinical_input",
+        "source": "case_control_ratio",
+        "transformation": null
+      },
+      {
+        "package_argument": "sig.level",
+        "source_type": "clinical_input",
+        "source": "alpha",
+        "transformation": null
+      },
+      {
+        "package_argument": "power",
+        "source_type": "clinical_input",
+        "source": "power",
+        "transformation": null
+      },
+      {
+        "package_argument": "method",
+        "source_type": "clinical_input",
+        "source": "variance_method",
+        "transformation": null
+      }
+    ],
+    "output_mapping": [
+      {
+        "package_output": "ncases and ncontrols",
+        "semantic_output": "sample_size",
+        "unit": "package-defined"
+      }
+    ],
     "runtime": "R",
     "formal_arguments": [
       {
@@ -211,5 +245,8 @@
     "Reproduce official package examples for the pinned version.",
     "Compare forward power and inverse sample-size results on a prespecified grid.",
     "Verify null-boundary type-I error and clinically relevant alternatives independently."
-  ]
+  ],
+  "specification_status": "DRAFT",
+  "design_components": [],
+  "derived_parameters": []
 }

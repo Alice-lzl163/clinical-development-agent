@@ -123,15 +123,39 @@
     "package": "rpact",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "rpact::getSimulationMultiArmMeans",
-    "parameter_mapping": {
-      "design_specification": "design and stage arguments",
-      "number of experimental arms": "activeArms",
-      "simulation_replicates": "iterations",
-      "rng_seed": "seed"
-    },
-    "output_mapping": {
-      "operating_characteristics": "FWER, rejection/selection, sample size"
-    },
+    "parameter_mapping": [
+      {
+        "package_argument": "design",
+        "source_type": "clinical_input",
+        "source": "design_specification",
+        "transformation": null
+      },
+      {
+        "package_argument": "activeArms",
+        "source_type": "unresolved",
+        "source": null,
+        "transformation": "Historical prose requires adapter specification"
+      },
+      {
+        "package_argument": "iterations",
+        "source_type": "clinical_input",
+        "source": "simulation_replicates",
+        "transformation": null
+      },
+      {
+        "package_argument": "seed",
+        "source_type": "clinical_input",
+        "source": "rng_seed",
+        "transformation": null
+      }
+    ],
+    "output_mapping": [
+      {
+        "package_output": "FWER, rejection/selection, sample size",
+        "semantic_output": "operating_characteristics",
+        "unit": "package-defined"
+      }
+    ],
     "runtime": "R",
     "formal_arguments": [
       {
@@ -191,5 +215,8 @@
     "Reproduce official package examples for the pinned version.",
     "Compare forward power and inverse sample-size results on a prespecified grid.",
     "Verify null-boundary type-I error and clinically relevant alternatives independently."
-  ]
+  ],
+  "specification_status": "DRAFT",
+  "design_components": [],
+  "derived_parameters": []
 }

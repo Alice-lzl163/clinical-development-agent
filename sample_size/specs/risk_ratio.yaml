@@ -121,18 +121,57 @@
     "package": "gsDesign",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "gsDesign::nBinomial",
-    "parameter_mapping": {
-      "control_probability": "p1",
-      "derived treatment probability under alternative": "p2",
-      "1-power": "beta",
-      "alpha": "alpha",
-      "allocation_ratio": "ratio",
-      "derived null difference on probability scale": "delta0",
-      "constant": "scale = RR"
-    },
-    "output_mapping": {
-      "n": "total analyzable sample size"
-    },
+    "parameter_mapping": [
+      {
+        "package_argument": "p1",
+        "source_type": "clinical_input",
+        "source": "control_probability",
+        "transformation": null
+      },
+      {
+        "package_argument": "p2",
+        "source_type": "unresolved",
+        "source": null,
+        "transformation": "Historical prose requires adapter specification"
+      },
+      {
+        "package_argument": "beta",
+        "source_type": "unresolved",
+        "source": null,
+        "transformation": "Historical prose requires adapter specification"
+      },
+      {
+        "package_argument": "alpha",
+        "source_type": "clinical_input",
+        "source": "alpha",
+        "transformation": null
+      },
+      {
+        "package_argument": "ratio",
+        "source_type": "clinical_input",
+        "source": "allocation_ratio",
+        "transformation": null
+      },
+      {
+        "package_argument": "delta0",
+        "source_type": "unresolved",
+        "source": null,
+        "transformation": "Historical prose requires adapter specification"
+      },
+      {
+        "package_argument": "scale",
+        "source_type": "constant",
+        "source": "constant",
+        "transformation": null
+      }
+    ],
+    "output_mapping": [
+      {
+        "package_output": "total analyzable sample size",
+        "semantic_output": "n",
+        "unit": "package-defined"
+      }
+    ],
     "runtime": "R",
     "formal_arguments": [
       {
@@ -216,5 +255,8 @@
     "Reproduce official package examples for the pinned version.",
     "Compare forward power and inverse sample-size results on a prespecified grid.",
     "Verify null-boundary type-I error and clinically relevant alternatives independently."
-  ]
+  ],
+  "specification_status": "DRAFT",
+  "design_components": [],
+  "derived_parameters": []
 }

@@ -98,15 +98,39 @@
     "package": "TrialSize",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "TrialSize::McNemar.Test",
-    "parameter_mapping": {
-      "alpha": "alpha",
-      "1-power": "beta",
-      "p_treatment_only / p_control_only": "psai",
-      "p_treatment_only + p_control_only": "paid"
-    },
-    "output_mapping": {
-      "sample_size": "complete matched pairs"
-    },
+    "parameter_mapping": [
+      {
+        "package_argument": "alpha",
+        "source_type": "clinical_input",
+        "source": "alpha",
+        "transformation": null
+      },
+      {
+        "package_argument": "beta",
+        "source_type": "unresolved",
+        "source": null,
+        "transformation": "Historical prose requires adapter specification"
+      },
+      {
+        "package_argument": "psai",
+        "source_type": "unresolved",
+        "source": null,
+        "transformation": "Historical prose requires adapter specification"
+      },
+      {
+        "package_argument": "paid",
+        "source_type": "unresolved",
+        "source": null,
+        "transformation": "Historical prose requires adapter specification"
+      }
+    ],
+    "output_mapping": [
+      {
+        "package_output": "complete matched pairs",
+        "semantic_output": "sample_size",
+        "unit": "package-defined"
+      }
+    ],
     "runtime": "R",
     "formal_arguments": [
       {
@@ -156,9 +180,12 @@
   "package_reference": "https://search.r-project.org/CRAN/refmans/TrialSize/html/00Index.html",
   "guideline_reference": "ICH E9",
   "benchmark_requirements": [
-    "Reproduce TrialSize example; enumerate discordant binomial outcomes; simulate paired 2×2 tables",
+    "Reproduce TrialSize example; enumerate discordant binomial outcomes; simulate paired 2\u00d72 tables",
     "Reproduce official package examples for the pinned version.",
     "Compare forward power and inverse sample-size results on a prespecified grid.",
     "Verify null-boundary type-I error and clinically relevant alternatives independently."
-  ]
+  ],
+  "specification_status": "DRAFT",
+  "design_components": [],
+  "derived_parameters": []
 }

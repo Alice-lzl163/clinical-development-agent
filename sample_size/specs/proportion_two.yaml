@@ -95,7 +95,7 @@
     "convention": "Overall alpha; one-sided uses alpha and two-sided divides alpha equally between tails."
   },
   "allocation": {
-    "ratio_definition": "n_treatment / n_control",
+    "ratio_definition": "n_treatment / n_control; passed unchanged as TrialSize k.",
     "supported": true,
     "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power."
   },
@@ -110,16 +110,45 @@
     "package": "TrialSize",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "TrialSize::TwoSampleProportion.Equality",
-    "parameter_mapping": {
-      "alpha": "alpha",
-      "1-power": "beta",
-      "control_probability": "p1",
-      "treatment_probability": "p2",
-      "allocation_ratio": "k"
-    },
-    "output_mapping": {
-      "sample_size": "arm sizes"
-    },
+    "parameter_mapping": [
+      {
+        "package_argument": "alpha",
+        "source_type": "clinical_input",
+        "source": "alpha",
+        "transformation": null
+      },
+      {
+        "package_argument": "beta",
+        "source_type": "derived_parameter",
+        "source": "beta",
+        "transformation": null
+      },
+      {
+        "package_argument": "p1",
+        "source_type": "clinical_input",
+        "source": "treatment_probability",
+        "transformation": null
+      },
+      {
+        "package_argument": "p2",
+        "source_type": "clinical_input",
+        "source": "control_probability",
+        "transformation": null
+      },
+      {
+        "package_argument": "k",
+        "source_type": "clinical_input",
+        "source": "allocation_ratio",
+        "transformation": "k = n_treatment / n_control"
+      }
+    ],
+    "output_mapping": [
+      {
+        "package_output": "result",
+        "semantic_output": "analyzable_arm_sample_sizes",
+        "unit": "subjects by arm"
+      }
+    ],
     "runtime": "R",
     "formal_arguments": [
       {
@@ -174,6 +203,22 @@
     "Compare TrialSize, rpact fixed design, validated textbook examples, and simulated achieved power",
     "Reproduce official package examples for the pinned version.",
     "Compare forward power and inverse sample-size results on a prespecified grid.",
-    "Verify null-boundary type-I error and clinically relevant alternatives independently."
+    "Verify null-boundary type-I error and clinically relevant alternatives independently.",
+    "Include an asymmetric 2:1 allocation benchmark that fails if k is reciprocated or p1/p2 are swapped."
+  ],
+  "specification_status": "SPEC_FROZEN",
+  "design_components": [],
+  "derived_parameters": [
+    {
+      "name": "beta",
+      "formula": "1 - power",
+      "inputs": [
+        "power"
+      ],
+      "output_unit": "probability",
+      "assumptions": [
+        "Power and beta are complementary for the prespecified alternative."
+      ]
+    }
   ]
 }

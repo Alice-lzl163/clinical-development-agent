@@ -118,13 +118,27 @@
     "package": "mvtnorm",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "mvtnorm::qmvt",
-    "parameter_mapping": {
-      "alpha and shared-control correlation": "tail probability and corr/sigma",
-      "degrees of freedom": "df"
-    },
-    "output_mapping": {
-      "critical_value": "Dunnett multivariate-t quantile used by independently specified sample-size inversion"
-    },
+    "parameter_mapping": [
+      {
+        "package_argument": "tail",
+        "source_type": "unresolved",
+        "source": null,
+        "transformation": "Historical prose requires adapter specification"
+      },
+      {
+        "package_argument": "df",
+        "source_type": "unresolved",
+        "source": null,
+        "transformation": "Historical prose requires adapter specification"
+      }
+    ],
+    "output_mapping": [
+      {
+        "package_output": "Dunnett multivariate-t quantile used by independently specified sample-size inversion",
+        "semantic_output": "critical_value",
+        "unit": "package-defined"
+      }
+    ],
     "runtime": "R",
     "formal_arguments": [
       {
@@ -225,5 +239,8 @@
     "Reproduce official package examples for the pinned version.",
     "Compare forward power and inverse sample-size results on a prespecified grid.",
     "Verify null-boundary type-I error and clinically relevant alternatives independently."
-  ]
+  ],
+  "specification_status": "DRAFT",
+  "design_components": [],
+  "derived_parameters": []
 }

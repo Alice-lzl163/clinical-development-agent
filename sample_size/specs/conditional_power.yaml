@@ -92,14 +92,33 @@
     "package": "rpact",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "rpact::getConditionalPower",
-    "parameter_mapping": {
-      "design/interim": "stageResults",
-      "specified_future_effect": "thetaH1",
-      "updated plan": "nPlanned/eventsOverStages"
-    },
-    "output_mapping": {
-      "power": "conditionalPower"
-    },
+    "parameter_mapping": [
+      {
+        "package_argument": "stageResults",
+        "source_type": "unresolved",
+        "source": null,
+        "transformation": "Historical prose requires adapter specification"
+      },
+      {
+        "package_argument": "thetaH1",
+        "source_type": "clinical_input",
+        "source": "specified_future_effect",
+        "transformation": null
+      },
+      {
+        "package_argument": "nPlanned",
+        "source_type": "unresolved",
+        "source": null,
+        "transformation": "Historical prose requires adapter specification"
+      }
+    ],
+    "output_mapping": [
+      {
+        "package_output": "conditionalPower",
+        "semantic_output": "power",
+        "unit": "package-defined"
+      }
+    ],
     "runtime": "R",
     "formal_arguments": [
       {
@@ -155,5 +174,8 @@
     "Reproduce official package examples for the pinned version.",
     "Compare forward power and inverse sample-size results on a prespecified grid.",
     "Verify null-boundary type-I error and clinically relevant alternatives independently."
-  ]
+  ],
+  "specification_status": "DRAFT",
+  "design_components": [],
+  "derived_parameters": []
 }

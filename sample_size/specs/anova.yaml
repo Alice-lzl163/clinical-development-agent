@@ -77,13 +77,13 @@
     }
   ],
   "alpha": {
-    "sidedness": "one_or_two_sided",
-    "convention": "Overall alpha; one-sided uses alpha and two-sided divides alpha equally between tails."
+    "sidedness": "not_applicable",
+    "convention": "Upper-tail omnibus F test; alpha is the total type-I error for that test."
   },
   "allocation": {
-    "ratio_definition": "n_treatment / n_control",
-    "supported": true,
-    "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power."
+    "ratio_definition": "Equal allocation across all groups is required.",
+    "supported": false,
+    "rounding_rule": "Round total N upward to a multiple of groups; retain equal integer group sizes and re-evaluate power."
   },
   "solve_modes": {
     "sample_size": true,
@@ -96,15 +96,39 @@
     "package": "pwr",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "pwr::pwr.anova.test",
-    "parameter_mapping": {
-      "groups": "k",
-      "cohen_f": "f",
-      "alpha": "sig.level",
-      "power": "power"
-    },
-    "output_mapping": {
-      "n": "subjects per group"
-    },
+    "parameter_mapping": [
+      {
+        "package_argument": "k",
+        "source_type": "clinical_input",
+        "source": "groups",
+        "transformation": null
+      },
+      {
+        "package_argument": "f",
+        "source_type": "clinical_input",
+        "source": "cohen_f",
+        "transformation": null
+      },
+      {
+        "package_argument": "sig.level",
+        "source_type": "clinical_input",
+        "source": "alpha",
+        "transformation": null
+      },
+      {
+        "package_argument": "power",
+        "source_type": "clinical_input",
+        "source": "power",
+        "transformation": null
+      }
+    ],
+    "output_mapping": [
+      {
+        "package_output": "n",
+        "semantic_output": "analyzable_total_sample_size",
+        "unit": "subjects"
+      }
+    ],
     "runtime": "R",
     "formal_arguments": [
       {
@@ -160,5 +184,8 @@
     "Reproduce official package examples for the pinned version.",
     "Compare forward power and inverse sample-size results on a prespecified grid.",
     "Verify null-boundary type-I error and clinically relevant alternatives independently."
-  ]
+  ],
+  "specification_status": "SPEC_FROZEN",
+  "design_components": [],
+  "derived_parameters": []
 }

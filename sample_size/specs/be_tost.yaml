@@ -135,18 +135,57 @@
     "package": "PowerTOST",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "PowerTOST::sampleN.TOST",
-    "parameter_mapping": {
-      "alpha": "alpha",
-      "power": "targetpower",
-      "theta0": "theta0",
-      "lower_limit": "theta1",
-      "upper_limit": "theta2",
-      "cv": "CV",
-      "design": "design"
-    },
-    "output_mapping": {
-      "sample_size": "total sample size reported by package"
-    },
+    "parameter_mapping": [
+      {
+        "package_argument": "alpha",
+        "source_type": "clinical_input",
+        "source": "alpha",
+        "transformation": null
+      },
+      {
+        "package_argument": "targetpower",
+        "source_type": "clinical_input",
+        "source": "power",
+        "transformation": null
+      },
+      {
+        "package_argument": "theta0",
+        "source_type": "clinical_input",
+        "source": "theta0",
+        "transformation": null
+      },
+      {
+        "package_argument": "theta1",
+        "source_type": "clinical_input",
+        "source": "lower_limit",
+        "transformation": null
+      },
+      {
+        "package_argument": "theta2",
+        "source_type": "clinical_input",
+        "source": "upper_limit",
+        "transformation": null
+      },
+      {
+        "package_argument": "CV",
+        "source_type": "clinical_input",
+        "source": "cv",
+        "transformation": null
+      },
+      {
+        "package_argument": "design",
+        "source_type": "clinical_input",
+        "source": "design",
+        "transformation": null
+      }
+    ],
+    "output_mapping": [
+      {
+        "package_output": "Sample size",
+        "semantic_output": "evaluable_total",
+        "unit": "subjects"
+      }
+    ],
     "runtime": "R",
     "formal_arguments": [
       {
@@ -224,8 +263,8 @@
     ]
   },
   "method_type": "numerical",
-  "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
-  "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
+  "dropout_handling": "Treat PowerTOST output as evaluable total; inflate by 1/(1-dropout_rate), then round upward to a complete randomization block.",
+  "rounding_rule": "For design 2x2, round randomized total upward to an even number so TR and RT sequence counts are equal; never report the evaluable total as randomized total.",
   "assumptions": [
     "The continuous_pk endpoint model and bioequivalence design are correctly specified.",
     "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
@@ -244,5 +283,33 @@
     "Reproduce official package examples for the pinned version.",
     "Compare forward power and inverse sample-size results on a prespecified grid.",
     "Verify null-boundary type-I error and clinically relevant alternatives independently."
+  ],
+  "specification_status": "SPEC_FROZEN",
+  "design_components": [],
+  "derived_parameters": [
+    {
+      "name": "sequence_block_size",
+      "formula": "2 when design == '2x2'",
+      "inputs": [
+        "design"
+      ],
+      "output_unit": "subjects",
+      "assumptions": [
+        "A 2x2 crossover randomizes equally to TR and RT sequences."
+      ]
+    },
+    {
+      "name": "randomized_total",
+      "formula": "ceil(ceil(evaluable_total / (1 - dropout_rate)) / sequence_block_size) * sequence_block_size",
+      "inputs": [
+        "dropout_rate",
+        "design",
+        "sequence_block_size"
+      ],
+      "output_unit": "subjects",
+      "assumptions": [
+        "Dropout inflation occurs after PowerTOST returns evaluable total sample size."
+      ]
+    }
   ]
 }

@@ -13,65 +13,48 @@
   },
   "inputs": [
     {
-      "name": "alternative_hazard_ratio",
-      "definition": "Hazard ratio under the design alternative.",
-      "type": "number",
-      "unit": "dimensionless",
+      "name": "sequential_design",
+      "definition": "Complete group-sequential design fields.",
+      "type": "object",
+      "unit": "design",
       "required": true,
-      "valid_range": {
-        "exclusive_minimum": 0
-      },
+      "valid_range": null,
       "default": null,
-      "clinical_interpretation": "Hazard ratio under the design alternative."
+      "clinical_interpretation": "Complete group-sequential design fields.",
+      "component_ref": "SequentialDesignSpec"
     },
     {
-      "name": "control_median",
-      "definition": "Control median survival used by the accrual/event model.",
-      "type": "number",
-      "unit": "time",
+      "name": "survival_endpoint",
+      "definition": "Event-time distribution and treatment effect.",
+      "type": "object",
+      "unit": "design",
       "required": true,
-      "valid_range": {
-        "exclusive_minimum": 0
-      },
+      "valid_range": null,
       "default": null,
-      "clinical_interpretation": "Control median survival used by the accrual/event model."
+      "clinical_interpretation": "Event-time distribution and treatment effect.",
+      "component_ref": "SurvivalEndpointSpec"
     },
     {
-      "name": "accrual_duration",
-      "definition": "Enrollment duration.",
-      "type": "number",
-      "unit": "time",
+      "name": "accrual",
+      "definition": "Accrual and analysis-horizon definition.",
+      "type": "object",
+      "unit": "design",
       "required": true,
-      "valid_range": {
-        "exclusive_minimum": 0
-      },
+      "valid_range": null,
       "default": null,
-      "clinical_interpretation": "Enrollment duration."
+      "clinical_interpretation": "Accrual and analysis-horizon definition.",
+      "component_ref": "AccrualSpec"
     },
     {
-      "name": "follow_up_duration",
-      "definition": "Additional follow-up after accrual.",
-      "type": "number",
-      "unit": "time",
+      "name": "dropout",
+      "definition": "Independent dropout model.",
+      "type": "object",
+      "unit": "design",
       "required": true,
-      "valid_range": {
-        "exclusive_minimum": 0
-      },
+      "valid_range": null,
       "default": null,
-      "clinical_interpretation": "Additional follow-up after accrual."
-    },
-    {
-      "name": "dropout_probability",
-      "definition": "Cumulative independent dropout probability over the stated horizon.",
-      "type": "number",
-      "unit": "dimensionless",
-      "required": true,
-      "valid_range": {
-        "minimum": 0,
-        "maximum": 1
-      },
-      "default": null,
-      "clinical_interpretation": "Cumulative independent dropout probability over the stated horizon."
+      "clinical_interpretation": "Independent dropout model.",
+      "component_ref": "DropoutSpec"
     },
     {
       "name": "allocation_ratio",
@@ -84,42 +67,6 @@
       },
       "default": 1,
       "clinical_interpretation": "Planned treatment-to-control sample-size ratio n_treatment / n_control."
-    },
-    {
-      "name": "alpha",
-      "definition": "Overall type-I error probability.",
-      "type": "number",
-      "unit": "dimensionless",
-      "required": true,
-      "valid_range": {
-        "exclusive_minimum": 0,
-        "exclusive_maximum": 1
-      },
-      "default": 0.05,
-      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis."
-    },
-    {
-      "name": "power",
-      "definition": "Target probability of rejecting the null under the design alternative.",
-      "type": "number",
-      "unit": "dimensionless",
-      "required": true,
-      "valid_range": {
-        "exclusive_minimum": 0,
-        "exclusive_maximum": 1
-      },
-      "default": 0.8,
-      "clinical_interpretation": "Target probability of rejecting the null under the design alternative."
-    },
-    {
-      "name": "design_specification",
-      "definition": "Prespecified rpact sequential design.",
-      "type": "object",
-      "unit": "design",
-      "required": true,
-      "valid_range": null,
-      "default": null,
-      "clinical_interpretation": "Prespecified rpact sequential design."
     }
   ],
   "alpha": {
@@ -142,16 +89,80 @@
     "package": "rpact",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "rpact::getSampleSizeSurvival",
-    "parameter_mapping": {
-      "design_specification": "design",
-      "alternative_hazard_ratio": "theta/lambda/median mapping",
-      "allocation_ratio": "allocationRatioPlanned",
-      "accrual/dropout inputs": "documented survival arguments"
-    },
-    "output_mapping": {
-      "events": "maxNumberOfEvents",
-      "sample_size": "maxNumberOfSubjects"
-    },
+    "parameter_mapping": [
+      {
+        "package_argument": "design",
+        "source_type": "design_component",
+        "source": "sequential_design.rpact_design",
+        "transformation": null
+      },
+      {
+        "package_argument": "lambda1",
+        "source_type": "derived_parameter",
+        "source": "lambda_treatment",
+        "transformation": null
+      },
+      {
+        "package_argument": "lambda2",
+        "source_type": "derived_parameter",
+        "source": "lambda_control",
+        "transformation": null
+      },
+      {
+        "package_argument": "accrualTime",
+        "source_type": "design_component",
+        "source": "accrual.accrual_duration",
+        "transformation": null
+      },
+      {
+        "package_argument": "accrualIntensity",
+        "source_type": "constant",
+        "source": 1,
+        "transformation": "Uniform accrual; scale is solved by rpact"
+      },
+      {
+        "package_argument": "followUpTime",
+        "source_type": "design_component",
+        "source": "accrual.additional_follow_up",
+        "transformation": null
+      },
+      {
+        "package_argument": "dropoutRate1",
+        "source_type": "derived_parameter",
+        "source": "dropout_hazard",
+        "transformation": null
+      },
+      {
+        "package_argument": "dropoutRate2",
+        "source_type": "derived_parameter",
+        "source": "dropout_hazard",
+        "transformation": null
+      },
+      {
+        "package_argument": "dropoutTime",
+        "source_type": "design_component",
+        "source": "dropout.dropout_horizon",
+        "transformation": null
+      },
+      {
+        "package_argument": "allocationRatioPlanned",
+        "source_type": "clinical_input",
+        "source": "allocation_ratio",
+        "transformation": null
+      }
+    ],
+    "output_mapping": [
+      {
+        "package_output": "maxNumberOfEvents",
+        "semantic_output": "maximum_events",
+        "unit": "events"
+      },
+      {
+        "package_output": "maxNumberOfSubjects",
+        "semantic_output": "maximum_analyzable_subjects",
+        "unit": "subjects"
+      }
+    ],
     "runtime": "R",
     "formal_arguments": [
       {
@@ -285,5 +296,446 @@
     "Reproduce official package examples for the pinned version.",
     "Compare forward power and inverse sample-size results on a prespecified grid.",
     "Verify null-boundary type-I error and clinically relevant alternatives independently."
+  ],
+  "specification_status": "SPEC_FROZEN",
+  "design_components": [
+    {
+      "name": "sequential_design",
+      "component_type": "SequentialDesignSpec",
+      "required": true,
+      "fields": [
+        {
+          "name": "number_of_looks",
+          "definition": "Number of planned analyses including the final analysis.",
+          "type": "integer",
+          "unit": "looks",
+          "required": true,
+          "valid_range": {
+            "minimum": 1
+          },
+          "default": null,
+          "clinical_interpretation": "Number of planned analyses including the final analysis."
+        },
+        {
+          "name": "information_rates",
+          "definition": "Cumulative information fractions, strictly increasing and ending at 1.",
+          "type": "array",
+          "unit": "fraction",
+          "required": true,
+          "valid_range": null,
+          "default": null,
+          "clinical_interpretation": "Cumulative information fractions, strictly increasing and ending at 1."
+        },
+        {
+          "name": "overall_alpha",
+          "definition": "Overall familywise type-I error used to construct efficacy boundaries.",
+          "type": "number",
+          "unit": "probability",
+          "required": true,
+          "valid_range": {
+            "exclusive_minimum": 0,
+            "exclusive_maximum": 1
+          },
+          "default": null,
+          "clinical_interpretation": "Overall familywise type-I error used to construct efficacy boundaries."
+        },
+        {
+          "name": "target_power",
+          "definition": "Target power; beta = 1 - target_power is used for beta spending.",
+          "type": "number",
+          "unit": "probability",
+          "required": true,
+          "valid_range": {
+            "exclusive_minimum": 0,
+            "exclusive_maximum": 1
+          },
+          "default": null,
+          "clinical_interpretation": "Target power; beta = 1 - target_power is used for beta spending."
+        },
+        {
+          "name": "sidedness",
+          "definition": "Number of test sides used by rpact.",
+          "type": "integer",
+          "unit": "sides",
+          "required": true,
+          "valid_range": {
+            "allowed_values": [
+              1,
+              2
+            ]
+          },
+          "default": null,
+          "clinical_interpretation": "Number of test sides used by rpact."
+        },
+        {
+          "name": "efficacy_boundary_type",
+          "definition": "Efficacy-boundary or alpha-spending family.",
+          "type": "string",
+          "unit": "category",
+          "required": true,
+          "valid_range": null,
+          "default": null,
+          "clinical_interpretation": "Efficacy-boundary or alpha-spending family."
+        },
+        {
+          "name": "futility_boundary_type",
+          "definition": "Futility-boundary or beta-spending family; use none when absent.",
+          "type": "string",
+          "unit": "category",
+          "required": true,
+          "valid_range": null,
+          "default": "none",
+          "clinical_interpretation": "Futility-boundary or beta-spending family; use none when absent."
+        },
+        {
+          "name": "binding_futility",
+          "definition": "Whether futility boundaries are binding for type-I-error calculations.",
+          "type": "boolean",
+          "unit": "boolean",
+          "required": true,
+          "valid_range": null,
+          "default": false,
+          "clinical_interpretation": "Whether futility boundaries are binding for type-I-error calculations."
+        },
+        {
+          "name": "alpha_spending_parameters",
+          "definition": "Named parameters required by the selected efficacy spending family.",
+          "type": "object",
+          "unit": "parameters",
+          "required": false,
+          "valid_range": null,
+          "default": {},
+          "clinical_interpretation": "Named parameters required by the selected efficacy spending family."
+        },
+        {
+          "name": "beta_spending_parameters",
+          "definition": "Named parameters required by the selected futility spending family.",
+          "type": "object",
+          "unit": "parameters",
+          "required": false,
+          "valid_range": null,
+          "default": {},
+          "clinical_interpretation": "Named parameters required by the selected futility spending family."
+        }
+      ],
+      "adapter": {
+        "runtime": "R",
+        "package": "rpact",
+        "function": "rpact::getDesignGroupSequential",
+        "formal_arguments": [
+          {
+            "name": "kMax",
+            "required": false,
+            "package_default": "NA",
+            "semantic_role": "Package argument populated by the declared adapter mapping."
+          },
+          {
+            "name": "alpha",
+            "required": false,
+            "package_default": "NA",
+            "semantic_role": "Package argument populated by the declared adapter mapping."
+          },
+          {
+            "name": "beta",
+            "required": false,
+            "package_default": "NA",
+            "semantic_role": "Package argument populated by the declared adapter mapping."
+          },
+          {
+            "name": "sided",
+            "required": false,
+            "package_default": "NA",
+            "semantic_role": "Package argument populated by the declared adapter mapping."
+          },
+          {
+            "name": "informationRates",
+            "required": false,
+            "package_default": "NA",
+            "semantic_role": "Package argument populated by the declared adapter mapping."
+          },
+          {
+            "name": "typeOfDesign",
+            "required": false,
+            "package_default": "NA",
+            "semantic_role": "Package argument populated by the declared adapter mapping."
+          },
+          {
+            "name": "typeBetaSpending",
+            "required": false,
+            "package_default": "NA",
+            "semantic_role": "Package argument populated by the declared adapter mapping."
+          },
+          {
+            "name": "bindingFutility",
+            "required": false,
+            "package_default": "NA",
+            "semantic_role": "Package argument populated by the declared adapter mapping."
+          },
+          {
+            "name": "gammaA",
+            "required": false,
+            "package_default": "NA",
+            "semantic_role": "Package argument populated by the declared adapter mapping."
+          },
+          {
+            "name": "gammaB",
+            "required": false,
+            "package_default": "NA",
+            "semantic_role": "Package argument populated by the declared adapter mapping."
+          }
+        ],
+        "parameter_mapping": [
+          {
+            "package_argument": "kMax",
+            "source_type": "design_component",
+            "source": "sequential_design.number_of_looks",
+            "transformation": null
+          },
+          {
+            "package_argument": "informationRates",
+            "source_type": "design_component",
+            "source": "sequential_design.information_rates",
+            "transformation": null
+          },
+          {
+            "package_argument": "alpha",
+            "source_type": "design_component",
+            "source": "sequential_design.overall_alpha",
+            "transformation": null
+          },
+          {
+            "package_argument": "beta",
+            "source_type": "design_component",
+            "source": "sequential_design.target_power",
+            "transformation": "1 - target_power"
+          },
+          {
+            "package_argument": "sided",
+            "source_type": "design_component",
+            "source": "sequential_design.sidedness",
+            "transformation": null
+          },
+          {
+            "package_argument": "typeOfDesign",
+            "source_type": "design_component",
+            "source": "sequential_design.efficacy_boundary_type",
+            "transformation": null
+          },
+          {
+            "package_argument": "typeBetaSpending",
+            "source_type": "design_component",
+            "source": "sequential_design.futility_boundary_type",
+            "transformation": null
+          },
+          {
+            "package_argument": "bindingFutility",
+            "source_type": "design_component",
+            "source": "sequential_design.binding_futility",
+            "transformation": null
+          },
+          {
+            "package_argument": "gammaA",
+            "source_type": "design_component",
+            "source": "sequential_design.alpha_spending_parameters.gammaA",
+            "transformation": "Present only when required by efficacy_boundary_type"
+          },
+          {
+            "package_argument": "gammaB",
+            "source_type": "design_component",
+            "source": "sequential_design.beta_spending_parameters.gammaB",
+            "transformation": "Present only when required by futility_boundary_type"
+          }
+        ],
+        "output": "rpact_design"
+      }
+    },
+    {
+      "name": "survival_endpoint",
+      "component_type": "SurvivalEndpointSpec",
+      "required": true,
+      "fields": [
+        {
+          "name": "distribution",
+          "definition": "Parametric event-time distribution; this frozen adapter supports exponential only.",
+          "type": "string",
+          "unit": "category",
+          "required": true,
+          "valid_range": {
+            "allowed_values": [
+              "exponential"
+            ]
+          },
+          "default": "exponential",
+          "clinical_interpretation": "Parametric event-time distribution; this frozen adapter supports exponential only."
+        },
+        {
+          "name": "control_median",
+          "definition": "Median event time in the control arm.",
+          "type": "number",
+          "unit": "time",
+          "required": true,
+          "valid_range": {
+            "exclusive_minimum": 0
+          },
+          "default": null,
+          "clinical_interpretation": "Median event time in the control arm."
+        },
+        {
+          "name": "alternative_hazard_ratio",
+          "definition": "Treatment-to-control hazard ratio under the design alternative.",
+          "type": "number",
+          "unit": "dimensionless",
+          "required": true,
+          "valid_range": {
+            "exclusive_minimum": 0
+          },
+          "default": null,
+          "clinical_interpretation": "Treatment-to-control hazard ratio under the design alternative."
+        }
+      ],
+      "adapter": null
+    },
+    {
+      "name": "accrual",
+      "component_type": "AccrualSpec",
+      "required": true,
+      "fields": [
+        {
+          "name": "model",
+          "definition": "Accrual model supported by the adapter.",
+          "type": "string",
+          "unit": "category",
+          "required": true,
+          "valid_range": {
+            "allowed_values": [
+              "uniform"
+            ]
+          },
+          "default": "uniform",
+          "clinical_interpretation": "Accrual model supported by the adapter."
+        },
+        {
+          "name": "accrual_duration",
+          "definition": "Duration of uniform enrollment.",
+          "type": "number",
+          "unit": "time",
+          "required": true,
+          "valid_range": {
+            "exclusive_minimum": 0
+          },
+          "default": null,
+          "clinical_interpretation": "Duration of uniform enrollment."
+        },
+        {
+          "name": "additional_follow_up",
+          "definition": "Follow-up after accrual closes.",
+          "type": "number",
+          "unit": "time",
+          "required": true,
+          "valid_range": {
+            "minimum": 0
+          },
+          "default": null,
+          "clinical_interpretation": "Follow-up after accrual closes."
+        },
+        {
+          "name": "event_time_horizon",
+          "definition": "Calendar time from first enrollment through analysis; must equal accrual_duration + additional_follow_up.",
+          "type": "number",
+          "unit": "time",
+          "required": true,
+          "valid_range": {
+            "exclusive_minimum": 0
+          },
+          "default": null,
+          "clinical_interpretation": "Calendar time from first enrollment through analysis; must equal accrual_duration + additional_follow_up."
+        }
+      ],
+      "adapter": null
+    },
+    {
+      "name": "dropout",
+      "component_type": "DropoutSpec",
+      "required": true,
+      "fields": [
+        {
+          "name": "distribution",
+          "definition": "Independent dropout-time distribution; this frozen adapter supports exponential only.",
+          "type": "string",
+          "unit": "category",
+          "required": true,
+          "valid_range": {
+            "allowed_values": [
+              "exponential"
+            ]
+          },
+          "default": "exponential",
+          "clinical_interpretation": "Independent dropout-time distribution; this frozen adapter supports exponential only."
+        },
+        {
+          "name": "cumulative_dropout_probability",
+          "definition": "Cumulative dropout probability over dropout_horizon.",
+          "type": "number",
+          "unit": "probability",
+          "required": true,
+          "valid_range": {
+            "minimum": 0,
+            "exclusive_maximum": 1
+          },
+          "default": 0,
+          "clinical_interpretation": "Cumulative dropout probability over dropout_horizon."
+        },
+        {
+          "name": "dropout_horizon",
+          "definition": "Time horizon defining cumulative_dropout_probability; required when probability is positive.",
+          "type": "number",
+          "unit": "time",
+          "required": false,
+          "valid_range": {
+            "exclusive_minimum": 0
+          },
+          "default": null,
+          "clinical_interpretation": "Time horizon defining cumulative_dropout_probability; required when probability is positive."
+        }
+      ],
+      "adapter": null
+    }
+  ],
+  "derived_parameters": [
+    {
+      "name": "lambda_control",
+      "formula": "log(2) / survival_endpoint.control_median",
+      "inputs": [
+        "survival_endpoint.control_median"
+      ],
+      "output_unit": "hazard per time",
+      "assumptions": [
+        "Exponential event times."
+      ]
+    },
+    {
+      "name": "lambda_treatment",
+      "formula": "survival_endpoint.alternative_hazard_ratio * lambda_control",
+      "inputs": [
+        "survival_endpoint.alternative_hazard_ratio",
+        "lambda_control"
+      ],
+      "output_unit": "hazard per time",
+      "assumptions": [
+        "Proportional exponential hazards."
+      ]
+    },
+    {
+      "name": "dropout_hazard",
+      "formula": "-log(1 - dropout.cumulative_dropout_probability) / dropout.dropout_horizon; 0 when probability is 0",
+      "inputs": [
+        "dropout.cumulative_dropout_probability",
+        "dropout.dropout_horizon"
+      ],
+      "output_unit": "hazard per time",
+      "assumptions": [
+        "Exponential independent dropout; dropout_horizon is required when probability > 0."
+      ]
+    }
   ]
 }

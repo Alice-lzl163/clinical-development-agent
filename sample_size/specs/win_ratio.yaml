@@ -106,17 +106,51 @@
     "package": "WRestimates",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "WRestimates::wr.ss",
-    "parameter_mapping": {
-      "alpha": "alpha",
-      "1-power": "beta",
-      "alternative_win_ratio": "WR.true",
-      "allocation_ratio converted to treatment proportion": "k",
-      "tie probability derived from component model": "p.tie",
-      "log-WR variance derived from component model": "sigma.sqr"
-    },
-    "output_mapping": {
-      "sample_size": "N"
-    },
+    "parameter_mapping": [
+      {
+        "package_argument": "alpha",
+        "source_type": "clinical_input",
+        "source": "alpha",
+        "transformation": null
+      },
+      {
+        "package_argument": "beta",
+        "source_type": "unresolved",
+        "source": null,
+        "transformation": "Historical prose requires adapter specification"
+      },
+      {
+        "package_argument": "WR.true",
+        "source_type": "clinical_input",
+        "source": "alternative_win_ratio",
+        "transformation": null
+      },
+      {
+        "package_argument": "k",
+        "source_type": "unresolved",
+        "source": null,
+        "transformation": "Historical prose requires adapter specification"
+      },
+      {
+        "package_argument": "p.tie",
+        "source_type": "unresolved",
+        "source": null,
+        "transformation": "Historical prose requires adapter specification"
+      },
+      {
+        "package_argument": "sigma.sqr",
+        "source_type": "unresolved",
+        "source": null,
+        "transformation": "Historical prose requires adapter specification"
+      }
+    ],
+    "output_mapping": [
+      {
+        "package_output": "N",
+        "semantic_output": "sample_size",
+        "unit": "package-defined"
+      }
+    ],
     "runtime": "R",
     "formal_arguments": [
       {
@@ -182,5 +216,8 @@
     "Reproduce official package examples for the pinned version.",
     "Compare forward power and inverse sample-size results on a prespecified grid.",
     "Verify null-boundary type-I error and clinically relevant alternatives independently."
-  ]
+  ],
+  "specification_status": "DRAFT",
+  "design_components": [],
+  "derived_parameters": []
 }

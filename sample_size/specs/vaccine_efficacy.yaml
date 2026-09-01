@@ -152,19 +152,63 @@
     "package": "TrialSize",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "TrialSize::Vaccine.RDI / TrialSize::Vaccine.ELDI",
-    "parameter_mapping": {
-      "vaccine_estimand": "selects function",
-      "alpha": "alpha",
-      "relative_incidence_ci_half_width": "d for Vaccine.RDI",
-      "1-power": "beta for Vaccine.ELDI",
-      "null_conditional_case_probability": "theta0 for Vaccine.ELDI",
-      "derived vaccine_incidence / (vaccine_incidence + control_incidence)": "theta for Vaccine.ELDI",
-      "vaccine_incidence": "pt",
-      "control_incidence": "pc"
-    },
-    "output_mapping": {
-      "sample_size": "arm sizes"
-    },
+    "parameter_mapping": [
+      {
+        "package_argument": "selects",
+        "source_type": "clinical_input",
+        "source": "vaccine_estimand",
+        "transformation": null
+      },
+      {
+        "package_argument": "alpha",
+        "source_type": "clinical_input",
+        "source": "alpha",
+        "transformation": null
+      },
+      {
+        "package_argument": "d",
+        "source_type": "clinical_input",
+        "source": "relative_incidence_ci_half_width",
+        "transformation": null
+      },
+      {
+        "package_argument": "beta",
+        "source_type": "unresolved",
+        "source": null,
+        "transformation": "Historical prose requires adapter specification"
+      },
+      {
+        "package_argument": "theta0",
+        "source_type": "clinical_input",
+        "source": "null_conditional_case_probability",
+        "transformation": null
+      },
+      {
+        "package_argument": "theta",
+        "source_type": "unresolved",
+        "source": null,
+        "transformation": "Historical prose requires adapter specification"
+      },
+      {
+        "package_argument": "pt",
+        "source_type": "clinical_input",
+        "source": "vaccine_incidence",
+        "transformation": null
+      },
+      {
+        "package_argument": "pc",
+        "source_type": "clinical_input",
+        "source": "control_incidence",
+        "transformation": null
+      }
+    ],
+    "output_mapping": [
+      {
+        "package_output": "arm sizes",
+        "semantic_output": "sample_size",
+        "unit": "package-defined"
+      }
+    ],
     "runtime": "R",
     "formal_arguments": [
       {
@@ -235,5 +279,8 @@
     "Reproduce official package examples for the pinned version.",
     "Compare forward power and inverse sample-size results on a prespecified grid.",
     "Verify null-boundary type-I error and clinically relevant alternatives independently."
-  ]
+  ],
+  "specification_status": "DRAFT",
+  "design_components": [],
+  "derived_parameters": []
 }

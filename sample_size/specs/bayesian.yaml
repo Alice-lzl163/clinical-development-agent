@@ -107,8 +107,8 @@
     "package": null,
     "package_version_policy": "Not applicable; pin the specification and implementation commit.",
     "function": null,
-    "parameter_mapping": {},
-    "output_mapping": {},
+    "parameter_mapping": [],
+    "output_mapping": [],
     "runtime": "PYTHON",
     "formal_arguments": []
   },
@@ -138,5 +138,8 @@
     "Reproduce official package examples for the pinned version.",
     "Compare forward power and inverse sample-size results on a prespecified grid.",
     "Verify null-boundary type-I error and clinically relevant alternatives independently."
-  ]
+  ],
+  "specification_status": "DRAFT",
+  "design_components": [],
+  "derived_parameters": []
 }
