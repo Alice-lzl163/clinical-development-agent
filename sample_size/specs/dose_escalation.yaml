@@ -19,7 +19,7 @@
       "unit": "category",
       "required": true,
       "valid_range": {
-        "enum": [
+        "allowed_values": [
           "three_plus_three",
           "crm",
           "boin"
@@ -113,11 +113,9 @@
   },
   "engine": {
     "engine_family": "escalation",
-    "type": "simulation",
     "package": "escalation",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "escalation::simulate_trials",
-    "function_signature": "simulate_trials(selector_factory, num_sims, true_prob_tox, true_prob_eff = NULL, ...)",
     "parameter_mapping": {
       "selector_specification": "selector_factory",
       "simulation_replicates": "num_sims",
@@ -125,9 +123,36 @@
     },
     "output_mapping": {
       "operating_characteristics": "selection, allocation, toxicity, stopping summaries"
-    }
+    },
+    "runtime": "R",
+    "formal_arguments": [
+      {
+        "name": "selector_factory",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "num_sims",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "true_prob_tox",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "true_prob_eff",
+        "required": false,
+        "package_default": "NULL",
+        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      }
+    ]
   },
-  "method_type": "simulation",
+  "method_type": "operating_characteristics",
   "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
   "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
   "assumptions": [

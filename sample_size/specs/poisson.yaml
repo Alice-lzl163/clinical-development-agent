@@ -117,11 +117,9 @@
   },
   "engine": {
     "engine_family": "rpact",
-    "type": "exact_package",
     "package": "rpact",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "rpact::getSampleSizeCounts",
-    "function_signature": "getSampleSizeCounts(design = NULL, groups = 2, thetaH0 = 1, lambda1 = seq(0.2, 0.5, 0.1), lambda2 = 0.2, dispersion1 = 1, dispersion2 = 1, allocationRatioPlanned = 1, directionUpper = TRUE, ...) ",
     "parameter_mapping": {
       "treatment_rate": "lambda1",
       "control_rate": "lambda2",
@@ -130,9 +128,66 @@
     },
     "output_mapping": {
       "sample_size": "maxNumberOfSubjects"
-    }
+    },
+    "runtime": "R",
+    "formal_arguments": [
+      {
+        "name": "design",
+        "required": false,
+        "package_default": "NULL",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "groups",
+        "required": false,
+        "package_default": "2",
+        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      },
+      {
+        "name": "thetaH0",
+        "required": false,
+        "package_default": "1",
+        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      },
+      {
+        "name": "lambda1",
+        "required": false,
+        "package_default": "seq(0.2, 0.5, 0.1)",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "lambda2",
+        "required": false,
+        "package_default": "0.2",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "dispersion1",
+        "required": false,
+        "package_default": "1",
+        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      },
+      {
+        "name": "dispersion2",
+        "required": false,
+        "package_default": "1",
+        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      },
+      {
+        "name": "allocationRatioPlanned",
+        "required": false,
+        "package_default": "1",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "directionUpper",
+        "required": false,
+        "package_default": "TRUE",
+        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      }
+    ]
   },
-  "method_type": "asymptotic",
+  "method_type": "analytical_asymptotic",
   "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
   "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
   "assumptions": [

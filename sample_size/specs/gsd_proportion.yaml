@@ -117,11 +117,9 @@
   },
   "engine": {
     "engine_family": "rpact",
-    "type": "exact_package",
     "package": "rpact",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "rpact::getSampleSizeRates",
-    "function_signature": "getSampleSizeRates(design = NULL, groups = 2, riskRatio = FALSE, thetaH0 = 0, pi1 = seq(0.2, 0.5, 0.1), pi2 = 0.2, allocationRatioPlanned = 1, directionUpper = TRUE, maxNumberOfSubjects = NA_real_, ...) ",
     "parameter_mapping": {
       "design_specification": "design",
       "treatment_probability": "pi1",
@@ -131,9 +129,66 @@
     "output_mapping": {
       "sample_size": "maxNumberOfSubjects",
       "power": "overallReject"
-    }
+    },
+    "runtime": "R",
+    "formal_arguments": [
+      {
+        "name": "design",
+        "required": false,
+        "package_default": "NULL",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "groups",
+        "required": false,
+        "package_default": "2",
+        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      },
+      {
+        "name": "riskRatio",
+        "required": false,
+        "package_default": "FALSE",
+        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      },
+      {
+        "name": "thetaH0",
+        "required": false,
+        "package_default": "0",
+        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      },
+      {
+        "name": "pi1",
+        "required": false,
+        "package_default": "seq(0.2, 0.5, 0.1)",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "pi2",
+        "required": false,
+        "package_default": "0.2",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "allocationRatioPlanned",
+        "required": false,
+        "package_default": "1",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "directionUpper",
+        "required": false,
+        "package_default": "TRUE",
+        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      },
+      {
+        "name": "maxNumberOfSubjects",
+        "required": false,
+        "package_default": "NA_real_",
+        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      }
+    ]
   },
-  "method_type": "exact_package",
+  "method_type": "numerical",
   "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
   "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
   "assumptions": [

@@ -118,11 +118,9 @@
   },
   "engine": {
     "engine_family": "simr",
-    "type": "simulation",
     "package": "simr",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "simr::powerSim",
-    "function_signature": "powerSim(fit, test = fixed(getDefaultXname(fit)), sim = fit, fitOpts = list(), testOpts = list(), simOpts = list(), seed, ...)",
     "parameter_mapping": {
       "model_specification": "fit constructed and frozen before simulation",
       "analysis_test": "test",
@@ -132,7 +130,52 @@
     "output_mapping": {
       "power": "empirical rejection proportion",
       "sample_size": "smallest candidate meeting target"
-    }
+    },
+    "runtime": "R",
+    "formal_arguments": [
+      {
+        "name": "fit",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "test",
+        "required": false,
+        "package_default": "fixed(getDefaultXname(fit))",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "sim",
+        "required": false,
+        "package_default": "fit",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "fitOpts",
+        "required": false,
+        "package_default": "list()",
+        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      },
+      {
+        "name": "testOpts",
+        "required": false,
+        "package_default": "list()",
+        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      },
+      {
+        "name": "simOpts",
+        "required": false,
+        "package_default": "list()",
+        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      },
+      {
+        "name": "seed",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      }
+    ]
   },
   "method_type": "simulation",
   "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",

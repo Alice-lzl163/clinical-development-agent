@@ -139,13 +139,13 @@
   },
   "engine": {
     "engine_family": "custom_sim",
-    "type": "simulation",
     "package": null,
     "package_version_policy": "Not applicable; pin the specification and implementation commit.",
     "function": null,
-    "function_signature": null,
     "parameter_mapping": {},
-    "output_mapping": {}
+    "output_mapping": {},
+    "runtime": "PYTHON",
+    "formal_arguments": []
   },
   "method_type": "simulation",
   "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",

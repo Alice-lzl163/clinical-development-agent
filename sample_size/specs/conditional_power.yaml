@@ -39,7 +39,7 @@
       "unit": "category",
       "required": true,
       "valid_range": {
-        "enum": [
+        "allowed_values": [
           "planned",
           "observed",
           "specified"
@@ -89,11 +89,9 @@
   },
   "engine": {
     "engine_family": "rpact",
-    "type": "exact_package",
     "package": "rpact",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "rpact::getConditionalPower",
-    "function_signature": "getConditionalPower(stageResults, ..., thetaH1 = NA_real_, nPlanned = NA_real_, eventsOverStages = NA_real_, longTimeSimulationAllowed = FALSE)",
     "parameter_mapping": {
       "design/interim": "stageResults",
       "specified_future_effect": "thetaH1",
@@ -101,9 +99,42 @@
     },
     "output_mapping": {
       "power": "conditionalPower"
-    }
+    },
+    "runtime": "R",
+    "formal_arguments": [
+      {
+        "name": "stageResults",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "thetaH1",
+        "required": false,
+        "package_default": "NA_real_",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "nPlanned",
+        "required": false,
+        "package_default": "NA_real_",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "eventsOverStages",
+        "required": false,
+        "package_default": "NA_real_",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "longTimeSimulationAllowed",
+        "required": false,
+        "package_default": "FALSE",
+        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      }
+    ]
   },
-  "method_type": "asymptotic",
+  "method_type": "analytical_asymptotic",
   "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
   "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
   "assumptions": [

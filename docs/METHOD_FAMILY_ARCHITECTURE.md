@@ -23,67 +23,66 @@ The separation prevents aliases such as `gsd_survival` and `gsd_hazard` from bec
 ## Consolidation summary
 
 - User-facing test keys: **49**
-- Unique method IDs: **44**
+- Unique method IDs: **45**
 - Calculation engine families: **20**
 - Required R packages: **17**
-- Analytical-only method IDs: **3** (**3** user-facing keys)
-- Simulation-based method IDs: **12** (**13** user-facing keys; the two sequential-survival simulation aliases share one method)
+- Method classifications by user-facing key: `analytical_asymptotic` **21**, `analytical_exact` **6**, `numerical` **8**, `operating_characteristics` **6**, `precision` **1**, `simulation` **7**.
 
 Required packages at specification freeze: `MKpower`, `MedianaDesigner`, `PowerTOST`, `RBesT`, `TrialSize`, `WRestimates`, `cmprsk`, `escalation`, `gsDesign`, `gsDesignNB`, `mvtnorm`, `pROC`, `powerMediation`, `powerSurvEpi`, `pwr`, `rpact`, `simr`.
 
 ## User key → method → engine map
 
-| test_key | method_id | endpoint family | design family | engine family | method type | R package | authoritative function | lifecycle |
-|---|---|---|---|---|---|---|---|---|
-| `adaptive` | `adaptive_combination_design` | continuous_or_binary | adaptive | `rpact` | simulation | `rpact` | `rpact::getSimulationMeans` | EXPERIMENTAL |
-| `adaptive_simulate` | `adaptive_simulation` | continuous_or_binary | adaptive_simulation | `custom_sim` | simulation | — | specification-frozen custom engine | EXPERIMENTAL |
-| `anova` | `anova_oneway_balanced` | continuous | fixed_multi_arm | `pwr_anova` | exact_package | `pwr` | `pwr::pwr.anova.test` | VALIDATION_PENDING |
-| `assurance` | `bayesian_assurance_sim` | binary_or_continuous | bayesian_assurance | `custom_sim` | simulation | — | specification-frozen custom engine | EXPERIMENTAL |
-| `bayesian` | `bayesian_binary_decision_sim` | binary | bayesian_parallel | `custom_sim` | simulation | — | specification-frozen custom engine | EXPERIMENTAL |
-| `be_tost` | `bioequivalence_tost` | continuous_pk | bioequivalence | `powertost` | exact_package | `PowerTOST` | `PowerTOST::sampleN.TOST` | VALIDATION_PENDING |
-| `bland_altman` | `bland_altman_precision` | method_comparison | paired_precision | `analytical` | analytical | — | specification-frozen custom engine | VALIDATION_PENDING |
-| `cluster` | `cluster_design_effect_equal` | generic | cluster_randomized | `analytical` | analytical | — | specification-frozen custom engine | VALIDATION_PENDING |
-| `competing_risks` | `competing_risk_sim` | time_to_event_competing | fixed_parallel | `cmprsk` | simulation | `cmprsk` | `cmprsk::cuminc` | EXPERIMENTAL |
-| `conditional_power` | `conditional_power_design` | continuous_or_binary | interim_monitoring | `rpact` | asymptotic | `rpact` | `rpact::getConditionalPower` | VALIDATION_PENDING |
-| `cox_covariate` | `cox_covariate_effect` | time_to_event | regression | `powersurvepi` | asymptotic | `powerSurvEpi` | `powerSurvEpi::ssizeEpi / powerSurvEpi::ssizeEpiCont` | VALIDATION_PENDING |
-| `dose_escalation` | `dose_escalation_oc` | binary_toxicity | phase_i_dose_finding | `escalation` | simulation | `escalation` | `escalation::simulate_trials` | EXPERIMENTAL |
-| `dunnett` | `dunnett_many_to_one` | continuous | multiple_treatments_control | `mvtnorm` | exact_package | `mvtnorm` | `mvtnorm::qmvt` | VALIDATION_PENDING |
-| `equivalence` | `mean_equivalence_tost` | continuous | fixed_parallel_equivalence | `trialsize` | exact_package | `TrialSize` | `TrialSize::TwoSampleMean.Equivalence` | VALIDATION_PENDING |
-| `group_sequential` | `gs_mean` | continuous | group_sequential | `rpact` | exact_package | `rpact` | `rpact::getSampleSizeMeans` | VALIDATION_PENDING |
-| `gsd_hazard` | `gs_survival` | time_to_event | group_sequential | `rpact` | exact_package | `rpact` | `rpact::getSampleSizeSurvival` | VALIDATION_PENDING |
-| `gsd_hazard_sim` | `gs_survival_sim` | time_to_event | group_sequential_simulation | `rpact` | simulation | `rpact` | `rpact::getSimulationSurvival` | VALIDATION_PENDING |
-| `gsd_poisson` | `gs_counts` | count | group_sequential | `rpact` | exact_package | `rpact` | `rpact::getSampleSizeCounts` | VALIDATION_PENDING |
-| `gsd_proportion` | `gs_binary_rates` | binary | group_sequential | `rpact` | exact_package | `rpact` | `rpact::getSampleSizeRates` | VALIDATION_PENDING |
-| `gsd_survival` | `gs_survival` | time_to_event | group_sequential | `rpact` | exact_package | `rpact` | `rpact::getSampleSizeSurvival` | VALIDATION_PENDING |
-| `gsd_survival_sim` | `gs_survival_sim` | time_to_event | group_sequential_simulation | `rpact` | simulation | `rpact` | `rpact::getSimulationSurvival` | VALIDATION_PENDING |
-| `historical_controls` | `map_historical_borrowing` | binary_or_continuous | external_control_borrowing | `rbest` | simulation | `RBesT` | `RBesT::gMAP` | EXPERIMENTAL |
-| `mams` | `mams_simulation` | multiple_arms | multi_arm_multi_stage | `rpact` | simulation | `rpact` | `rpact::getSimulationMultiArmMeans` | EXPERIMENTAL |
-| `mediation` | `linear_mediation_sobel` | continuous | mediation | `powermediation` | asymptotic | `powerMediation` | `powerMediation::ssMediation.Sobel` | VALIDATION_PENDING |
-| `mixed_model` | `mixed_model_longitudinal_sim` | continuous_longitudinal | repeated_measures | `simr` | simulation | `simr` | `simr::powerSim` | EXPERIMENTAL |
-| `multiple_endpoints` | `multiple_endpoint_joint_power` | multiple_endpoints | multiple_primary | `mediana` | simulation | `MedianaDesigner` | `MedianaDesigner::MultAdj` | EXPERIMENTAL |
-| `must_win` | `multiple_endpoint_joint_power` | multiple_endpoints | co_primary | `mkpower` | asymptotic | `MKpower` | `MKpower::power.mpe.known.var` | VALIDATION_PENDING |
-| `ni_survival` | `cox_margin_design` | time_to_event | noninferiority | `trialsize` | asymptotic | `TrialSize` | `TrialSize::Cox.NIS` | VALIDATION_PENDING |
-| `non_inferiority` | `binary_risk_difference_margin` | binary | fixed_parallel_noninferiority | `trialsize` | exact_package | `TrialSize` | `TrialSize::TwoSampleProportion.NIS` | VALIDATION_PENDING |
-| `odds_ratio` | `binary_farrington_manning_or` | binary | fixed_parallel | `gsdesign` | asymptotic | `gsDesign` | `gsDesign::nBinomial` | VALIDATION_PENDING |
-| `poisson` | `count_two_sample` | count | fixed_parallel | `rpact` | asymptotic | `rpact` | `rpact::getSampleSizeCounts` | VALIDATION_PENDING |
-| `proportion_one` | `binary_one_sample` | binary | one_sample | `trialsize` | asymptotic | `TrialSize` | `TrialSize::OneSampleProportion.Equality` | VALIDATION_PENDING |
-| `proportion_paired` | `binary_paired_mcnemar` | binary | paired | `trialsize` | asymptotic | `TrialSize` | `TrialSize::McNemar.Test` | VALIDATION_PENDING |
-| `proportion_two` | `binary_two_sample_difference` | binary | fixed_parallel | `trialsize` | asymptotic | `TrialSize` | `TrialSize::TwoSampleProportion.Equality` | VALIDATION_PENDING |
-| `recurrent_events` | `recurrent_event_design` | recurrent_count | fixed_parallel | `gsdesignnb` | asymptotic | `gsDesignNB` | `gsDesignNB::sample_size_nbinom` | EXPERIMENTAL |
-| `risk_ratio` | `binary_farrington_manning_rr` | binary | fixed_parallel | `gsdesign` | asymptotic | `gsDesign` | `gsDesign::nBinomial` | VALIDATION_PENDING |
-| `roc` | `roc_auc_design` | diagnostic | case_control | `proc` | asymptotic | `pROC` | `pROC::power.roc.test` | EXPERIMENTAL |
-| `superiority_margin` | `binary_risk_difference_margin` | binary | fixed_parallel_superiority_margin | `trialsize` | asymptotic | `TrialSize` | `TrialSize::TwoSampleProportion.NIS` | VALIDATION_PENDING |
-| `survival` | `survival_schoenfeld_fixed` | time_to_event | fixed_parallel | `powersurvepi` | asymptotic | `powerSurvEpi` | `powerSurvEpi::ssizeCT` | VALIDATION_PENDING |
-| `survival_equivalence` | `cox_equivalence_tost` | time_to_event | equivalence | `trialsize` | asymptotic | `TrialSize` | `TrialSize::Cox.Equivalence` | VALIDATION_PENDING |
-| `survival_exact` | `survival_rpact_accrual` | time_to_event | fixed_parallel_accrual | `rpact` | exact_package | `rpact` | `rpact::getSampleSizeSurvival` | VALIDATION_PENDING |
-| `survival_historical` | `historical_survival_sensitivity` | time_to_event | single_arm_external_control | `custom_sim` | simulation | — | specification-frozen custom engine | EXPERIMENTAL |
-| `survival_one_sample` | `one_sample_exponential_survival` | time_to_event | one_sample | `analytical` | analytical | — | specification-frozen custom engine | EXPERIMENTAL |
-| `survival_superiority` | `cox_margin_design` | time_to_event | superiority_margin | `trialsize` | asymptotic | `TrialSize` | `TrialSize::Cox.NIS` | VALIDATION_PENDING |
-| `ttest_ind` | `mean_t_two_sample` | continuous | fixed_parallel | `pwr_t` | exact_package | `pwr` | `pwr::pwr.t.test` | VALIDATION_PENDING |
-| `ttest_one` | `mean_t_one_sample` | continuous | one_sample | `pwr_t` | exact_package | `pwr` | `pwr::pwr.t.test` | VALIDATION_PENDING |
-| `ttest_paired` | `mean_t_paired` | continuous | paired | `pwr_t` | exact_package | `pwr` | `pwr::pwr.t.test` | VALIDATION_PENDING |
-| `vaccine_efficacy` | `vaccine_incidence_design` | binary_incidence | vaccine_parallel | `trialsize` | asymptotic | `TrialSize` | `TrialSize::Vaccine.RDI / TrialSize::Vaccine.ELDI` | EXPERIMENTAL |
-| `win_ratio` | `win_ratio_design` | hierarchical_composite | fixed_parallel | `wrestimates` | asymptotic | `WRestimates` | `WRestimates::wr.ss` | EXPERIMENTAL |
+| test_key | method_id | endpoint family | design family | method type | runtime | engine family | R package | authoritative function | lifecycle |
+|---|---|---|---|---|---|---|---|---|---|
+| `adaptive` | `adaptive_combination_design` | continuous_or_binary | adaptive | operating_characteristics | R | `rpact` | `rpact` | `rpact::getSimulationMeans` | EXPERIMENTAL |
+| `adaptive_simulate` | `adaptive_simulation` | continuous_or_binary | adaptive_simulation | simulation | PYTHON | `custom_sim` | — | specification-frozen custom engine | EXPERIMENTAL |
+| `anova` | `anova_oneway_balanced` | continuous | fixed_multi_arm | analytical_exact | R | `pwr_anova` | `pwr` | `pwr::pwr.anova.test` | VALIDATION_PENDING |
+| `assurance` | `bayesian_assurance_sim` | binary_or_continuous | bayesian_assurance | operating_characteristics | PYTHON | `custom_sim` | — | specification-frozen custom engine | EXPERIMENTAL |
+| `bayesian` | `bayesian_binary_decision_sim` | binary | bayesian_parallel | simulation | PYTHON | `custom_sim` | — | specification-frozen custom engine | EXPERIMENTAL |
+| `be_tost` | `bioequivalence_tost` | continuous_pk | bioequivalence | numerical | R | `powertost` | `PowerTOST` | `PowerTOST::sampleN.TOST` | VALIDATION_PENDING |
+| `bland_altman` | `bland_altman_precision` | method_comparison | paired_precision | precision | NONE | `analytical` | — | specification-frozen custom engine | VALIDATION_PENDING |
+| `cluster` | `cluster_design_effect_equal` | generic | cluster_randomized | analytical_asymptotic | NONE | `analytical` | — | specification-frozen custom engine | VALIDATION_PENDING |
+| `competing_risks` | `competing_risk_sim` | time_to_event_competing | fixed_parallel | simulation | R | `cmprsk` | `cmprsk` | `cmprsk::cuminc` | EXPERIMENTAL |
+| `conditional_power` | `conditional_power_design` | continuous_or_binary | interim_monitoring | analytical_asymptotic | R | `rpact` | `rpact` | `rpact::getConditionalPower` | VALIDATION_PENDING |
+| `cox_covariate` | `cox_covariate_effect` | time_to_event | regression | analytical_asymptotic | R | `powersurvepi` | `powerSurvEpi` | `powerSurvEpi::ssizeEpi / powerSurvEpi::ssizeEpiCont` | VALIDATION_PENDING |
+| `dose_escalation` | `dose_escalation_oc` | binary_toxicity | phase_i_dose_finding | operating_characteristics | R | `escalation` | `escalation` | `escalation::simulate_trials` | EXPERIMENTAL |
+| `dunnett` | `dunnett_many_to_one` | continuous | multiple_treatments_control | numerical | R | `mvtnorm` | `mvtnorm` | `mvtnorm::qmvt` | VALIDATION_PENDING |
+| `equivalence` | `mean_equivalence_tost` | continuous | fixed_parallel_equivalence | analytical_exact | R | `trialsize` | `TrialSize` | `TrialSize::TwoSampleMean.Equivalence` | VALIDATION_PENDING |
+| `group_sequential` | `gs_mean` | continuous | group_sequential | numerical | R | `rpact` | `rpact` | `rpact::getSampleSizeMeans` | VALIDATION_PENDING |
+| `gsd_hazard` | `gs_survival` | time_to_event | group_sequential | numerical | R | `rpact` | `rpact` | `rpact::getSampleSizeSurvival` | VALIDATION_PENDING |
+| `gsd_hazard_sim` | `gs_survival_sim` | time_to_event | group_sequential_simulation | simulation | R | `rpact` | `rpact` | `rpact::getSimulationSurvival` | VALIDATION_PENDING |
+| `gsd_poisson` | `gs_counts` | count | group_sequential | numerical | R | `rpact` | `rpact` | `rpact::getSampleSizeCounts` | VALIDATION_PENDING |
+| `gsd_proportion` | `gs_binary_rates` | binary | group_sequential | numerical | R | `rpact` | `rpact` | `rpact::getSampleSizeRates` | VALIDATION_PENDING |
+| `gsd_survival` | `gs_survival` | time_to_event | group_sequential | numerical | R | `rpact` | `rpact` | `rpact::getSampleSizeSurvival` | VALIDATION_PENDING |
+| `gsd_survival_sim` | `gs_survival_sim` | time_to_event | group_sequential_simulation | simulation | R | `rpact` | `rpact` | `rpact::getSimulationSurvival` | VALIDATION_PENDING |
+| `historical_controls` | `map_historical_borrowing` | binary_or_continuous | external_control_borrowing | operating_characteristics | R | `rbest` | `RBesT` | `RBesT::gMAP` | EXPERIMENTAL |
+| `mams` | `mams_simulation` | multiple_arms | multi_arm_multi_stage | operating_characteristics | R | `rpact` | `rpact` | `rpact::getSimulationMultiArmMeans` | EXPERIMENTAL |
+| `mediation` | `linear_mediation_sobel` | continuous | mediation | analytical_asymptotic | R | `powermediation` | `powerMediation` | `powerMediation::ssMediation.Sobel` | VALIDATION_PENDING |
+| `mixed_model` | `mixed_model_longitudinal_sim` | continuous_longitudinal | repeated_measures | simulation | R | `simr` | `simr` | `simr::powerSim` | EXPERIMENTAL |
+| `multiple_endpoints` | `multiplicity_operating_characteristics` | multiple_endpoints | multiple_primary | operating_characteristics | R | `mediana` | `MedianaDesigner` | `MedianaDesigner::MultAdj` | EXPERIMENTAL |
+| `must_win` | `coprimary_conjunctive_power` | multiple_endpoints | co_primary | analytical_asymptotic | R | `mkpower` | `MKpower` | `MKpower::power.mpe.known.var` | VALIDATION_PENDING |
+| `ni_survival` | `cox_margin_design` | time_to_event | noninferiority | analytical_asymptotic | R | `trialsize` | `TrialSize` | `TrialSize::Cox.NIS` | VALIDATION_PENDING |
+| `non_inferiority` | `binary_risk_difference_margin` | binary | fixed_parallel_noninferiority | analytical_exact | R | `trialsize` | `TrialSize` | `TrialSize::TwoSampleProportion.NIS` | VALIDATION_PENDING |
+| `odds_ratio` | `binary_farrington_manning_or` | binary | fixed_parallel | analytical_asymptotic | R | `gsdesign` | `gsDesign` | `gsDesign::nBinomial` | VALIDATION_PENDING |
+| `poisson` | `count_two_sample` | count | fixed_parallel | analytical_asymptotic | R | `rpact` | `rpact` | `rpact::getSampleSizeCounts` | VALIDATION_PENDING |
+| `proportion_one` | `binary_one_sample` | binary | one_sample | analytical_asymptotic | R | `trialsize` | `TrialSize` | `TrialSize::OneSampleProportion.Equality` | VALIDATION_PENDING |
+| `proportion_paired` | `binary_paired_mcnemar` | binary | paired | analytical_asymptotic | R | `trialsize` | `TrialSize` | `TrialSize::McNemar.Test` | VALIDATION_PENDING |
+| `proportion_two` | `binary_two_sample_difference` | binary | fixed_parallel | analytical_asymptotic | R | `trialsize` | `TrialSize` | `TrialSize::TwoSampleProportion.Equality` | VALIDATION_PENDING |
+| `recurrent_events` | `recurrent_event_design` | recurrent_count | fixed_parallel | analytical_asymptotic | R | `gsdesignnb` | `gsDesignNB` | `gsDesignNB::sample_size_nbinom` | EXPERIMENTAL |
+| `risk_ratio` | `binary_farrington_manning_rr` | binary | fixed_parallel | analytical_asymptotic | R | `gsdesign` | `gsDesign` | `gsDesign::nBinomial` | VALIDATION_PENDING |
+| `roc` | `roc_auc_design` | diagnostic | case_control | analytical_asymptotic | R | `proc` | `pROC` | `pROC::power.roc.test` | EXPERIMENTAL |
+| `superiority_margin` | `binary_risk_difference_margin` | binary | fixed_parallel_superiority_margin | analytical_asymptotic | R | `trialsize` | `TrialSize` | `TrialSize::TwoSampleProportion.NIS` | VALIDATION_PENDING |
+| `survival` | `survival_schoenfeld_fixed` | time_to_event | fixed_parallel | analytical_asymptotic | R | `powersurvepi` | `powerSurvEpi` | `powerSurvEpi::ssizeCT` | VALIDATION_PENDING |
+| `survival_equivalence` | `cox_equivalence_tost` | time_to_event | equivalence | analytical_asymptotic | R | `trialsize` | `TrialSize` | `TrialSize::Cox.Equivalence` | VALIDATION_PENDING |
+| `survival_exact` | `survival_rpact_accrual` | time_to_event | fixed_parallel_accrual | numerical | R | `rpact` | `rpact` | `rpact::getSampleSizeSurvival` | VALIDATION_PENDING |
+| `survival_historical` | `historical_survival_sensitivity` | time_to_event | single_arm_external_control | simulation | PYTHON | `custom_sim` | — | specification-frozen custom engine | EXPERIMENTAL |
+| `survival_one_sample` | `one_sample_exponential_survival` | time_to_event | one_sample | analytical_asymptotic | NONE | `analytical` | — | specification-frozen custom engine | EXPERIMENTAL |
+| `survival_superiority` | `cox_margin_design` | time_to_event | superiority_margin | analytical_asymptotic | R | `trialsize` | `TrialSize` | `TrialSize::Cox.NIS` | VALIDATION_PENDING |
+| `ttest_ind` | `mean_t_two_sample` | continuous | fixed_parallel | analytical_exact | R | `pwr_t` | `pwr` | `pwr::pwr.t.test` | VALIDATION_PENDING |
+| `ttest_one` | `mean_t_one_sample` | continuous | one_sample | analytical_exact | R | `pwr_t` | `pwr` | `pwr::pwr.t.test` | VALIDATION_PENDING |
+| `ttest_paired` | `mean_t_paired` | continuous | paired | analytical_exact | R | `pwr_t` | `pwr` | `pwr::pwr.t.test` | VALIDATION_PENDING |
+| `vaccine_efficacy` | `vaccine_incidence_design` | binary_incidence | vaccine_parallel | analytical_asymptotic | R | `trialsize` | `TrialSize` | `TrialSize::Vaccine.RDI / TrialSize::Vaccine.ELDI` | EXPERIMENTAL |
+| `win_ratio` | `win_ratio_design` | hierarchical_composite | fixed_parallel | analytical_asymptotic | R | `wrestimates` | `WRestimates` | `WRestimates::wr.ss` | EXPERIMENTAL |
 
 ## Shared method families
 
@@ -91,11 +90,20 @@ Only method IDs used by more than one routing key are listed here; all other met
 
 | method_id | user-facing keys | reason for sharing |
 |---|---|---|
-| `binary_risk_difference_margin` | `non_inferiority`, `superiority_margin` | The same TrialSize margin engine is parameterized by hypothesis direction and signed boundary. |
-| `cox_margin_design` | `ni_survival`, `survival_superiority` | The same Cox margin engine supports NI or superiority after explicit log-HR orientation. |
+| `binary_risk_difference_margin` | `non_inferiority`, `superiority_margin` | The same TrialSize margin method is parameterized by hypothesis direction and signed boundary. |
+| `cox_margin_design` | `ni_survival`, `survival_superiority` | The same Cox margin method supports NI or superiority after explicit log-HR orientation. |
 | `gs_survival` | `gsd_hazard`, `gsd_survival` | Survival and hazard labels are semantic routes to one rpact group-sequential survival method. |
 | `gs_survival_sim` | `gsd_hazard_sim`, `gsd_survival_sim` | Both labels route to the same rpact survival operating-characteristics simulation. |
-| `multiple_endpoint_joint_power` | `multiple_endpoints`, `must_win` | The joint endpoint model is shared; `success_rule` selects conjunctive versus other multiplicity behavior. |
+
+## Multiple-endpoint method-ID decision
+
+`multiple_endpoint_joint_power` has been retired because it conflated statistically different success criteria and multiplicity structures.
+
+- `must_win` now uses `coprimary_conjunctive_power`: an intersection-union design in which every co-primary endpoint must succeed. For the currently specified continuous, known-covariance domain, it routes to `MKpower::power.mpe.known.var`.
+- `multiple_endpoints` now uses `multiplicity_operating_characteristics`: simulation of a fully specified FWER-controlling procedure and endpoint model, currently routed to `MedianaDesigner::MultAdj`.
+- Gatekeeping and graphical multiplicity are not silently treated as aliases of conjunctive or disjunctive power. They are procedure variants under `multiplicity_operating_characteristics` only when the complete hierarchy/graph, transition/recycling rules, endpoint model, and success criterion are supplied. If a future package adapter or validation record differs materially, they must receive separate method IDs.
+
+Thus co-primary conjunctive power and general multiple-primary FWER-controlled operating characteristics are separate statistical methods. Gatekeeping and graphical procedures remain explicit, fail-closed variants of the latter—not one generic scalar-correlation method.
 
 ## Engine-family responsibilities
 
@@ -133,6 +141,6 @@ Only method IDs used by more than one routing key are listed here; all other met
 
 ## Package/function provenance policy
 
-Function names and signatures in the YAML were checked against official package documentation. A signature records the formal package interface relevant to the adapter; `parameter_mapping` separately records how clinical inputs are derived or transformed. Where no verified function exactly represents the frozen method, package/function are null and the method remains experimental rather than inventing an API.
+Function names and structured formal arguments in the YAML were checked against official package documentation. The `formal_arguments` records capture the package interface relevant to the adapter; `parameter_mapping` separately records how clinical inputs are derived or transformed. Where no verified function exactly represents the frozen method, package/function are null and the method remains experimental rather than inventing an API.
 
 Verification sources include official CRAN help pages and package-owned documentation for `pwr`, `TrialSize`, `PowerTOST`, `rpact`, `simr`, `gsDesign`, `gsDesignNB`, `powerSurvEpi`, `cmprsk`, `pROC`, `mvtnorm`, `WRestimates`, `MKpower`, `MedianaDesigner`, `powerMediation`, `escalation`, and `RBesT`. Exact versions are intentionally not frozen here: the validation lockfile will select a version, record session information, and trigger revalidation on change.

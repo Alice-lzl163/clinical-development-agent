@@ -93,11 +93,9 @@
   },
   "engine": {
     "engine_family": "pwr_anova",
-    "type": "exact_package",
     "package": "pwr",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "pwr::pwr.anova.test",
-    "function_signature": "pwr.anova.test(k = NULL, n = NULL, f = NULL, sig.level = 0.05, power = NULL)",
     "parameter_mapping": {
       "groups": "k",
       "cohen_f": "f",
@@ -106,9 +104,42 @@
     },
     "output_mapping": {
       "n": "subjects per group"
-    }
+    },
+    "runtime": "R",
+    "formal_arguments": [
+      {
+        "name": "k",
+        "required": false,
+        "package_default": "NULL",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "n",
+        "required": false,
+        "package_default": "NULL",
+        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      },
+      {
+        "name": "f",
+        "required": false,
+        "package_default": "NULL",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "sig.level",
+        "required": false,
+        "package_default": "0.05",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "power",
+        "required": false,
+        "package_default": "NULL",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      }
+    ]
   },
-  "method_type": "exact_package",
+  "method_type": "analytical_exact",
   "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
   "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
   "assumptions": [

@@ -19,7 +19,7 @@
       "unit": "category",
       "required": true,
       "valid_range": {
-        "enum": [
+        "allowed_values": [
           "combination_test_ssr"
         ]
       },
@@ -124,11 +124,9 @@
   },
   "engine": {
     "engine_family": "rpact",
-    "type": "simulation",
     "package": "rpact",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "rpact::getSimulationMeans",
-    "function_signature": "getSimulationMeans(design = NULL, ... , conditionalPower = NA_real_, minNumberOfSubjectsPerStage = NA_real_, maxNumberOfSubjectsPerStage = NA_real_, iterations = 1000, seed = NA_real_)",
     "parameter_mapping": {
       "design/adaptation": "documented design and conditional-power arguments",
       "simulation_replicates": "iterations",
@@ -136,9 +134,48 @@
     },
     "output_mapping": {
       "operating_characteristics": "rejection, sample size, adaptation summaries"
-    }
+    },
+    "runtime": "R",
+    "formal_arguments": [
+      {
+        "name": "design",
+        "required": false,
+        "package_default": "NULL",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "conditionalPower",
+        "required": false,
+        "package_default": "NA_real_",
+        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      },
+      {
+        "name": "minNumberOfSubjectsPerStage",
+        "required": false,
+        "package_default": "NA_real_",
+        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      },
+      {
+        "name": "maxNumberOfSubjectsPerStage",
+        "required": false,
+        "package_default": "NA_real_",
+        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      },
+      {
+        "name": "iterations",
+        "required": false,
+        "package_default": "1000",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "seed",
+        "required": false,
+        "package_default": "NA_real_",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      }
+    ]
   },
-  "method_type": "simulation",
+  "method_type": "operating_characteristics",
   "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
   "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
   "assumptions": [

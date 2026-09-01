@@ -67,7 +67,7 @@
       "unit": "category",
       "required": true,
       "valid_range": {
-        "enum": [
+        "allowed_values": [
           "2x2",
           "parallel"
         ]
@@ -132,11 +132,9 @@
   },
   "engine": {
     "engine_family": "powertost",
-    "type": "exact_package",
     "package": "PowerTOST",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "PowerTOST::sampleN.TOST",
-    "function_signature": "sampleN.TOST(alpha = 0.05, targetpower = 0.8, logscale = TRUE, theta0 = 0.95, theta1, theta2, CV, design = \"2x2\", method = \"exact\", robust = FALSE, print = TRUE, details = FALSE)",
     "parameter_mapping": {
       "alpha": "alpha",
       "power": "targetpower",
@@ -148,9 +146,84 @@
     },
     "output_mapping": {
       "sample_size": "total sample size reported by package"
-    }
+    },
+    "runtime": "R",
+    "formal_arguments": [
+      {
+        "name": "alpha",
+        "required": false,
+        "package_default": "0.05",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "targetpower",
+        "required": false,
+        "package_default": "0.8",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "logscale",
+        "required": false,
+        "package_default": "TRUE",
+        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      },
+      {
+        "name": "theta0",
+        "required": false,
+        "package_default": "0.95",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "theta1",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "theta2",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "CV",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "design",
+        "required": false,
+        "package_default": "\"2x2\"",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "method",
+        "required": false,
+        "package_default": "\"exact\"",
+        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      },
+      {
+        "name": "robust",
+        "required": false,
+        "package_default": "FALSE",
+        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      },
+      {
+        "name": "print",
+        "required": false,
+        "package_default": "TRUE",
+        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      },
+      {
+        "name": "details",
+        "required": false,
+        "package_default": "FALSE",
+        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      }
+    ]
   },
-  "method_type": "exact_package",
+  "method_type": "numerical",
   "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
   "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
   "assumptions": [

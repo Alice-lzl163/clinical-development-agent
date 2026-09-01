@@ -1,6 +1,6 @@
 {
   "test_key": "must_win",
-  "method_id": "multiple_endpoint_joint_power",
+  "method_id": "coprimary_conjunctive_power",
   "display_name": "All co-primary endpoints must succeed",
   "endpoint_family": "multiple_endpoints",
   "design_family": "co_primary",
@@ -39,7 +39,7 @@
       "unit": "category",
       "required": true,
       "valid_range": {
-        "enum": [
+        "allowed_values": [
           "all_endpoints",
           "at_least_one_endpoint"
         ]
@@ -116,11 +116,9 @@
   },
   "engine": {
     "engine_family": "mkpower",
-    "type": "asymptotic",
     "package": "MKpower",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "MKpower::power.mpe.known.var",
-    "function_signature": "power.mpe.known.var(K, n = NULL, delta = NULL, Sigma, SD, rho, sig.level = 0.05, power = NULL, n.max = 1e5, tol = .Machine$double.eps^0.25)",
     "parameter_mapping": {
       "number of endpoints": "K",
       "candidate or solved sample size": "n",
@@ -132,9 +130,72 @@
     "output_mapping": {
       "power": "conjunctive power",
       "sample_size": "n"
-    }
+    },
+    "runtime": "R",
+    "formal_arguments": [
+      {
+        "name": "K",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "n",
+        "required": false,
+        "package_default": "NULL",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "delta",
+        "required": false,
+        "package_default": "NULL",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "Sigma",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "SD",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "rho",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "sig.level",
+        "required": false,
+        "package_default": "0.05",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "power",
+        "required": false,
+        "package_default": "NULL",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "n.max",
+        "required": false,
+        "package_default": "1e5",
+        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      },
+      {
+        "name": "tol",
+        "required": false,
+        "package_default": ".Machine$double.eps^0.25",
+        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      }
+    ]
   },
-  "method_type": "asymptotic",
+  "method_type": "analytical_asymptotic",
   "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
   "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
   "assumptions": [

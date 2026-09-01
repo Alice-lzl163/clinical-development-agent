@@ -19,7 +19,7 @@
       "unit": "category",
       "required": true,
       "valid_range": {
-        "enum": [
+        "allowed_values": [
           "relative_disease_incidence",
           "exposure_longitudinal_disease_incidence"
         ]
@@ -85,7 +85,7 @@
       "unit": "dimensionless",
       "required": true,
       "valid_range": {
-        "enum": [
+        "allowed_values": [
           1
         ]
       },
@@ -149,11 +149,9 @@
   },
   "engine": {
     "engine_family": "trialsize",
-    "type": "exact_package",
     "package": "TrialSize",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "TrialSize::Vaccine.RDI / TrialSize::Vaccine.ELDI",
-    "function_signature": "Vaccine.RDI(alpha, d, pt, pc) or Vaccine.ELDI(alpha, beta, theta0, theta, pt, pc); vaccine_estimand selects exactly one documented interface",
     "parameter_mapping": {
       "vaccine_estimand": "selects function",
       "alpha": "alpha",
@@ -166,9 +164,54 @@
     },
     "output_mapping": {
       "sample_size": "arm sizes"
-    }
+    },
+    "runtime": "R",
+    "formal_arguments": [
+      {
+        "name": "alpha",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "d",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "pt",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "pc",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "beta",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "theta0",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "theta",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      }
+    ]
   },
-  "method_type": "asymptotic",
+  "method_type": "analytical_asymptotic",
   "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
   "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
   "assumptions": [

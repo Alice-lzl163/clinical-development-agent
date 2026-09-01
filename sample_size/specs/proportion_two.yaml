@@ -107,11 +107,9 @@
   },
   "engine": {
     "engine_family": "trialsize",
-    "type": "exact_package",
     "package": "TrialSize",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "TrialSize::TwoSampleProportion.Equality",
-    "function_signature": "TwoSampleProportion.Equality(alpha, beta, p1, p2, k = 1)",
     "parameter_mapping": {
       "alpha": "alpha",
       "1-power": "beta",
@@ -121,9 +119,42 @@
     },
     "output_mapping": {
       "sample_size": "arm sizes"
-    }
+    },
+    "runtime": "R",
+    "formal_arguments": [
+      {
+        "name": "alpha",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "beta",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "p1",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "p2",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "k",
+        "required": false,
+        "package_default": "1",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      }
+    ]
   },
-  "method_type": "asymptotic",
+  "method_type": "analytical_asymptotic",
   "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
   "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
   "assumptions": [

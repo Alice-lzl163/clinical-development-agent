@@ -103,11 +103,9 @@
   },
   "engine": {
     "engine_family": "wrestimates",
-    "type": "asymptotic",
     "package": "WRestimates",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "WRestimates::wr.ss",
-    "function_signature": "wr.ss(alpha = 0.025, beta = 0.1, WR.true = 1, k, p.tie, sigma.sqr)",
     "parameter_mapping": {
       "alpha": "alpha",
       "1-power": "beta",
@@ -118,9 +116,48 @@
     },
     "output_mapping": {
       "sample_size": "N"
-    }
+    },
+    "runtime": "R",
+    "formal_arguments": [
+      {
+        "name": "alpha",
+        "required": false,
+        "package_default": "0.025",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "beta",
+        "required": false,
+        "package_default": "0.1",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "WR.true",
+        "required": false,
+        "package_default": "1",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "k",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "p.tie",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "sigma.sqr",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      }
+    ]
   },
-  "method_type": "asymptotic",
+  "method_type": "analytical_asymptotic",
   "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
   "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
   "assumptions": [

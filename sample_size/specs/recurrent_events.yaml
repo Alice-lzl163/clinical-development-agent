@@ -118,7 +118,7 @@
       "unit": "category",
       "required": true,
       "valid_range": {
-        "enum": [
+        "allowed_values": [
           "negative_binomial",
           "andersen_gill_robust"
         ]
@@ -144,11 +144,9 @@
   },
   "engine": {
     "engine_family": "gsdesignnb",
-    "type": "asymptotic",
     "package": "gsDesignNB",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "gsDesignNB::sample_size_nbinom",
-    "function_signature": "sample_size_nbinom(lambda1, lambda2, dispersion, power = NULL, alpha = 0.025, sided = 1, ratio = 1, rr0 = 1, accrual_rate, accrual_duration, trial_duration, dropout_rate = 0, max_followup = NULL, test_type = c(\"wald\", \"score\"), event_gap = NULL)",
     "parameter_mapping": {
       "control_rate": "lambda1",
       "treatment_rate": "lambda2",
@@ -164,9 +162,102 @@
       "sample_size": "n1, n2, n_total",
       "events": "events_n1, events_n2, total_events",
       "power": "power"
-    }
+    },
+    "runtime": "R",
+    "formal_arguments": [
+      {
+        "name": "lambda1",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "lambda2",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "dispersion",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "power",
+        "required": false,
+        "package_default": "NULL",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "alpha",
+        "required": false,
+        "package_default": "0.025",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "sided",
+        "required": false,
+        "package_default": "1",
+        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      },
+      {
+        "name": "ratio",
+        "required": false,
+        "package_default": "1",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "rr0",
+        "required": false,
+        "package_default": "1",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "accrual_rate",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "accrual_duration",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "trial_duration",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "dropout_rate",
+        "required": false,
+        "package_default": "0",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "max_followup",
+        "required": false,
+        "package_default": "NULL",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "test_type",
+        "required": false,
+        "package_default": "c(\"wald\", \"score\")",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "event_gap",
+        "required": false,
+        "package_default": "NULL",
+        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      }
+    ]
   },
-  "method_type": "asymptotic",
+  "method_type": "analytical_asymptotic",
   "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
   "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
   "assumptions": [

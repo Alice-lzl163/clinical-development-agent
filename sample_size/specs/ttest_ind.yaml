@@ -93,11 +93,9 @@
   },
   "engine": {
     "engine_family": "pwr_t",
-    "type": "exact_package",
     "package": "pwr",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "pwr::pwr.t.test",
-    "function_signature": "pwr.t.test(n = NULL, d = NULL, sig.level = 0.05, power = NULL, type = c(\"two.sample\", \"one.sample\", \"paired\"), alternative = c(\"two.sided\", \"less\", \"greater\"))",
     "parameter_mapping": {
       "standardized_effect": "d",
       "alpha": "sig.level",
@@ -107,9 +105,48 @@
     },
     "output_mapping": {
       "n": "per-arm sample size before allocation/dropout"
-    }
+    },
+    "runtime": "R",
+    "formal_arguments": [
+      {
+        "name": "n",
+        "required": false,
+        "package_default": "NULL",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "d",
+        "required": false,
+        "package_default": "NULL",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "sig.level",
+        "required": false,
+        "package_default": "0.05",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "power",
+        "required": false,
+        "package_default": "NULL",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "type",
+        "required": false,
+        "package_default": "c(\"two.sample\", \"one.sample\", \"paired\")",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "alternative",
+        "required": false,
+        "package_default": "c(\"two.sided\", \"less\", \"greater\")",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      }
+    ]
   },
-  "method_type": "exact_package",
+  "method_type": "analytical_exact",
   "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
   "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
   "assumptions": [

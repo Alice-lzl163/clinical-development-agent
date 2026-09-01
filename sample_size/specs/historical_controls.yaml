@@ -104,20 +104,75 @@
   },
   "engine": {
     "engine_family": "rbest",
-    "type": "simulation",
     "package": "RBesT",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "RBesT::gMAP",
-    "function_signature": "gMAP(formula, family = gaussian, data, weights, tau.dist = \"HalfNormal\", tau.prior, beta.prior, tau.strata, contrasts = NULL, ... )",
     "parameter_mapping": {
       "map_model and historical_studies": "formula, family, data, weights, tau/beta priors",
       "current trial simulation": "uses predictive prior derived from gMAP"
     },
     "output_mapping": {
       "prior": "MAP posterior/predictive mixture used by a separate frozen simulation layer"
-    }
+    },
+    "runtime": "R",
+    "formal_arguments": [
+      {
+        "name": "formula",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "family",
+        "required": false,
+        "package_default": "gaussian",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "data",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "weights",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "tau.dist",
+        "required": false,
+        "package_default": "\"HalfNormal\"",
+        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      },
+      {
+        "name": "tau.prior",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      },
+      {
+        "name": "beta.prior",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      },
+      {
+        "name": "tau.strata",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      },
+      {
+        "name": "contrasts",
+        "required": false,
+        "package_default": "NULL",
+        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      }
+    ]
   },
-  "method_type": "simulation",
+  "method_type": "operating_characteristics",
   "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
   "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
   "assumptions": [

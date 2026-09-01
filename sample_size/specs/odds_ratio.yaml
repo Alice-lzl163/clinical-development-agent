@@ -118,11 +118,9 @@
   },
   "engine": {
     "engine_family": "gsdesign",
-    "type": "asymptotic",
     "package": "gsDesign",
     "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
     "function": "gsDesign::nBinomial",
-    "function_signature": "nBinomial(p1, p2, beta = 0.1, alpha = 0.025, sided = 1, delta0 = 0, ratio = 1, scale = c(\"Difference\", \"RR\", \"OR\"), np = 1)",
     "parameter_mapping": {
       "control_probability": "p1",
       "derived treatment probability under alternative": "p2",
@@ -134,9 +132,66 @@
     },
     "output_mapping": {
       "n": "total analyzable sample size"
-    }
+    },
+    "runtime": "R",
+    "formal_arguments": [
+      {
+        "name": "p1",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "p2",
+        "required": true,
+        "package_default": null,
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "beta",
+        "required": false,
+        "package_default": "0.1",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "alpha",
+        "required": false,
+        "package_default": "0.025",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "sided",
+        "required": false,
+        "package_default": "1",
+        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      },
+      {
+        "name": "delta0",
+        "required": false,
+        "package_default": "0",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "ratio",
+        "required": false,
+        "package_default": "1",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "scale",
+        "required": false,
+        "package_default": "c(\"Difference\", \"RR\", \"OR\")",
+        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
+      },
+      {
+        "name": "np",
+        "required": false,
+        "package_default": "1",
+        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      }
+    ]
   },
-  "method_type": "asymptotic",
+  "method_type": "analytical_asymptotic",
   "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
   "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
   "assumptions": [

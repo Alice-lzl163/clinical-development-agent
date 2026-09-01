@@ -92,15 +92,15 @@
   },
   "engine": {
     "engine_family": "analytical",
-    "type": "analytical",
     "package": null,
     "package_version_policy": "Not applicable; pin the specification and implementation commit.",
     "function": null,
-    "function_signature": null,
     "parameter_mapping": {},
-    "output_mapping": {}
+    "output_mapping": {},
+    "runtime": "NONE",
+    "formal_arguments": []
   },
-  "method_type": "analytical",
+  "method_type": "analytical_asymptotic",
   "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
   "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
   "assumptions": [
