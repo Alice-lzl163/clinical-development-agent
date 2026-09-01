@@ -1,0 +1,52 @@
+schema_version: 1
+validation_round: "4.2"
+validation_date: "2026-09-01"
+validation_basis_commit: fb9ed65
+outcome: DEPENDENCY_BLOCKED
+environment:
+  Rscript: NOT_FOUND
+  R_version: null
+  R_platform: null
+  Python_version: "3.12.13"
+  Python_platform: "Windows-11-10.0.26100-SP0 AMD64"
+  SciPy_status: NOT_FOUND
+  SciPy_version: null
+  packages:
+    jsonlite: {status: NOT_AUDITABLE_WITHOUT_R, version: null, library_path: null}
+    pwr: {status: NOT_AUDITABLE_WITHOUT_R, version: null, library_path: null}
+    TrialSize: {status: NOT_AUDITABLE_WITHOUT_R, version: null, library_path: null}
+    PowerTOST: {status: NOT_AUDITABLE_WITHOUT_R, version: null, library_path: null}
+benchmarks: {total: 24, numerically_executed: 0, passed: 0, failed: 0, pending: 24}
+methods:
+  - &blocked
+    test_key: ttest_one
+    implementation_status: IMPLEMENTED_UNVALIDATED
+    specification_status: SPEC_FROZEN
+    package_reproduction: BLOCKED
+    round_trip_validation: BLOCKED
+    independent_reference_validation: BLOCKED
+    monotonicity_validation: BLOCKED
+    dropout_rounding_validation: BLOCKED
+    reproducibility_validation: BLOCKED
+    validated_R_version: null
+    validated_package_version: null
+    benchmark_count: 4
+    benchmark_passed: 0
+    benchmark_failed: 0
+    validation_status: IMPLEMENTED_UNVALIDATED
+    remaining_issues: [DEPENDENCY_MISSING_R_RUNTIME, DEPENDENCY_MISSING_VALIDATION_REFERENCE]
+  - <<: *blocked
+    test_key: ttest_paired
+    benchmark_count: 3
+  - <<: *blocked
+    test_key: ttest_ind
+    benchmark_count: 4
+  - <<: *blocked
+    test_key: anova
+    benchmark_count: 5
+  - <<: *blocked
+    test_key: proportion_two
+    benchmark_count: 3
+  - <<: *blocked
+    test_key: be_tost
+    benchmark_count: 5
