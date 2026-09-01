@@ -125,8 +125,8 @@
     "output_mapping": [
       {
         "package_output": "n",
-        "semantic_output": "analyzable_total_sample_size",
-        "unit": "subjects"
+        "semantic_output": "analyzable_sample_size_per_group",
+        "unit": "subjects per group"
       }
     ],
     "runtime": "R",
@@ -164,8 +164,8 @@
     ]
   },
   "method_type": "analytical_exact",
-  "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
-  "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
+  "dropout_handling": "Inflate each equal-sized group separately as ceil(analyzable_per_group / (1 - dropout_rate)); randomized_total is groups * randomized_per_group.",
+  "rounding_rule": "Ceil package n to analyzable subjects per group, preserve equal group sizes, then apply dropout inflation and ceiling separately per group.",
   "assumptions": [
     "The continuous endpoint model and fixed_multi_arm design are correctly specified.",
     "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
@@ -183,9 +183,58 @@
     "Compare with noncentral-F calculations and simulation under balanced designs",
     "Reproduce official package examples for the pinned version.",
     "Compare forward power and inverse sample-size results on a prespecified grid.",
-    "Verify null-boundary type-I error and clinically relevant alternatives independently."
+    "Verify null-boundary type-I error and clinically relevant alternatives independently.",
+    "For groups = 3 and package n = 32, require analyzable_per_group = 32 and analyzable_total = 96; reject total N = 32."
   ],
   "specification_status": "SPEC_FROZEN",
   "design_components": [],
-  "derived_parameters": []
+  "derived_parameters": [
+    {
+      "name": "analyzable_per_group",
+      "formula": "ceil(package_n)",
+      "inputs": [
+        "package_n"
+      ],
+      "output_unit": "subjects per group",
+      "assumptions": [
+        "pwr::pwr.anova.test returns n per group."
+      ]
+    },
+    {
+      "name": "analyzable_total",
+      "formula": "groups * analyzable_per_group",
+      "inputs": [
+        "groups",
+        "analyzable_per_group"
+      ],
+      "output_unit": "subjects",
+      "assumptions": [
+        "All groups have the same analyzable size."
+      ]
+    },
+    {
+      "name": "randomized_per_group",
+      "formula": "ceil(analyzable_per_group / (1 - dropout_rate))",
+      "inputs": [
+        "analyzable_per_group",
+        "dropout_rate"
+      ],
+      "output_unit": "subjects per group",
+      "assumptions": [
+        "Dropout inflation is applied identically to each group."
+      ]
+    },
+    {
+      "name": "randomized_total",
+      "formula": "groups * randomized_per_group",
+      "inputs": [
+        "groups",
+        "randomized_per_group"
+      ],
+      "output_unit": "subjects",
+      "assumptions": [
+        "Equal integer group sizes are preserved."
+      ]
+    }
+  ]
 }

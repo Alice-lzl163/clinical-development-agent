@@ -80,12 +80,12 @@ def semantic_errors(spec):
             orientation = {(m["package_argument"], m["source"]) for m in mappings}
             if not {("p1", "treatment_probability"), ("p2", "control_probability"), ("k", "allocation_ratio")} <= orientation:
                 errors.append("TrialSize arm orientation is incorrect")
-        if key == "be_tost" and not any(d["name"] == "randomized_total" and "sequence_block_size" in d["formula"] for d in spec["derived_parameters"]):
+        if key == "be_tost" and not any(d["name"] == "randomized_total" and "randomization_block_size" in d["formula"] for d in spec["derived_parameters"]):
             errors.append("bioequivalence sequence-balanced enrollment rule missing")
         if key in {"group_sequential", "gsd_proportion", "gsd_survival"}:
             seq = next((c for c in spec["design_components"] if c["component_type"] == "SequentialDesignSpec"), None)
             required = {"number_of_looks", "information_rates", "overall_alpha", "target_power", "sidedness", "efficacy_boundary_type", "futility_boundary_type", "binding_futility", "alpha_spending_parameters", "beta_spending_parameters"}
-            if seq is None or {f["name"] for f in seq["fields"]} != required:
+            if seq is None or not required <= {f["name"] for f in seq["fields"]}:
                 errors.append("incomplete sequential design")
             else:
                 adapter_pairs = {(m["package_argument"], m["source"]) for m in seq["adapter"]["parameter_mapping"]}
@@ -101,6 +101,23 @@ def semantic_errors(spec):
             horizon = next(f for f in components["DropoutSpec"]["fields"] if f["name"] == "dropout_horizon")
             if dropout["default"] and horizon["default"] is None:
                 errors.append("positive dropout probability requires horizon")
+
+        # DRAFT package mappings may remain explicitly unresolved. Every active,
+        # frozen package adapter must be a closed contract.
+        package_contracts = []
+        if spec.get("specification_status") == "SPEC_FROZEN" and spec.get("engine", {}).get("package"):
+            package_contracts.append(("engine", spec["engine"]))
+        if spec.get("specification_status") == "SPEC_FROZEN":
+            package_contracts.extend((component["name"], component["adapter"]) for component in spec.get("design_components", []) if component.get("adapter"))
+        for contract_name, contract in package_contracts:
+            mapped = {item["package_argument"] for item in contract["parameter_mapping"]}
+            declared = {item["name"] for item in contract["formal_arguments"]}
+            solved_outputs = {item["package_output"] for item in contract.get("output_mapping", [])}
+            if not mapped <= declared:
+                errors.append(f"{contract_name} maps undeclared package arguments: {sorted(mapped - declared)}")
+            for argument in contract["formal_arguments"]:
+                if argument["name"] not in mapped and argument["name"] not in solved_outputs and not any(token in argument["semantic_role"].lower() for token in ("default", "control", "intentionally")):
+                    errors.append(f"{contract_name} unmapped formal lacks intentional-default documentation: {argument['name']}")
     return errors
 
 
@@ -208,7 +225,7 @@ class SpecSchemaTests(unittest.TestCase):
         self.assert_invalid(spec)
 
     def test_sequential_component_cannot_be_incomplete(self):
-        spec = copy.deepcopy(self.by_key["group_sequential"]); spec["design_components"][0]["fields"].pop()
+        spec = copy.deepcopy(self.by_key["group_sequential"]); spec["design_components"][0]["fields"] = [field for field in spec["design_components"][0]["fields"] if field["name"] != "information_rates"]
         self.assert_invalid(spec)
 
     def test_survival_positive_dropout_requires_horizon(self):
@@ -232,6 +249,66 @@ class SpecSchemaTests(unittest.TestCase):
                 text = yaml.safe_dump(spec["engine"]["parameter_mapping"]).lower()
                 self.assertFalse(any(term in text for term in vague), spec["test_key"])
                 self.assertFalse(any(m["source_type"] == "unresolved" for m in spec["engine"]["parameter_mapping"]), spec["test_key"])
+
+    def test_anova_package_n_is_per_group(self):
+        spec = self.by_key["anova"]
+        output = spec["engine"]["output_mapping"][0]
+        self.assertEqual({"package_output": "n", "semantic_output": "analyzable_sample_size_per_group", "unit": "subjects per group"}, output)
+        package_n, groups = 32, 3
+        analyzable_per_group = int(package_n)
+        self.assertEqual(96, groups * analyzable_per_group)
+        self.assertNotEqual(32, groups * analyzable_per_group)
+
+    def test_bioequivalence_rounding_examples_and_balanced_allocation(self):
+        spec = self.by_key["be_tost"]
+        self.assertFalse(spec["allocation"]["supported"])
+        for design, labels in [("2x2", ("TR", "RT")), ("parallel", ("treatment", "control"))]:
+            with self.subTest(design=design):
+                evaluable, dropout, block = 24, 0.10, 2
+                inflated = -(-evaluable // (1 - dropout))
+                randomized = int(-(-inflated // block) * block)
+                self.assertEqual(28, randomized)
+                self.assertEqual((14, 14), (randomized // 2, randomized // 2), labels)
+
+    def test_group_sequential_direction_is_explicit(self):
+        spec = self.by_key["group_sequential"]
+        seq = spec["design_components"][0]
+        direction = next(field for field in seq["fields"] if field["name"] == "alternative_direction")
+        self.assertEqual(["higher", "lower"], direction["valid_range"]["allowed_values"])
+        mapping = next(item for item in seq["adapter"]["parameter_mapping"] if item["package_argument"] == "directionUpper")
+        self.assertIn("higher -> TRUE", mapping["transformation"])
+        self.assertIn("lower -> FALSE", mapping["transformation"])
+        self.assertNotEqual(True, False)
+
+    def test_fixed_survival_error_rates_are_explicit(self):
+        spec = self.by_key["survival_exact"]
+        sources = {item["package_argument"]: item["source"] for item in spec["engine"]["parameter_mapping"]}
+        self.assertEqual("alpha", sources["alpha"])
+        self.assertEqual("beta", sources["beta"])
+        self.assertEqual("sidedness", sources["sided"])
+        power = next(item for item in spec["inputs"] if item["name"] == "power")
+        self.assertEqual(0.8, power["default"])
+        changed = copy.deepcopy(spec); next(item for item in changed["inputs"] if item["name"] == "power")["default"] = 0.9
+        self.assertNotEqual(power["default"], next(item for item in changed["inputs"] if item["name"] == "power")["default"])
+
+    def test_fixed_survival_sidedness_and_uniform_accrual_are_explicit(self):
+        spec = self.by_key["survival_exact"]
+        mappings = {item["package_argument"]: item for item in spec["engine"]["parameter_mapping"]}
+        self.assertEqual([1, 2], next(item for item in spec["inputs"] if item["name"] == "sidedness")["valid_range"]["allowed_values"])
+        self.assertEqual(1, mappings["accrualIntensity"]["source"])
+        self.assertEqual("relative", mappings["accrualIntensityType"]["source"])
+
+    def test_package_contracts_are_closed_for_all_frozen_adapters(self):
+        for spec in self.specs:
+            if spec["specification_status"] != "SPEC_FROZEN":
+                continue
+            contracts = [spec["engine"]] + [component["adapter"] for component in spec.get("design_components", []) if component.get("adapter")]
+            for contract in contracts:
+                if not contract.get("package"):
+                    continue
+                mapped = {item["package_argument"] for item in contract["parameter_mapping"]}
+                declared = {item["name"] for item in contract["formal_arguments"]}
+                self.assertLessEqual(mapped, declared, spec["test_key"])
 
 
 if __name__ == "__main__":

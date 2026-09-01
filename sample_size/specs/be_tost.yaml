@@ -120,9 +120,9 @@
     "convention": "Each component one-sided test uses alpha; resulting TOST confidence level is 1 - 2*alpha."
   },
   "allocation": {
-    "ratio_definition": "n_treatment / n_control",
-    "supported": true,
-    "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power."
+    "ratio_definition": "Balanced 1:1 TR/RT sequences for 2x2 and balanced 1:1 treatment/control arms for parallel.",
+    "supported": false,
+    "rounding_rule": "Round randomized total upward to a multiple of 2 and assign half to each sequence or arm."
   },
   "solve_modes": {
     "sample_size": true,
@@ -263,14 +263,16 @@
     ]
   },
   "method_type": "numerical",
-  "dropout_handling": "Treat PowerTOST output as evaluable total; inflate by 1/(1-dropout_rate), then round upward to a complete randomization block.",
-  "rounding_rule": "For design 2x2, round randomized total upward to an even number so TR and RT sequence counts are equal; never report the evaluable total as randomized total.",
+  "dropout_handling": "Treat PowerTOST output as evaluable_total; inflate by 1/(1-dropout_rate), round upward to a two-person block, and allocate equally to TR/RT or treatment/control.",
+  "rounding_rule": "For both 2x2 and parallel, randomized_total = ceil(ceil(evaluable_total/(1-dropout_rate))/2)*2; assign randomized_total/2 to each sequence or arm.",
   "assumptions": [
     "The continuous_pk endpoint model and bioequivalence design are correctly specified.",
     "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
     "The planned primary analysis matches the hypothesis and engine mapping in this specification."
   ],
-  "unsupported_domains": [],
+  "unsupported_domains": [
+    "Unequal sequence allocation or unequal parallel-arm allocation."
+  ],
   "warnings": [],
   "validation_grade": "V1",
   "migration_action": "KEEP",
@@ -282,33 +284,46 @@
     "Reproduce PowerTOST manual examples and regulatory worked examples; forward/reverse round trips",
     "Reproduce official package examples for the pinned version.",
     "Compare forward power and inverse sample-size results on a prespecified grid.",
-    "Verify null-boundary type-I error and clinically relevant alternatives independently."
+    "Verify null-boundary type-I error and clinically relevant alternatives independently.",
+    "2x2: evaluable_total 24 with dropout_rate 0.10 yields randomized_total 28 and 14 subjects in each of TR and RT.",
+    "Parallel: evaluable_total 24 with dropout_rate 0.10 yields randomized_total 28 and 14 subjects in each treatment arm."
   ],
   "specification_status": "SPEC_FROZEN",
   "design_components": [],
   "derived_parameters": [
     {
-      "name": "sequence_block_size",
-      "formula": "2 when design == '2x2'",
+      "name": "randomization_block_size",
+      "formula": "2 if design in {'2x2', 'parallel'}",
       "inputs": [
         "design"
       ],
       "output_unit": "subjects",
       "assumptions": [
-        "A 2x2 crossover randomizes equally to TR and RT sequences."
+        "Only balanced 2x2 and balanced parallel designs are frozen."
       ]
     },
     {
       "name": "randomized_total",
-      "formula": "ceil(ceil(evaluable_total / (1 - dropout_rate)) / sequence_block_size) * sequence_block_size",
+      "formula": "ceil(ceil(evaluable_total / (1 - dropout_rate)) / randomization_block_size) * randomization_block_size",
       "inputs": [
+        "evaluable_total",
         "dropout_rate",
-        "design",
-        "sequence_block_size"
+        "randomization_block_size"
       ],
       "output_unit": "subjects",
       "assumptions": [
         "Dropout inflation occurs after PowerTOST returns evaluable total sample size."
+      ]
+    },
+    {
+      "name": "randomized_per_sequence_or_arm",
+      "formula": "randomized_total / 2",
+      "inputs": [
+        "randomized_total"
+      ],
+      "output_unit": "subjects per sequence or arm",
+      "assumptions": [
+        "The randomized total is an even multiple of the two-person balance block."
       ]
     }
   ]

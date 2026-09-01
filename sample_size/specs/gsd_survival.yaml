@@ -238,6 +238,12 @@
         "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
       },
       {
+        "name": "followUpTime",
+        "required": false,
+        "package_default": "NA_real_",
+        "semantic_role": "Package argument populated by the declared adapter mapping."
+      },
+      {
         "name": "dropoutRate1",
         "required": false,
         "package_default": "0",

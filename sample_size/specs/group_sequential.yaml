@@ -9,7 +9,7 @@
     "null": "difference = 0 at every look",
     "alternative": "difference = planned alternative",
     "effect_measure": "mean_difference",
-    "beneficial_direction": "higher_or_lower_explicit"
+    "beneficial_direction": "higher_or_lower_explicit_via_sequential_design.alternative_direction"
   },
   "inputs": [
     {
@@ -194,7 +194,8 @@
   "assumptions": [
     "The continuous endpoint model and group_sequential design are correctly specified.",
     "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
-    "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+    "The planned primary analysis matches the hypothesis and engine mapping in this specification.",
+    "One-sided direction is prespecified by alternative_direction and is never inferred from the sign of mean_difference."
   ],
   "unsupported_domains": [],
   "warnings": [],
@@ -329,6 +330,21 @@
           "valid_range": null,
           "default": {},
           "clinical_interpretation": "Named parameters required by the selected futility spending family."
+        },
+        {
+          "name": "alternative_direction",
+          "definition": "Prespecified direction for a one-sided test; not applicable to two-sided designs.",
+          "type": "string",
+          "unit": "category",
+          "required": true,
+          "valid_range": {
+            "allowed_values": [
+              "higher",
+              "lower"
+            ]
+          },
+          "default": "higher",
+          "clinical_interpretation": "Prespecified direction for a one-sided test; not applicable to two-sided designs."
         }
       ],
       "adapter": {
@@ -395,6 +411,12 @@
             "required": false,
             "package_default": "NA",
             "semantic_role": "Package argument populated by the declared adapter mapping."
+          },
+          {
+            "name": "directionUpper",
+            "required": false,
+            "package_default": "NA",
+            "semantic_role": "Direction flag populated explicitly for one-sided designs; intentionally NA for two-sided designs."
           }
         ],
         "parameter_mapping": [
@@ -457,6 +479,12 @@
             "source_type": "design_component",
             "source": "sequential_design.beta_spending_parameters.gammaB",
             "transformation": "Present only when required by futility_boundary_type"
+          },
+          {
+            "package_argument": "directionUpper",
+            "source_type": "design_component",
+            "source": "sequential_design.alternative_direction",
+            "transformation": "If sidedness == 1: higher -> TRUE and lower -> FALSE; if sidedness == 2: NA"
           }
         ],
         "output": "rpact_design"

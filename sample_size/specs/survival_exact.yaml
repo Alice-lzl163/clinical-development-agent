@@ -56,11 +56,52 @@
       },
       "default": 1,
       "clinical_interpretation": "Planned treatment-to-control sample-size ratio n_treatment / n_control."
+    },
+    {
+      "name": "alpha",
+      "definition": "Overall type-I error probability for the fixed survival design.",
+      "type": "number",
+      "unit": "probability",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.05,
+      "clinical_interpretation": "Overall type-I error probability for the fixed survival design."
+    },
+    {
+      "name": "power",
+      "definition": "Target power for the fixed survival design.",
+      "type": "number",
+      "unit": "probability",
+      "required": true,
+      "valid_range": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 1
+      },
+      "default": 0.8,
+      "clinical_interpretation": "Target power for the fixed survival design."
+    },
+    {
+      "name": "sidedness",
+      "definition": "Number of sides for the fixed survival test.",
+      "type": "integer",
+      "unit": "sides",
+      "required": true,
+      "valid_range": {
+        "allowed_values": [
+          1,
+          2
+        ]
+      },
+      "default": 1,
+      "clinical_interpretation": "Number of sides for the fixed survival test."
     }
   ],
   "alpha": {
     "sidedness": "one_or_two_sided",
-    "convention": "Overall alpha; one-sided uses alpha and two-sided divides alpha equally between tails."
+    "convention": "Explicit overall alpha is passed with sided = 1 or 2 to the fixed design constructed internally by rpact; package defaults are not used."
   },
   "allocation": {
     "ratio_definition": "n_treatment / n_control",
@@ -86,6 +127,24 @@
         "transformation": "NULL requests fixed design"
       },
       {
+        "package_argument": "alpha",
+        "source_type": "clinical_input",
+        "source": "alpha",
+        "transformation": null
+      },
+      {
+        "package_argument": "beta",
+        "source_type": "derived_parameter",
+        "source": "beta",
+        "transformation": null
+      },
+      {
+        "package_argument": "sided",
+        "source_type": "clinical_input",
+        "source": "sidedness",
+        "transformation": null
+      },
+      {
         "package_argument": "lambda1",
         "source_type": "derived_parameter",
         "source": "lambda_treatment",
@@ -107,7 +166,13 @@
         "package_argument": "accrualIntensity",
         "source_type": "constant",
         "source": 1,
-        "transformation": "Uniform accrual; scale is solved by rpact"
+        "transformation": "Uniform relative accrual intensity fixed at 1"
+      },
+      {
+        "package_argument": "accrualIntensityType",
+        "source_type": "constant",
+        "source": "relative",
+        "transformation": null
       },
       {
         "package_argument": "followUpTime",
@@ -159,6 +224,24 @@
         "required": false,
         "package_default": "NULL",
         "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
+      },
+      {
+        "name": "alpha",
+        "required": false,
+        "package_default": "NA_real_ (forwarded through ... to getDesignFixed; effective package default 0.025)",
+        "semantic_role": "Explicit fixed-design alpha forwarded through getSampleSizeSurvival(...) to getDesignFixed."
+      },
+      {
+        "name": "beta",
+        "required": false,
+        "package_default": "NA_real_ (forwarded through ... to getDesignFixed; effective package default 0.2)",
+        "semantic_role": "Explicit fixed-design beta forwarded through getSampleSizeSurvival(...) to getDesignFixed."
+      },
+      {
+        "name": "sided",
+        "required": false,
+        "package_default": "1L (forwarded through ... to getDesignFixed)",
+        "semantic_role": "Explicit fixed-design sidedness forwarded through getSampleSizeSurvival(...) to getDesignFixed."
       },
       {
         "name": "groups",
@@ -227,6 +310,18 @@
         "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
       },
       {
+        "name": "accrualIntensityType",
+        "required": false,
+        "package_default": "c(\"auto\", \"absolute\", \"relative\")",
+        "semantic_role": "Package argument populated by the declared adapter mapping."
+      },
+      {
+        "name": "followUpTime",
+        "required": false,
+        "package_default": "NA_real_",
+        "semantic_role": "Package argument populated by the declared adapter mapping."
+      },
+      {
         "name": "dropoutRate1",
         "required": false,
         "package_default": "0",
@@ -270,7 +365,8 @@
   "assumptions": [
     "The time_to_event endpoint model and fixed_parallel_accrual design are correctly specified.",
     "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
-    "The planned primary analysis matches the hypothesis and engine mapping in this specification."
+    "The planned primary analysis matches the hypothesis and engine mapping in this specification.",
+    "Uniform relative accrual is explicit: accrualIntensity = 1 and accrualIntensityType = 'relative'."
   ],
   "unsupported_domains": [],
   "warnings": [
@@ -477,6 +573,17 @@
       "output_unit": "hazard per time",
       "assumptions": [
         "Exponential independent dropout; dropout_horizon is required when probability > 0."
+      ]
+    },
+    {
+      "name": "beta",
+      "formula": "1 - power",
+      "inputs": [
+        "power"
+      ],
+      "output_unit": "probability",
+      "assumptions": [
+        "Power and beta are complementary for the fixed alternative."
       ]
     }
   ]
