@@ -1,6 +1,6 @@
-# ct-samplesize v5 — the published skill is stdlib-only: NO third-party runtime
-# dependencies (argparse / json / urllib / math ... standard library only).
-# The coze R engine runs server-side; local computation needs nothing extra.
+# Local specification validation dependencies.
+PyYAML==6.0.2
+jsonschema==4.25.1
 #
 # Optional extras (not required for core computation):
 #   cairosvg — only for --figure-mode png_file (local SVG→PNG rasterization).

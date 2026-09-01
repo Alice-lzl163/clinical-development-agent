@@ -1,0 +1,20 @@
+schema_version: 1
+runtime:
+  executable: Rscript
+  automatic_install: false
+helper_packages:
+  jsonlite:
+    version_policy: exact_version_must_be_pinned_after_benchmark_validation
+statistical_packages:
+  pwr:
+    functions: [pwr.t.test, pwr.anova.test]
+    methods: [ttest_one, ttest_paired, ttest_ind, anova]
+    version_policy: exact_version_must_be_pinned_after_benchmark_validation
+  TrialSize:
+    functions: [TwoSampleProportion.Equality]
+    methods: [proportion_two]
+    version_policy: exact_version_must_be_pinned_after_benchmark_validation
+  PowerTOST:
+    functions: [sampleN.TOST, power.TOST]
+    methods: [be_tost]
+    version_policy: exact_version_must_be_pinned_after_benchmark_validation
