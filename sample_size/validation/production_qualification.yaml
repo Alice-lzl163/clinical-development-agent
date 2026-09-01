@@ -1,0 +1,66 @@
+schema_version: 1
+qualification_round: "4.3"
+lifecycle_dimensions:
+  statistical_specification:
+    states:
+      SPEC_DRAFT: Editable and not authorized for implementation.
+      SPEC_FROZEN: Reviewed contract whose statistical meaning may change only through change control.
+  implementation:
+    states:
+      IMPLEMENTED_UNVALIDATED: Executable implementation without complete numerical validation.
+      BENCHMARK_VALIDATED: Implementation passed every required numerical gate in a recorded dependency environment.
+  numerical_validation:
+    states: [NOT_RUN, FAILED, BENCHMARK_VALIDATED]
+  production_qualification:
+    states:
+      NOT_ASSESSED: Production controls have not been assessed.
+      PRODUCTION_CANDIDATE: Every candidate gate is evidenced, but release approval has not occurred.
+      PRODUCTION: Candidate gates, independent approval, and release controls are complete.
+benchmark_validated_contract:
+  required_gates: [authoritative_package_reproduction, forward_inverse_round_trip, independent_numerical_reference, allocation_dropout_rounding, edge_cases_monotonicity, reproducible_source_calls, validated_dependency_versions, fixture_level_evidence]
+  exclusions: [regulatory_qualification, production_readiness, correctness_outside_declared_assumptions, equivalence_under_arbitrary_dependency_versions]
+version_policy:
+  states:
+    MATCHED_VALIDATED_ENVIRONMENT: Exact validated R and package versions.
+    UNVALIDATED_VERSION: Executable version without runtime-equivalence evidence; warn and withhold BENCHMARK_VALIDATED runtime status.
+    INCOMPATIBLE_VERSION: Known incompatible version; fail closed.
+  validated:
+    R: "4.6.1"
+    pwr: "1.3.0"
+    TrialSize: "1.4.1"
+    PowerTOST: "1.5.7"
+  automatic_install_or_downgrade: false
+production_candidate_checklist:
+  statistical_contract: [spec_frozen, estimand_hypothesis_explicit, alpha_sidedness_explicit, allocation_explicit, solve_modes_explicit, dropout_explicit, rounding_explicit, unsupported_domains_explicit]
+  numerical_validation: [benchmark_validated, provenance_complete, versions_recorded, tolerances_documented]
+  api_behavior: [required_input_validation, prohibited_input_rejection, unknown_field_rejection, solve_mode_validation, fail_closed_routing, no_silent_inference, no_engine_substitution]
+  runtime_behavior: [rscript_unavailable, package_unavailable, incompatible_version, malformed_result, nonzero_exit, timeout, nonfinite_result, nonsensical_sample_size, operating_system_behavior]
+  reproducibility: [r_code, engine_function, package_versions, derived_parameters, rounding_transform, benchmark_id]
+  output_contract: [method_identity, assumptions, analyzable_n, randomized_n, allocation, target_achieved_power, alpha, effect, dropout, warnings_limitations, reproducible_code, validation_status]
+  change_control: [benchmark_regression, spec_identifier, implementation_version, dependency_policy, revalidation_triggers]
+revalidation_policy:
+  NO_REVALIDATION: [documentation_only, spelling_or_formatting_without_contract_change]
+  TARGETED_REVALIDATION: [nonstatistical_api_serialization, new_fail_closed_error_mapping, operating_system_adapter_change]
+  FULL_METHOD_REVALIDATION: [statistical_formula, method_spec, adapter_logic, allocation_logic, dropout_logic, rounding_logic, R_package_version, authoritative_R_function, numerical_tolerance, benchmark]
+method_assessment:
+  - &common
+    test_key: ttest_one
+    benchmark_validated: true
+    statistical_contract_complete: true
+    api_behavior_complete: true
+    runtime_failure_complete: false
+    reproducibility_complete: true
+    output_contract_complete: true
+    change_control_complete: true
+    production_candidate: false
+    remaining_gaps: [incompatible-version registry is empty, cross-operating-system runtime behavior is not evidenced]
+  - <<: *common
+    test_key: ttest_paired
+  - <<: *common
+    test_key: ttest_ind
+  - <<: *common
+    test_key: anova
+  - <<: *common
+    test_key: proportion_two
+  - <<: *common
+    test_key: be_tost

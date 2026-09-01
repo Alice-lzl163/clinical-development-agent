@@ -1,3 +1,5 @@
+import hashlib
+import json
 import math
 
 from sample_size.adapters import PwrAnovaAdapter, PwrTAdapter, PowerTOSTAdapter, TrialSizeProportionAdapter
@@ -21,6 +23,12 @@ def _check_power(achieved: float, target: float):
 def _result(spec, values, adapter_result, *, solve_mode, analysis_total, randomized_total, per_group=None, per_sequence=None, derived=None, rounding=None, sidedness=None):
     raw = adapter_result.raw
     achieved = float(raw["achieved_power"])
+    if not math.isfinite(achieved) or not 0 <= achieved <= 1:
+        raise PackageExecutionError("R engine returned an invalid achieved power")
+    if analysis_total is not None and (not isinstance(analysis_total, int) or analysis_total <= 0):
+        raise PackageExecutionError("R engine returned a nonsensical analyzable sample size")
+    if randomized_total is not None and (not isinstance(randomized_total, int) or randomized_total <= 0):
+        raise PackageExecutionError("operational adjustment produced a nonsensical randomized sample size")
     if solve_mode == "sample_size":
         _check_power(achieved, values["power"])
     package = spec["engine"]["package"]
@@ -31,6 +39,7 @@ def _result(spec, values, adapter_result, *, solve_mode, analysis_total, randomi
         and r_version.startswith(_VALIDATED_R_VERSION)
     )
     validation_status = "BENCHMARK_VALIDATED" if version_validated else "IMPLEMENTED_UNVALIDATED"
+    validation_environment = "MATCHED_VALIDATED_ENVIRONMENT" if version_validated else "UNVALIDATED_VERSION"
     version_warnings = [] if version_validated else [
         f"Runtime versions differ from the validated R 4.6.1 / {package} "
         f"{_VALIDATED_PACKAGE_VERSIONS.get(package)} environment; numerical validation status is not inherited."
@@ -48,6 +57,8 @@ def _result(spec, values, adapter_result, *, solve_mode, analysis_total, randomi
         warnings=list(spec["warnings"]) + list(raw.get("warnings", [])) + version_warnings, assumptions=list(spec["assumptions"]),
         validation_status=validation_status, reproducible_code=adapter_result.reproducible_code,
         r_version=r_version, session_info=str(raw["session_info"]),
+        validation_environment=validation_environment,
+        specification_version="sha256:" + hashlib.sha256(json.dumps(spec, sort_keys=True, separators=(",", ":")).encode()).hexdigest(),
     )
 
 

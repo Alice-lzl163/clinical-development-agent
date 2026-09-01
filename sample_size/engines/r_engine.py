@@ -1,4 +1,5 @@
 import json
+import math
 import shutil
 import subprocess
 from typing import Any
@@ -54,6 +55,20 @@ cat(jsonlite::toJSON(.cda_payload, auto_unbox = TRUE, null = "null", digits = 16
         if marker_at < 0:
             raise PackageExecutionError("R engine returned no structured result marker")
         try:
-            return json.loads(process.stdout[marker_at + len(self.MARKER):])
-        except json.JSONDecodeError as exc:
+            result = json.loads(
+                process.stdout[marker_at + len(self.MARKER):],
+                parse_constant=lambda value: (_ for _ in ()).throw(ValueError(value)),
+            )
+        except (json.JSONDecodeError, ValueError) as exc:
             raise PackageExecutionError("R engine returned invalid structured JSON") from exc
+        if not isinstance(result, dict):
+            raise PackageExecutionError("R engine result must be a structured object")
+        def ensure_finite(value):
+            if isinstance(value, float) and not math.isfinite(value):
+                raise PackageExecutionError("R engine returned a non-finite numerical value")
+            if isinstance(value, dict):
+                for nested in value.values(): ensure_finite(nested)
+            elif isinstance(value, list):
+                for nested in value: ensure_finite(nested)
+        ensure_finite(result)
+        return result
