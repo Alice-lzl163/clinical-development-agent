@@ -71,4 +71,25 @@ def validate_request(spec: dict[str, Any], solve_mode: str, parameters: Any) -> 
         raise RequestValidationError("bioequivalence power mode requires an even evaluable_total for balanced sequences/arms")
     if spec["test_key"] == "proportion_two" and values["treatment_probability"] == values["control_probability"]:
         raise RequestValidationError("treatment and control probabilities must differ for sample-size inversion")
+    if spec["test_key"] == "proportion_one":
+        difference = values["alternative_probability"] - values["null_probability"]
+        if difference == 0:
+            raise RequestValidationError("null_probability and alternative_probability must differ")
+        if values["alternative"] == "greater" and difference < 0:
+            raise RequestValidationError("greater requires alternative_probability > null_probability")
+        if values["alternative"] == "less" and difference > 0:
+            raise RequestValidationError("less requires alternative_probability < null_probability")
+    if spec["test_key"] == "proportion_paired":
+        if values["p_treatment_only"] + values["p_control_only"] > 1:
+            raise RequestValidationError("directional discordance probabilities must sum to at most 1")
+        if values["p_treatment_only"] == values["p_control_only"]:
+            raise RequestValidationError("directional discordance probabilities must differ for sample-size inversion")
+    if spec["test_key"] == "equivalence" and abs(values["expected_difference"]) >= values["equivalence_margin"]:
+        raise RequestValidationError("abs(expected_difference) must be below equivalence_margin")
+    if spec["test_key"] == "non_inferiority":
+        if values["treatment_probability"] - values["control_probability"] <= -values["noninferiority_margin"]:
+            raise RequestValidationError("expected treatment-control difference must exceed the non-inferiority boundary")
+    if spec["test_key"] == "superiority_margin":
+        if values["treatment_probability"] - values["control_probability"] <= values["superiority_margin"]:
+            raise RequestValidationError("expected treatment-control difference must exceed superiority_margin")
     return values

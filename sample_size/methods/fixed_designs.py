@@ -2,7 +2,16 @@ import hashlib
 import json
 import math
 
-from sample_size.adapters import PwrAnovaAdapter, PwrTAdapter, PowerTOSTAdapter, TrialSizeProportionAdapter
+from sample_size.adapters import (
+    PowerTOSTAdapter,
+    PwrAnovaAdapter,
+    PwrProportionAdapter,
+    PwrTAdapter,
+    TrialSizeMcNemarAdapter,
+    TrialSizeMeanEquivalenceAdapter,
+    TrialSizeProportionAdapter,
+    TrialSizeProportionMarginAdapter,
+)
 from sample_size.agent.result import SampleSizeResult
 from sample_size.engines.errors import PackageExecutionError, RequestValidationError
 from sample_size.validation.dependency_compatibility import classify_runtime
@@ -20,7 +29,7 @@ def _check_power(achieved: float, target: float):
         raise PackageExecutionError(f"forward achieved power {achieved} is below target {target} after upward rounding")
 
 
-def _result(spec, values, adapter_result, *, solve_mode, analysis_total, randomized_total, per_group=None, per_sequence=None, derived=None, rounding=None, sidedness=None):
+def _result(spec, values, adapter_result, *, solve_mode, analysis_total, randomized_total, per_group=None, per_sequence=None, derived=None, rounding=None, sidedness=None, benchmark_eligible=True, implementation_version="round-4.3", benchmark_id="fixed-design-round4-v1"):
     raw = adapter_result.raw
     achieved = float(raw["achieved_power"])
     if not math.isfinite(achieved) or not 0 <= achieved <= 1:
@@ -38,10 +47,13 @@ def _result(spec, values, adapter_result, *, solve_mode, analysis_total, randomi
     if validation_environment == "INCOMPATIBLE_VERSION":
         raise PackageExecutionError(f"{package} {package_version} is empirically incompatible with this calculator runtime")
     version_qualified = validation_environment in {"MATCHED_VALIDATED_ENVIRONMENT", "TESTED_COMPATIBLE_VERSION"}
-    validation_status = "BENCHMARK_VALIDATED" if version_qualified else "IMPLEMENTED_UNVALIDATED"
+    validation_status = "BENCHMARK_VALIDATED" if benchmark_eligible and version_qualified else "IMPLEMENTED_UNVALIDATED"
     version_warnings = [] if version_qualified else [
         f"Runtime versions differ from the validated R 4.6.1 / {package} "
         f"{_VALIDATED_PACKAGE_VERSIONS.get(package)} environment; numerical validation status is not inherited."
+    ]
+    validation_warnings = [] if benchmark_eligible else [
+        "This Round 5.2A calculator is implemented but has not completed numerical benchmark validation."
     ]
     return SampleSizeResult(
         method_id=spec["method_id"], test_key=spec["test_key"], solve_mode=solve_mode,
@@ -53,11 +65,12 @@ def _result(spec, values, adapter_result, *, solve_mode, analysis_total, randomi
         derived_parameters=derived or {}, dropout_assumption=float(values["dropout_rate"]) if solve_mode == "sample_size" else None, rounding_applied=rounding or [],
         engine=spec["engine"]["engine_family"], runtime="R", package=package,
         package_version=package_version, function=adapter_result.function, package_arguments=adapter_result.package_arguments,
-        warnings=list(spec["warnings"]) + list(raw.get("warnings", [])) + version_warnings, assumptions=list(spec["assumptions"]),
+        warnings=list(spec["warnings"]) + list(raw.get("warnings", [])) + version_warnings + validation_warnings, assumptions=list(spec["assumptions"]),
         validation_status=validation_status, reproducible_code=adapter_result.reproducible_code,
         r_version=r_version, session_info=str(raw["session_info"]),
         validation_environment=validation_environment,
         specification_version="sha256:" + hashlib.sha256(json.dumps(spec, sort_keys=True, separators=(",", ":")).encode()).hexdigest(),
+        implementation_version=implementation_version, benchmark_id=benchmark_id,
     )
 
 
@@ -131,3 +144,57 @@ class BioequivalenceMethod:
         return _result(spec, values, result, solve_mode=solve_mode, analysis_total=evaluable, randomized_total=randomized, per_group=realized if values["design"]=="parallel" else None, per_sequence=realized if values["design"]=="2x2" else None,
             derived={"evaluable_total":evaluable,"randomization_block_size":2,"randomized_total":randomized,"randomized_per_sequence_or_arm":half},
             rounding=["PowerTOST evaluable total","ceil dropout inflation","ceil to two-subject randomization block"] if solve_mode=="sample_size" else [],sidedness="two_one_sided_tests")
+
+
+class ProportionOneMethod:
+    def __init__(self, engine): self.adapter = PwrProportionAdapter(engine)
+    def calculate(self, spec, values, solve_mode):
+        effect = self.adapter.cohen_h(values["alternative_probability"], values["null_probability"])
+        sided = "two_sided" if values["alternative"] == "two_sided" else "one_sided"
+        if solve_mode == "sample_size":
+            result = self.adapter.calculate(alternative_probability=values["alternative_probability"], null_probability=values["null_probability"], alpha=values["alpha"], power=values["power"], alternative=values["alternative"])
+            n = int(result.raw["analysis_n"]); randomized = _ceil_dropout(n, values["dropout_rate"])
+        else:
+            n = values["analyzable_sample_size"]; randomized = None
+            result = self.adapter.power(n=n, alternative_probability=values["alternative_probability"], null_probability=values["null_probability"], alpha=values["alpha"], alternative=values["alternative"])
+        return _result(spec, values, result, solve_mode=solve_mode, analysis_total=n, randomized_total=randomized, per_group={"one_sample": n},
+            derived={"signed_cohen_h": effect, "analyzable_subjects": n, "randomized_subjects": randomized},
+            rounding=["ceil package n", "ceil dropout inflation"] if solve_mode == "sample_size" else [], sidedness=sided,
+            benchmark_eligible=False, implementation_version="round-5.2a", benchmark_id="not_assigned")
+
+
+class ProportionPairedMethod:
+    def __init__(self, engine): self.adapter = TrialSizeMcNemarAdapter(engine)
+    def calculate(self, spec, values, solve_mode):
+        result = self.adapter.calculate(p_treatment_only=values["p_treatment_only"], p_control_only=values["p_control_only"], alpha=values["alpha"], power=values["power"])
+        n = int(result.raw["analysis_n"]); randomized = _ceil_dropout(n, values["dropout_rate"])
+        return _result(spec, values, result, solve_mode=solve_mode, analysis_total=n, randomized_total=randomized, per_sequence={"complete_matched_pairs": n},
+            derived={"beta": 1-values["power"], "discordance_ratio": values["p_treatment_only"]/values["p_control_only"], "total_discordance_probability": values["p_treatment_only"]+values["p_control_only"], "complete_analyzable_pairs": n, "randomized_pairs": randomized},
+            rounding=["ceil TrialSize complete-pair n", "ceil dropout inflation"], sidedness="two_sided",
+            benchmark_eligible=False, implementation_version="round-5.2a", benchmark_id="not_assigned")
+
+
+class MeanEquivalenceMethod:
+    def __init__(self, engine): self.adapter = TrialSizeMeanEquivalenceAdapter(engine)
+    def calculate(self, spec, values, solve_mode):
+        result = self.adapter.calculate(expected_difference=values["expected_difference"], sd=values["sd"], equivalence_margin=values["equivalence_margin"], allocation_ratio=values["allocation_ratio"], alpha=values["alpha"], power=values["power"])
+        nt, nc = int(result.raw["analysis_n_treatment"]), int(result.raw["analysis_n_control"])
+        rt, rc = _ceil_dropout(nt, values["dropout_rate"]), _ceil_dropout(nc, values["dropout_rate"])
+        return _result(spec, values, result, solve_mode=solve_mode, analysis_total=nt+nc, randomized_total=rt+rc, per_group={"treatment": nt, "control": nc},
+            derived={"beta": 1-values["power"], "analyzable_treatment": nt, "analyzable_control": nc, "randomized_treatment": rt, "randomized_control": rc},
+            rounding=["ceil TrialSize treatment n", "ceil implied control n", "ceil dropout inflation per arm"], sidedness="two_one_sided_tests",
+            benchmark_eligible=False, implementation_version="round-5.2a", benchmark_id="not_assigned")
+
+
+class ProportionMarginMethod:
+    def __init__(self, engine, test_key): self.adapter = TrialSizeProportionMarginAdapter(engine); self.test_key = test_key
+    def calculate(self, spec, values, solve_mode):
+        delta = values["treatment_probability"] - values["control_probability"]
+        margin = -values["noninferiority_margin"] if self.test_key == "non_inferiority" else values["superiority_margin"]
+        result = self.adapter.calculate(treatment_probability=values["treatment_probability"], control_probability=values["control_probability"], allocation_ratio=values["allocation_ratio"], margin=margin, alpha=values["alpha"], power=values["power"])
+        nt, nc = int(result.raw["analysis_n_treatment"]), int(result.raw["analysis_n_control"])
+        rt, rc = _ceil_dropout(nt, values["dropout_rate"]), _ceil_dropout(nc, values["dropout_rate"])
+        return _result(spec, values, result, solve_mode=solve_mode, analysis_total=nt+nc, randomized_total=rt+rc, per_group={"treatment": nt, "control": nc},
+            derived={"beta": 1-values["power"], "expected_risk_difference": delta, "package_margin": margin, "analyzable_treatment": nt, "analyzable_control": nc, "randomized_treatment": rt, "randomized_control": rc},
+            rounding=["ceil TrialSize treatment n", "ceil implied control n", "ceil dropout inflation per arm"], sidedness="one_sided",
+            benchmark_eligible=False, implementation_version="round-5.2a", benchmark_id="not_assigned")
