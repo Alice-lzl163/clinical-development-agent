@@ -21,6 +21,8 @@ qualifications:
     observed_difference: All integer outputs exact; floating-point differences within frozen tolerances.
     qualification_date: "2026-09-02"
     notes: Canonical Round 4.2 environment.
+    tested_operating_systems: [Windows, Linux, macOS]
+    hosted_evidence_reference: sample_size/validation/hosted_run_33595483882.yaml
   - <<: *canonical
     dependency: TrialSize
     version: "1.4.1"

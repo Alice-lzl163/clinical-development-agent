@@ -1,4 +1,5 @@
 import json
+import hashlib
 import platform
 import subprocess
 import sys
@@ -58,11 +59,23 @@ class ProductionQualificationTests(unittest.TestCase):
         for platform_name in ("windows-latest", "ubuntu-latest", "macos-latest"):
             self.assertIn(f"--expected-platform {platform_name}", command)
 
-    def test_machine_readable_assessment_has_six_unpromoted_methods(self):
+    def test_machine_readable_assessment_has_six_production_candidates(self):
         data = yaml.safe_load((ROOT / "sample_size/validation/production_qualification.yaml").read_text(encoding="utf-8"))
         self.assertEqual(6, len(data["method_assessment"]))
         self.assertEqual({"ttest_one", "ttest_paired", "ttest_ind", "anova", "proportion_two", "be_tost"}, {m["test_key"] for m in data["method_assessment"]})
-        self.assertTrue(all(m["benchmark_validated"] and not m["production_candidate"] for m in data["method_assessment"]))
+        for method in data["method_assessment"]:
+            self.assertEqual("SPEC_FROZEN", method["statistical_specification"])
+            self.assertEqual("IMPLEMENTED", method["implementation"])
+            self.assertEqual("BENCHMARK_VALIDATED", method["numerical_validation"])
+            self.assertEqual("PRODUCTION_CANDIDATE", method["production_qualification"])
+            self.assertTrue(method["benchmark_validated"])
+            self.assertTrue(method["production_candidate"])
+            self.assertFalse(method["production"])
+            self.assertEqual({"PASS"}, set(method["gate_matrix"].values()))
+            self.assertEqual([], method["remaining_gaps"])
+            self.assertRegex(method["traceability"]["specification_hash"], r"^sha256:[0-9a-f]{64}$")
+            spec_bytes = (ROOT / "sample_size/specs" / f"{method['test_key']}.yaml").read_bytes()
+            self.assertEqual(f"sha256:{hashlib.sha256(spec_bytes).hexdigest()}", method["traceability"]["specification_hash"])
 
     def test_dependency_and_os_registries_are_evidence_bounded(self):
         dependencies = yaml.safe_load((ROOT / "sample_size/validation/dependency_compatibility.yaml").read_text(encoding="utf-8"))
@@ -72,8 +85,27 @@ class ProductionQualificationTests(unittest.TestCase):
         self.assertEqual("UNVALIDATED_VERSION", classify_runtime("pwr", "9.9.9", "R version 4.6.1", operating_system="Windows", architecture="AMD64"))
         os_data = yaml.safe_load((ROOT / "sample_size/validation/os_qualification.yaml").read_text(encoding="utf-8"))
         states = {item["operating_system"]: item["qualification_status"] for item in os_data["platforms"]}
-        self.assertEqual({"Windows": "QUALIFIED", "Linux": "UNQUALIFIED", "macOS": "UNQUALIFIED"}, states)
-        self.assertEqual("PENDING", os_data["cross_platform_comparison"]["status"])
+        self.assertEqual({"Windows": "QUALIFIED", "Linux": "QUALIFIED", "macOS": "QUALIFIED"}, states)
+        comparison = os_data["cross_platform_comparison"]
+        self.assertEqual("PASS", comparison["status"])
+        self.assertEqual(24, comparison["fixture_count"])
+        self.assertEqual([], comparison["discrepancies"])
+        self.assertFalse(comparison["tolerance_changed_after_results"])
+
+    def test_hosted_closeout_evidence_is_traceable_and_bounded(self):
+        evidence = yaml.safe_load((ROOT / "sample_size/validation/hosted_run_33595483882.yaml").read_text(encoding="utf-8"))
+        self.assertEqual(33595483882, evidence["source"]["run_id"])
+        self.assertEqual("02ed81369fe7924695fd8e6148381f4f28cecf8a", evidence["source"]["head_sha"])
+        self.assertEqual("success", evidence["source"]["conclusion"])
+        self.assertEqual({"Windows", "Linux", "macOS"}, {job["operating_system"] for job in evidence["jobs"]})
+        for job in evidence["jobs"]:
+            self.assertEqual("success", job["conclusion"])
+            self.assertEqual({"PASS"}, set(job["required_steps"].values()))
+            self.assertIsInstance(job["artifact"]["id"], int)
+        self.assertEqual({"passed": 24, "total": 24}, evidence["reported_numerical_result"]["fixtures"])
+        self.assertEqual({"passed": 114, "total": 114}, evidence["reported_numerical_result"]["live_R_calculations"])
+        self.assertEqual("PASS", evidence["comparison"]["status"])
+        self.assertEqual([], evidence["comparison"]["discrepancies"])
 
     def test_cross_platform_comparator_accepts_identical_evidence(self):
         source = json.loads((ROOT / "sample_size/validation/round42_evidence.json").read_text(encoding="utf-8"))

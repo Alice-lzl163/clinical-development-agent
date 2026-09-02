@@ -9,7 +9,7 @@ Four independent dimensions prevent a single label from making ambiguous claims:
 | Dimension | States | Meaning |
 |---|---|---|
 | Statistical specification | `SPEC_DRAFT`, `SPEC_FROZEN` | Whether the statistical contract is authorized and change-controlled |
-| Implementation | `IMPLEMENTED_UNVALIDATED`, `BENCHMARK_VALIDATED` | Whether executable code exists and has passed numerical benchmarks |
+| Implementation | `NOT_IMPLEMENTED`, `IMPLEMENTED` | Whether an authorized executable implementation exists |
 | Numerical validation | `NOT_RUN`, `FAILED`, `BENCHMARK_VALIDATED` | Recorded outcome of the numerical gates |
 | Production qualification | `NOT_ASSESSED`, `PRODUCTION_CANDIDATE`, `PRODUCTION` | Operational readiness and release approval |
 
@@ -44,6 +44,6 @@ The validated package versions are pwr 1.3.0, TrialSize 1.4.1, and PowerTOST 1.5
 
 Documentation-only formatting or wording changes are `NO_REVALIDATION`. Non-statistical serialization and error-mapping changes normally require `TARGETED_REVALIDATION`. Formula, method specification, adapter, allocation, dropout, rounding, authoritative function or package version, tolerance, and benchmark changes require `FULL_METHOD_REVALIDATION`. A change-control reviewer may always escalate the scope.
 
-## Six-method gap assessment
+## Six-method closeout assessment
 
-All six Round 4.2 methods remain `BENCHMARK_VALIDATED`; none is a `PRODUCTION_CANDIDATE`. Windows is qualified and the empty incompatible-version registry now truthfully records that no incompatibility has been observed. Runtime portability remains incomplete because Linux and macOS have not been executed and reviewed. These gaps apply to `ttest_one`, `ttest_paired`, `ttest_ind`, `anova`, `proportion_two`, and `be_tost`.
+Hosted Run 33595483882 passed Windows, Linux, macOS, every production-qualification test, the full regression suite, and cross-platform comparison under the exact declared dependencies. All nine candidate gates now have evidence-backed PASS for `ttest_one`, `ttest_paired`, `ttest_ind`, `anova`, `proportion_two`, and `be_tost`. Their independent states are `SPEC_FROZEN`, `IMPLEMENTED`, `BENCHMARK_VALIDATED`, and `PRODUCTION_CANDIDATE`. None is `PRODUCTION`; release approval and production operational controls remain separate future work.

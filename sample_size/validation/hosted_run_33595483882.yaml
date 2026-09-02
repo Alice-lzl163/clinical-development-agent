@@ -1,0 +1,55 @@
+schema_version: 1
+source:
+  repository: Alice-lzl163/clinical-development-agent
+  workflow: Sample Size Runtime Qualification
+  run_id: 33595483882
+  run_url: https://github.com/Alice-lzl163/clinical-development-agent/actions/runs/33595483882
+  head_sha: 02ed81369fe7924695fd8e6148381f4f28cecf8a
+  created_at: "2026-09-02T05:38:22Z"
+  completed_at: "2026-09-02T05:43:11Z"
+  conclusion: success
+  metadata_source: GitHub public Actions API
+  artifact_content_access: Authentication required; values unavailable from public metadata are not inferred.
+declared_environment:
+  Python: "3.12.7"
+  SciPy: "1.18.1"
+  R: "4.6.1"
+  packages: {jsonlite: "2.0.0", pwr: "1.3.0", TrialSize: "1.4.1", PowerTOST: "1.5.7"}
+  basis: Exact workflow setup/install declarations and successful setup, installation, probe, and version-capture steps.
+jobs:
+  - operating_system: macOS
+    runner_label: macos-latest
+    architecture: null
+    job_id: 100137962160
+    conclusion: success
+    artifact: {id: 9833280210, name: sample-size-runtime-macos-latest, size_bytes: 13319}
+    required_steps: {environment_probe: PASS, frozen_numerical_qualification: PASS, production_qualification_tests: PASS, full_regression_suite: PASS, version_capture: PASS, artifact_upload: PASS}
+  - operating_system: Linux
+    runner_label: ubuntu-latest
+    architecture: null
+    job_id: 100137962462
+    conclusion: success
+    artifact: {id: 9833263538, name: sample-size-runtime-ubuntu-latest, size_bytes: 13679}
+    required_steps: {environment_probe: PASS, frozen_numerical_qualification: PASS, production_qualification_tests: PASS, full_regression_suite: PASS, version_capture: PASS, artifact_upload: PASS}
+  - operating_system: Windows
+    runner_label: windows-latest
+    architecture: null
+    job_id: 100137962547
+    conclusion: success
+    artifact: {id: 9833327997, name: sample-size-runtime-windows-latest, size_bytes: 13342}
+    required_steps: {environment_probe: PASS, frozen_numerical_qualification: PASS, production_qualification_tests: PASS, full_regression_suite: PASS, version_capture: PASS, artifact_upload: PASS}
+reported_numerical_result:
+  source: Successful hosted workflow plus task-provided artifact result summary.
+  benchmark_id: fixed-design-round4-v1
+  fixtures: {passed: 24, total: 24}
+  live_R_calculations: {passed: 114, total: 114}
+comparison:
+  job_id: 100138838095
+  conclusion: success
+  artifact: {id: 9833336025, name: sample-size-cross-platform-comparison, size_bytes: 356}
+  benchmark_id: fixed-design-round4-v1
+  platform_count: 3
+  fixture_count: 24
+  status: PASS
+  discrepancies: []
+  tolerances: {integer: exact, achieved_power_absolute: 1.0e-6}

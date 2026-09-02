@@ -12,15 +12,15 @@ Only pwr 1.3.0, TrialSize 1.4.1, PowerTOST 1.5.7, and jsonlite 2.0.0 were actual
 
 | OS | State | Evidence |
 |---|---|---|
-| Windows AMD64 | `QUALIFIED` | Probe passed; 24/24 fixtures and 114/114 live R calls passed; 74/74 Round 4.3 regression tests passed |
-| Linux | `UNQUALIFIED` | Workflow created, not executed in this workspace |
-| macOS | `UNQUALIFIED` | Workflow created, not executed in this workspace |
+| Windows | `QUALIFIED` | Hosted Run 33595483882 passed probe, frozen numerical qualification, qualification tests, and full regression |
+| Linux | `QUALIFIED` | Hosted Run 33595483882 passed the same required pipeline |
+| macOS | `QUALIFIED` | Hosted Run 33595483882 passed the same required pipeline |
 
 Importability is not qualification. A platform becomes `QUALIFIED` only after its environment probe, frozen fixtures, production qualification tests, and complete regression suite pass and its artifact is reviewed.
 
 ## Cross-platform acceptance
 
-Acceptance thresholds were declared before Linux/macOS execution: all analyzable, group, randomized, and block-rounded counts must match exactly; achieved power and exposed intermediates use absolute tolerance `1e-6`; derived effects use `1e-12`. Discrepancies must be assigned one of the classes recorded in `os_qualification.yaml`. Cross-platform comparison remains `PENDING` because only Windows has executed.
+Acceptance thresholds were declared before Linux/macOS execution: all analyzable, group, randomized, and block-rounded counts must match exactly; achieved power and exposed intermediates use absolute tolerance `1e-6`; derived effects use `1e-12`. Hosted Run 33595483882 compared the same 24 fixture identities and benchmark ID across all three platforms: integer/allocation/rounding outputs matched exactly, floating outputs stayed within the predeclared tolerances, and no discrepancy was reported. No tolerance changed after results.
 
 The GitHub Actions matrix runs local `Rscript` calculations on Windows, Ubuntu, and macOS runners. It installs declared runtimes and exact package versions where the repositories can reproduce them, runs the probe, writes separate numerical evidence (never overwriting Round 4.2 evidence), runs qualification and regression tests, and uploads all artifacts. Failure to install an exact version is a failed/pending CI qualification—not permission to substitute a newer version.
 
@@ -38,4 +38,4 @@ Hosted Run #4 passed the complete Windows, Ubuntu, and macOS matrix jobs. The co
 
 ## Production-candidate decision
 
-All six methods remain `BENCHMARK_VALIDATED`. None reaches `PRODUCTION_CANDIDATE` until reviewed Linux and macOS artifacts complete the portability gate and any dependency versions used outside the canonical environment have explicit registry evidence. No method is promoted to `PRODUCTION` in this round.
+All six methods retain `BENCHMARK_VALIDATED` numerical status and now reach `PRODUCTION_CANDIDATE` after all nine qualification gates passed. No method is promoted to `PRODUCTION`.

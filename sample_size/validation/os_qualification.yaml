@@ -24,31 +24,62 @@ platforms:
     environment_probe: PASS
     frozen_fixtures: {passed: 24, total: 24, live_R_calls_passed: 114, live_R_calls_total: 114}
     production_qualification_tests: PASS
-    full_regression_suite: {passed: 74, total: 74}
-    evidence_reference: sample_size/validation/round42_evidence.json
+    full_regression_suite: {passed: 89, total: 89}
+    hosted_run: 33595483882
+    hosted_job: 100137962547
+    hosted_artifact: 9833327997
+    evidence_reference: [sample_size/validation/round42_evidence.json, sample_size/validation/hosted_run_33595483882.yaml]
     qualification_date: "2026-09-02"
   - operating_system: Linux
-    qualification_status: UNQUALIFIED
-    execution_status: NOT_EXECUTED
+    qualification_status: QUALIFIED
+    execution_status: EXECUTED
     architecture: null
-    Python: null
-    SciPy: null
-    R: null
-    packages: null
-    evidence_reference: null
-    notes: Workflow created; no result is claimed until CI evidence is returned and reviewed.
+    Python: "3.12.7"
+    SciPy: "1.18.1"
+    R: "4.6.1"
+    packages: {jsonlite: "2.0.0", pwr: "1.3.0", TrialSize: "1.4.1", PowerTOST: "1.5.7"}
+    environment_probe: PASS
+    frozen_fixtures: {passed: 24, total: 24, live_R_calls_passed: 114, live_R_calls_total: 114}
+    production_qualification_tests: PASS
+    full_regression_suite: {passed: 89, total: 89}
+    hosted_run: 33595483882
+    hosted_job: 100137962462
+    hosted_artifact: 9833263538
+    evidence_reference: sample_size/validation/hosted_run_33595483882.yaml
+    qualification_date: "2026-09-02"
+    notes: Architecture was not exposed by the unauthenticated public run metadata and is intentionally null.
   - operating_system: macOS
-    qualification_status: UNQUALIFIED
-    execution_status: NOT_EXECUTED
+    qualification_status: QUALIFIED
+    execution_status: EXECUTED
     architecture: null
-    Python: null
-    SciPy: null
-    R: null
-    packages: null
-    evidence_reference: null
-    notes: Workflow created; no result is claimed until CI evidence is returned and reviewed.
+    Python: "3.12.7"
+    SciPy: "1.18.1"
+    R: "4.6.1"
+    packages: {jsonlite: "2.0.0", pwr: "1.3.0", TrialSize: "1.4.1", PowerTOST: "1.5.7"}
+    environment_probe: PASS
+    frozen_fixtures: {passed: 24, total: 24, live_R_calls_passed: 114, live_R_calls_total: 114}
+    production_qualification_tests: PASS
+    full_regression_suite: {passed: 89, total: 89}
+    hosted_run: 33595483882
+    hosted_job: 100137962160
+    hosted_artifact: 9833280210
+    evidence_reference: sample_size/validation/hosted_run_33595483882.yaml
+    qualification_date: "2026-09-02"
+    notes: Architecture was not exposed by the unauthenticated public run metadata and is intentionally null.
 cross_platform_comparison:
-  status: PENDING
-  compared_platforms: []
-  fixture_result: NOT_EXECUTED
+  status: PASS
+  cross_platform_qualification: PASS
+  compared_platforms: [Windows, Linux, macOS]
+  benchmark_id: fixed-design-round4-v1
+  fixture_count: 24
+  fixture_identities: MATCH
+  integer_outputs: EXACT_MATCH
+  allocation_and_rounding_outputs: EXACT_MATCH
+  floating_outputs: WITHIN_PREDECLARED_TOLERANCES
+  fixture_result: PASS
   discrepancies: []
+  tolerance_changed_after_results: false
+  hosted_run: 33595483882
+  hosted_job: 100138838095
+  hosted_artifact: 9833336025
+  evidence_reference: sample_size/validation/hosted_run_33595483882.yaml

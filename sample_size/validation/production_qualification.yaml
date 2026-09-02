@@ -1,5 +1,5 @@
 schema_version: 1
-qualification_round: "4.4"
+qualification_round: "4.5"
 lifecycle_dimensions:
   statistical_specification:
     states:
@@ -7,8 +7,8 @@ lifecycle_dimensions:
       SPEC_FROZEN: Reviewed contract whose statistical meaning may change only through change control.
   implementation:
     states:
-      IMPLEMENTED_UNVALIDATED: Executable implementation without complete numerical validation.
-      BENCHMARK_VALIDATED: Implementation passed every required numerical gate in a recorded dependency environment.
+      NOT_IMPLEMENTED: No authorized executable implementation.
+      IMPLEMENTED: Authorized executable implementation exists; validation is recorded independently.
   numerical_validation:
     states: [NOT_RUN, FAILED, BENCHMARK_VALIDATED]
   production_qualification:
@@ -46,22 +46,90 @@ revalidation_policy:
 method_assessment:
   - &common
     test_key: ttest_one
+    statistical_specification: SPEC_FROZEN
+    implementation: IMPLEMENTED
+    numerical_validation: BENCHMARK_VALIDATED
+    production_qualification: PRODUCTION_CANDIDATE
     benchmark_validated: true
     statistical_contract_complete: true
     api_behavior_complete: true
-    runtime_failure_complete: false
+    runtime_failure_complete: true
     reproducibility_complete: true
     output_contract_complete: true
     change_control_complete: true
-    production_candidate: false
-    remaining_gaps: [Linux runtime qualification pending, macOS runtime qualification pending, cross-platform comparison pending]
+    runtime_os_qualification_complete: true
+    validated_environment_classification_complete: true
+    production_candidate: true
+    production: false
+    gate_matrix: {A_statistical_contract: PASS, B_numerical_validation: PASS, C_api_behavior: PASS, D_runtime_fail_closed: PASS, E_reproducibility: PASS, F_protocol_output: PASS, G_change_control: PASS, H_runtime_os: PASS, I_environment_classification: PASS}
+    traceability:
+      specification_hash: sha256:460c2be5460a08d5f8c55c54e255f35e761a4c30f1a2a287c5aec65af2d0833b
+      implementation_version: round-4.3
+      qualified_commit: 02ed81369fe7924695fd8e6148381f4f28cecf8a
+      benchmark_id: fixed-design-round4-v1
+      authoritative_package: pwr
+      validated_package_version: "1.3.0"
+      os_evidence: sample_size/validation/os_qualification.yaml
+      comparator_evidence: sample_size/validation/hosted_run_33595483882.yaml
+      regression_evidence: GitHub Actions run 33595483882
+    remaining_gaps: []
   - <<: *common
     test_key: ttest_paired
+    traceability:
+      specification_hash: sha256:a73e36722a31379e44b433a6374f237461487bbfbbf896b2253ca15f24d998f1
+      implementation_version: round-4.3
+      qualified_commit: 02ed81369fe7924695fd8e6148381f4f28cecf8a
+      benchmark_id: fixed-design-round4-v1
+      authoritative_package: pwr
+      validated_package_version: "1.3.0"
+      os_evidence: sample_size/validation/os_qualification.yaml
+      comparator_evidence: sample_size/validation/hosted_run_33595483882.yaml
+      regression_evidence: GitHub Actions run 33595483882
   - <<: *common
     test_key: ttest_ind
+    traceability:
+      specification_hash: sha256:c9325f44dc65dffd52484b0c48dc215bf1074fd32658d762d09530db2dde0566
+      implementation_version: round-4.3
+      qualified_commit: 02ed81369fe7924695fd8e6148381f4f28cecf8a
+      benchmark_id: fixed-design-round4-v1
+      authoritative_package: pwr
+      validated_package_version: "1.3.0"
+      os_evidence: sample_size/validation/os_qualification.yaml
+      comparator_evidence: sample_size/validation/hosted_run_33595483882.yaml
+      regression_evidence: GitHub Actions run 33595483882
   - <<: *common
     test_key: anova
+    traceability:
+      specification_hash: sha256:27377181d2997cd9fe29ea7fab8c7dcc5b071b1e19809a7693f04f20bd9544a4
+      implementation_version: round-4.3
+      qualified_commit: 02ed81369fe7924695fd8e6148381f4f28cecf8a
+      benchmark_id: fixed-design-round4-v1
+      authoritative_package: pwr
+      validated_package_version: "1.3.0"
+      os_evidence: sample_size/validation/os_qualification.yaml
+      comparator_evidence: sample_size/validation/hosted_run_33595483882.yaml
+      regression_evidence: GitHub Actions run 33595483882
   - <<: *common
     test_key: proportion_two
+    traceability:
+      specification_hash: sha256:fdb78c0e18e690606d984499c7e0dbe6b2a85f32a7cbadb32c4cff0ac2ff2ef2
+      implementation_version: round-4.3
+      qualified_commit: 02ed81369fe7924695fd8e6148381f4f28cecf8a
+      benchmark_id: fixed-design-round4-v1
+      authoritative_package: TrialSize
+      validated_package_version: "1.4.1"
+      os_evidence: sample_size/validation/os_qualification.yaml
+      comparator_evidence: sample_size/validation/hosted_run_33595483882.yaml
+      regression_evidence: GitHub Actions run 33595483882
   - <<: *common
     test_key: be_tost
+    traceability:
+      specification_hash: sha256:e0aa487b06cbc166cec1e480a2aac8bf13d521c98f75b83fcd7e9fd1a4e6b18e
+      implementation_version: round-4.3
+      qualified_commit: 02ed81369fe7924695fd8e6148381f4f28cecf8a
+      benchmark_id: fixed-design-round4-v1
+      authoritative_package: PowerTOST
+      validated_package_version: "1.5.7"
+      os_evidence: sample_size/validation/os_qualification.yaml
+      comparator_evidence: sample_size/validation/hosted_run_33595483882.yaml
+      regression_evidence: GitHub Actions run 33595483882
