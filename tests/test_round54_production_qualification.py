@@ -85,8 +85,18 @@ class Round54ProductionQualificationTests(unittest.TestCase):
 
     def test_workflow_installs_exact_round5_dependencies_and_runs_all_stages(self):
         workflow=(ROOT/".github/workflows/sample-size-runtime-qualification.yml").read_text(encoding="utf-8")
-        for text in ('version = "3.11.0"','run_round5_hosted_qualification','tests.test_round54_production_qualification','round5-evidence.json','round5-cross-platform-comparison.json'):
+        for text in ('install_r_dependencies.R','--verify-only','run_round5_hosted_qualification','tests.test_round54_production_qualification','round5-evidence.json','round5-cross-platform-comparison.json'):
             self.assertIn(text,workflow)
+        self.assertNotIn('install.packages("gsDesign")',workflow)
+
+    def test_r_bootstrap_matches_exact_dependency_manifest(self):
+        manifest=yaml.safe_load((ROOT/"sample_size/r_dependencies.yaml").read_text(encoding="utf-8"))
+        expected={name:str(row["validated_version"]) for name,row in {**manifest["helper_packages"],**manifest["statistical_packages"]}.items()}
+        script=(ROOT/"sample_size/validation/install_r_dependencies.R").read_text(encoding="utf-8")
+        self.assertEqual({"jsonlite":"2.0.0","pwr":"1.3.0","TrialSize":"1.4.1","PowerTOST":"1.5.7","gsDesign":"3.11.0"},expected)
+        for package,version in expected.items(): self.assertIn(f'{package} = "{version}"',script)
+        self.assertIn("DEPENDENCY_VERSION_MISMATCH",script)
+        self.assertIn("DEPENDENCY_MISSING",script)
 
 
 if __name__ == "__main__": unittest.main()

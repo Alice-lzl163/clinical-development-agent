@@ -33,3 +33,11 @@ The existing workflow now installs exact gsDesign 3.11.0 in addition to the alre
 No hosted Windows, Ubuntu, or macOS result is claimed here. After this commit reaches GitHub, the workflow must be rerun. Only a three-platform PASS plus a PASS cross-platform comparison can close gate H and authorize a later evidence-backed promotion to `PRODUCTION_CANDIDATE`.
 
 No statistical formula, frozen fixture, frozen evidence, or numerical tolerance was changed in this round.
+
+## Round 5.4.1 hosted bootstrap failure
+
+The first hosted attempt after Round 5.4 was blocked during dependency discovery: `run_numerical_validation` reported `R dependency unavailable: gsDesign`. No numerical fixture executed, no cross-platform comparison began, and no discrepancy was observed. The failure is CI dependency bootstrap infrastructure, not evidence against OR/RR, equivalence, or any other statistical method.
+
+The reusable `install_r_dependencies.R` script had not been extended with the manifest: it omitted gsDesign and installed other missing packages without enforcing their validated versions. Although the workflow also carried inline installation commands, that duplication was not an auditable single source of truth and did not yield a usable gsDesign installation in the observed runner.
+
+The workflow now delegates installation entirely to the reusable script before the environment probe and all Round 4/5 validation or test stages. The script pins and verifies jsonlite 2.0.0, pwr 1.3.0, TrialSize 1.4.1, PowerTOST 1.5.7, and gsDesign 3.11.0, writes the verified versions to the hosted artifact, and fails closed on absence or mismatch. Lifecycle states remain unchanged; gate H is still pending until a rerun succeeds on all three hosted operating systems and the comparator completes.

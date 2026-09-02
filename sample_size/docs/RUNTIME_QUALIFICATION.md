@@ -39,3 +39,11 @@ Hosted Run #4 passed the complete Windows, Ubuntu, and macOS matrix jobs. The co
 ## Production-candidate decision
 
 All six methods retain `BENCHMARK_VALIDATED` numerical status and now reach `PRODUCTION_CANDIDATE` after all nine qualification gates passed. No method is promoted to `PRODUCTION`.
+
+### Round 5.4.1 exact-dependency bootstrap correction
+
+The first Round 5 hosted qualification attempt failed before numerical qualification because gsDesign was unavailable when `run_numerical_validation` performed its fail-closed dependency audit. The Round 4 harness probes the complete declared dependency manifest, which now includes the Round 5 OR/RR authority; therefore no frozen calculation began and the platform comparison did not begin. This is `ENVIRONMENT_BLOCKED`: no numerical discrepancy was observed, and no statistical method, OR/RR calculation, equivalence calculation, benchmark, or tolerance is implicated.
+
+The repository previously had two inconsistent installation paths. The workflow contained inline exact-version calls, while `install_r_dependencies.R` remained an unpinned missing-package helper that omitted gsDesign. The R script is now the single executable CI bootstrap. It installs and then verifies exactly jsonlite 2.0.0, pwr 1.3.0, TrialSize 1.4.1, PowerTOST 1.5.7, and gsDesign 3.11.0. Any missing package or version mismatch stops the job. The workflow invokes this bootstrap before every probe or qualification stage and invokes its verification-only mode again after the regression suite to capture the exact versions.
+
+Method-specific validation scope is unchanged: gsDesign 3.11.0 is qualified only for `odds_ratio` and `risk_ratio`; PowerTOST 1.5.7 is qualified independently for `be_tost` and `equivalence`. A fresh three-platform hosted run is required.

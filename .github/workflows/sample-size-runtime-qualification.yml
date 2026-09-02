@@ -26,19 +26,12 @@ jobs:
         with:
           r-version: "4.6.1"
           use-public-rspm: true
-      - name: Install exact R dependencies
-        shell: Rscript {0}
-        run: |
-          install.packages("remotes")
-          remotes::install_version("jsonlite", version = "2.0.0", upgrade = "never")
-          remotes::install_version("pwr", version = "1.3.0", upgrade = "never")
-          remotes::install_version("TrialSize", version = "1.4.1", upgrade = "never")
-          remotes::install_version("PowerTOST", version = "1.5.7", upgrade = "never")
-          remotes::install_version("gsDesign", version = "3.11.0", upgrade = "never")
-      - name: Install Python validation dependencies
-        run: python -m pip install -r requirements.txt -r requirements-dev.txt
       - name: Create artifact directory
         run: python -c "from pathlib import Path; Path('qualification-artifacts').mkdir()"
+      - name: Install exact R dependencies
+        run: Rscript sample_size/validation/install_r_dependencies.R qualification-artifacts/r-versions.json
+      - name: Install Python validation dependencies
+        run: python -m pip install -r requirements.txt -r requirements-dev.txt
       - name: Capture environment probe
         run: python -m sample_size.validation.environment_probe > qualification-artifacts/environment-probe.json
       - name: Run frozen numerical qualification
@@ -49,11 +42,8 @@ jobs:
         run: python -m unittest tests.test_production_qualification tests.test_round54_production_qualification -v 2>&1 | tee qualification-artifacts/production-tests.txt
       - name: Run full regression suite
         run: python -m unittest discover -s tests -v 2>&1 | tee qualification-artifacts/full-tests.txt
-      - name: Capture installed versions
-        shell: Rscript {0}
-        run: |
-          versions <- sapply(c("jsonlite", "pwr", "TrialSize", "PowerTOST", "gsDesign"), function(x) as.character(packageVersion(x)))
-          writeLines(jsonlite::toJSON(list(R=R.version.string, platform=R.version$platform, packages=versions), auto_unbox=TRUE, pretty=TRUE), "qualification-artifacts/r-versions.json")
+      - name: Verify exact installed R versions
+        run: Rscript sample_size/validation/install_r_dependencies.R qualification-artifacts/r-versions.json --verify-only
       - uses: actions/upload-artifact@v4
         if: always()
         with:
