@@ -18,8 +18,8 @@ inputs:
   unit: dimensionless
   required: true
   valid_range:
-    minimum: 0
-    maximum: 1
+    exclusive_minimum: 0
+    exclusive_maximum: 1
   default: null
   clinical_interpretation: Control event probability anchoring the OR.
   required_for_solve_modes: &id001
@@ -126,11 +126,11 @@ engine:
   - package_argument: p2
     source_type: unresolved
     source: null
-    transformation: Historical prose requires adapter specification
+    transformation: Requires live gsDesign introspection; package unavailable locally.
   - package_argument: beta
     source_type: unresolved
     source: null
-    transformation: Historical prose requires adapter specification
+    transformation: Requires live gsDesign introspection; package unavailable locally.
   - package_argument: alpha
     source_type: clinical_input
     source: alpha
@@ -142,7 +142,7 @@ engine:
   - package_argument: delta0
     source_type: unresolved
     source: null
-    transformation: Historical prose requires adapter specification
+    transformation: Requires live gsDesign introspection; package unavailable locally.
   - package_argument: scale
     source_type: constant
     source: constant
@@ -218,9 +218,14 @@ unsupported_domains:
 - Zero-event boundary cases.
 - Power solve mode until gsDesign argument orientation and forward-power semantics
   are formally verified.
+- Package mapping, scale="OR", delta0, sidedness, alpha, ratio, n, outtype, and output-unit
+  semantics remain unresolved because gsDesign is not installed in the local pinned
+  environment.
 warnings:
 - 'DO_NOT_REPRODUCE_HISTORICAL_BEHAVIOR: Do not transform the OR to a risk and power
   an arcsine risk-difference surrogate.'
+- Keep this specification DRAFT until live gsDesign::nBinomial introspection resolves
+  every package-level contract item.
 validation_grade: V4
 migration_action: REPLACE
 lifecycle_status: VALIDATION_PENDING
@@ -231,7 +236,9 @@ benchmark_requirements:
 - Reproduce `nBinomial` examples; independently compute achieved power and compare
   with binomial simulation across baseline risks
 - Reproduce official package examples for the pinned version.
-- Compare forward power and inverse sample-size results on a prespecified grid.
+- Independently calculate forward power on a prespecified validation grid and compare
+  it with inverse sample-size results; this validation calculation is not a supported
+  public power solve mode.
 - Verify null-boundary type-I error and clinically relevant alternatives independently.
 specification_status: DRAFT
 design_components: []

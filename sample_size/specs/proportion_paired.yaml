@@ -19,7 +19,7 @@ inputs:
   unit: dimensionless
   required: true
   valid_range:
-    minimum: 0
+    exclusive_minimum: 0
     maximum: 1
   default: null
   clinical_interpretation: Probability of discordance favoring control (treatment
@@ -33,7 +33,7 @@ inputs:
   unit: dimensionless
   required: true
   valid_range:
-    minimum: 0
+    exclusive_minimum: 0
     maximum: 1
   default: null
   clinical_interpretation: Probability of discordance favoring treatment.
@@ -79,9 +79,9 @@ inputs:
   required_for_solve_modes: *id001
   allowed_for_solve_modes: *id001
 alpha:
-  sidedness: one_or_two_sided
-  convention: Overall alpha; one-sided uses alpha and two-sided divides alpha equally
-    between tails.
+  sidedness: two_sided
+  convention: Overall two-sided alpha passed directly to TrialSize::McNemar.Test;
+    the package implementation uses qnorm(1-alpha/2). One-sided use is unsupported.
 allocation:
   ratio_definition: Not applicable.
   supported: false
@@ -173,7 +173,9 @@ benchmark_requirements:
 - Reproduce TrialSize example; enumerate discordant binomial outcomes; simulate paired
   2��2 tables
 - Reproduce official package examples for the pinned version.
-- Compare forward power and inverse sample-size results on a prespecified grid.
+- Independently calculate forward power on a prespecified validation grid and compare
+  it with inverse sample-size results; this validation calculation is not a supported
+  public power solve mode.
 - Verify null-boundary type-I error and clinically relevant alternatives independently.
 specification_status: SPEC_FROZEN
 design_components: []
@@ -192,7 +194,10 @@ derived_parameters:
   - p_control_only
   output_unit: dimensionless
   assumptions:
-  - TrialSize psai is documented as p01/p10; p01 is treatment-only under this contract.
+  - TrialSize 1.4.1 documents psai as p01/p10. With the first index denoting the
+    before/control response and the second the after/treatment response, p01 is
+    control failure/treatment success (treatment-only) and p10 is control
+    success/treatment failure (control-only).
 - name: total_discordance_probability
   formula: p_treatment_only + p_control_only
   inputs:
@@ -201,3 +206,4 @@ derived_parameters:
   output_unit: probability
   assumptions:
   - The two discordant cells are mutually exclusive.
+  - Requests must fail validation when p_treatment_only + p_control_only > 1.

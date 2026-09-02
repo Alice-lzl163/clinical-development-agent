@@ -37,13 +37,15 @@ inputs:
   required_for_solve_modes: *id001
   allowed_for_solve_modes: *id001
 - name: superiority_margin
-  definition: Nonzero risk-difference threshold to exceed.
+  definition: Strictly positive treatment-minus-control risk-difference threshold
+    that the alternative must exceed.
   type: number
   unit: probability difference
   required: true
-  valid_range: null
+  valid_range:
+    exclusive_minimum: 0
   default: null
-  clinical_interpretation: Nonzero risk-difference threshold to exceed.
+  clinical_interpretation: Minimum clinically relevant superiority over control.
   required_for_solve_modes: *id001
   allowed_for_solve_modes: *id001
 - name: allocation_ratio
@@ -220,7 +222,9 @@ benchmark_requirements:
 - Compare TrialSize NIS examples, direct score-test simulation, and boundary/null
   scenarios
 - Reproduce official package examples for the pinned version.
-- Compare forward power and inverse sample-size results on a prespecified grid.
+- Independently calculate forward power on a prespecified validation grid and compare
+  it with inverse sample-size results; this validation calculation is not a supported
+  public power solve mode.
 - Verify null-boundary type-I error and clinically relevant alternatives independently.
 specification_status: SPEC_FROZEN
 design_components: []
@@ -246,8 +250,8 @@ derived_parameters:
   - superiority_margin
   output_unit: probability difference
   assumptions:
-  - TrialSize tests p1-p2 > margin; NI therefore maps the positive clinical loss margin
-    to a negative package margin.
+  - TrialSize 1.4.1 tests p1-p2 > margin, so the positive superiority margin is
+    passed directly as the package margin.
 - name: analyzable_control_sample_size
   formula: ceil(analyzable_treatment_sample_size / allocation_ratio)
   inputs:

@@ -59,7 +59,7 @@ inputs:
   required_for_solve_modes: *id001
   allowed_for_solve_modes: *id001
 - name: alpha
-  definition: Overall type-I error probability.
+  definition: One-sided significance level used for each component of TOST.
   type: number
   unit: dimensionless
   required: true
@@ -67,8 +67,8 @@ inputs:
     exclusive_minimum: 0
     exclusive_maximum: 1
   default: 0.05
-  clinical_interpretation: Maximum prespecified probability of a false positive across
-    the tested hypothesis.
+  clinical_interpretation: One-sided type-I error for each of the two component tests;
+    the adapter passes this value directly and does not divide it by two.
   required_for_solve_modes: *id001
   allowed_for_solve_modes: *id001
 - name: power
@@ -211,7 +211,9 @@ benchmark_requirements:
 - Compare TrialSize with two one-sided noncentral-t calculations and a commercial/textbook
   benchmark
 - Reproduce official package examples for the pinned version.
-- Compare forward power and inverse sample-size results on a prespecified grid.
+- Independently calculate forward power on a prespecified validation grid and compare
+  it with inverse sample-size results; this validation calculation is not a supported
+  public power solve mode.
 - Verify null-boundary type-I error and clinically relevant alternatives independently.
 specification_status: SPEC_FROZEN
 design_components: []
@@ -229,4 +231,7 @@ derived_parameters:
   - allocation_ratio
   output_unit: participants
   assumptions:
-  - TrialSize defines k=n1/n2; integer allocation is rechecked after rounding.
+  - TrialSize 1.4.1 defines k=n1/n2 and returns n1. The project contract assigns
+    n1 to treatment and n2 to control; integer allocation is rechecked after rounding.
+  - TrialSize documentation describes margin as test minus control (mu2-mu1), while
+    its formula uses abs(margin), so sign does not alter the returned sample size.

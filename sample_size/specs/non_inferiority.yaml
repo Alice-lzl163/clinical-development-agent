@@ -37,13 +37,16 @@ inputs:
   required_for_solve_modes: *id001
   allowed_for_solve_modes: *id001
 - name: noninferiority_margin
-  definition: Risk-difference NI margin with explicit event orientation.
+  definition: Strictly positive clinical loss-margin magnitude on the treatment-minus-control
+    risk-difference scale.
   type: number
   unit: probability difference
   required: true
-  valid_range: null
+  valid_range:
+    exclusive_minimum: 0
   default: null
-  clinical_interpretation: Risk-difference NI margin with explicit event orientation.
+  clinical_interpretation: Maximum clinically acceptable loss in favorable treatment
+    success probability relative to control.
   required_for_solve_modes: *id001
   allowed_for_solve_modes: *id001
 - name: allocation_ratio
@@ -218,7 +221,9 @@ benchmark_requirements:
 - Reproduce package examples and protocol scenarios; verify H0 boundary by simulation
   and commercial benchmark
 - Reproduce official package examples for the pinned version.
-- Compare forward power and inverse sample-size results on a prespecified grid.
+- Independently calculate forward power on a prespecified validation grid and compare
+  it with inverse sample-size results; this validation calculation is not a supported
+  public power solve mode.
 - Verify null-boundary type-I error and clinically relevant alternatives independently.
 specification_status: SPEC_FROZEN
 design_components: []
