@@ -35,6 +35,17 @@ qualifications:
     tested_methods: [be_tost]
     fixture_count: 5
   - <<: *canonical
+    dependency: PowerTOST
+    version: "1.5.7"
+    tested_methods: [equivalence]
+    fixture_count: 6
+    benchmark_id: round5-equivalence-powertost-v1
+    evidence_reference: sample_size/validation/round5_equivalence_powertost_evidence.json
+    observed_difference: Exact power matched direct PowerTOST calls and the independent pooled-variance joint-TOST integral within predeclared tolerances.
+    qualification_date: "2026-09-02"
+    tested_operating_systems: [Windows]
+    hosted_evidence_reference: null
+  - <<: *canonical
     dependency: jsonlite
     version: "2.0.0"
     tested_methods: [ttest_one, ttest_paired, ttest_ind, anova, proportion_two, be_tost]

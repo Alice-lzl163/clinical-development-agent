@@ -17,8 +17,8 @@ inputs:
 - {name: alpha, definition: One-sided significance level for each TOST component., type: number, unit: dimensionless, required: true, valid_range: {exclusive_minimum: 0, exclusive_maximum: 1}, default: 0.05, clinical_interpretation: Passed directly to PowerTOST and not divided by two., required_for_solve_modes: *both, allowed_for_solve_modes: *both}
 - {name: power, definition: Target joint probability that both one-sided tests reject., type: number, unit: dimensionless, required: true, valid_range: {exclusive_minimum: 0, exclusive_maximum: 1}, default: 0.8, clinical_interpretation: Minimum exact joint TOST power for the final analyzable integer design., required_for_solve_modes: *sample, allowed_for_solve_modes: *sample}
 - {name: dropout_rate, definition: Expected proportion without an analyzable primary endpoint., type: number, unit: dimensionless, required: true, valid_range: {minimum: 0, exclusive_maximum: 1}, default: 0, clinical_interpretation: Applied per arm only after analyzable design acceptance., required_for_solve_modes: *sample, allowed_for_solve_modes: *sample}
-- {name: analyzable_treatment, definition: Integer analyzable treatment-arm participants for forward power., type: integer, unit: participants, required: true, valid_range: {minimum: 2}, default: null, clinical_interpretation: Analysis count and never randomized enrollment., required_for_solve_modes: &forward [power], allowed_for_solve_modes: *forward}
-- {name: analyzable_control, definition: Integer analyzable control-arm participants for forward power., type: integer, unit: participants, required: true, valid_range: {minimum: 2}, default: null, clinical_interpretation: Analysis count and never randomized enrollment., required_for_solve_modes: *forward, allowed_for_solve_modes: *forward}
+- {name: analyzable_treatment, definition: Integer analyzable treatment-arm participants for forward power., type: integer, unit: participants, required: true, valid_range: {minimum: 2, maximum: 1000000}, default: null, clinical_interpretation: Analysis count and never randomized enrollment., required_for_solve_modes: &forward [power], allowed_for_solve_modes: *forward}
+- {name: analyzable_control, definition: Integer analyzable control-arm participants for forward power., type: integer, unit: participants, required: true, valid_range: {minimum: 2, maximum: 1000000}, default: null, clinical_interpretation: Analysis count and never randomized enrollment., required_for_solve_modes: *forward, allowed_for_solve_modes: *forward}
 alpha:
   sidedness: two_one_sided_tests
   convention: alpha is the one-sided level for each component and is passed directly without division.
@@ -86,7 +86,7 @@ unsupported_domains:
 - Randomized or dropout-inflated counts supplied to power mode.
 warnings:
 - TrialSize::TwoSampleMean.Equivalence is historical diagnostic evidence only; its nearest-bound symmetric approximation and allocation labeling do not implement this contract.
-- PowerTOST 1.5.7 has prior project use, but this repaired equivalence mapping remains numerically unvalidated pending a new benchmark.
+- The repaired equivalence mapping is qualified only for the exact PowerTOST 1.5.7 method-specific benchmark; no compatibility is inferred for other versions.
 validation_grade: V2
 migration_action: REPLACE
 lifecycle_status: VALIDATION_PENDING

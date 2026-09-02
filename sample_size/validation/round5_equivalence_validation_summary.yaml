@@ -1,0 +1,75 @@
+schema_version: 1
+validation_round: 5.3D
+benchmark_id: round5-equivalence-powertost-v1
+outcome: FROZEN_VALIDATED
+final_status: BENCHMARK_VALIDATED
+environment:
+  Python: 3.12.7
+  SciPy: 1.18.1
+  R:
+    version: R version 4.6.1 (2026-06-24 ucrt)
+    platform: x86_64-w64-mingw32
+  PowerTOST:
+    status: FOUND
+    version: 1.5.7
+    library_path: C:/Users/ZhuoChang/AppData/Local/R/win-library/4.6
+    functions:
+      power.TOST: true
+  rscript: C:\Program Files\R\R-4.6.1\bin\x64\Rscript.exe
+fixtures:
+  total: 6
+  passed: 6
+  failed: 0
+validation_gates:
+  direct_package_reproduction: PASS
+  independent_exact_reference: PASS
+  search_minimality: PASS
+  allocation_dropout_rounding: PASS
+  edge_cases_monotonicity: PASS
+  simulation: PASS
+  reproducibility_versions: PASS
+simulation:
+  seed_base: 5303004
+  replicates_per_scenario: 100000
+  results:
+    eq_centered_sample:
+      seed: 5303004
+      replicates: 100000
+      estimate: 0.80546
+      exact_power: 0.8059311816274025
+      mcse: 0.0012517754926503395
+      confidence_interval_95:
+      - 0.8030065200344053
+      - 0.8079134799655946
+      tolerance: 0.01
+      acceptance_rule: abs(simulated-exact) <= max(0.01, 3*MCSE)
+      status: PASS
+    eq_k2_repaired:
+      seed: 5303005
+      replicates: 100000
+      estimate: 0.80616
+      exact_power: 0.8065493607543245
+      mcse: 0.0012500642159505248
+      confidence_interval_95:
+      - 0.803709874136737
+      - 0.808610125863263
+      tolerance: 0.01
+      acceptance_rule: abs(simulated-exact) <= max(0.01, 3*MCSE)
+      status: PASS
+    eq_khalf_repaired:
+      seed: 5303006
+      replicates: 100000
+      estimate: 0.90073
+      exact_power: 0.9011199416062228
+      mcse: 0.0009455975206185768
+      confidence_interval_95:
+      - 0.8988766288595876
+      - 0.9025833711404124
+      tolerance: 0.01
+      acceptance_rule: abs(simulated-exact) <= max(0.01, 3*MCSE)
+      status: PASS
+live_execution:
+  subprocess_executions: 21
+  successful: 21
+  failed: 0
+  authoritative_power_tost_calls: 1410

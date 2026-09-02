@@ -4,11 +4,11 @@ import math
 
 from sample_size.adapters import (
     PowerTOSTAdapter,
+    PowerTOSTMeanEquivalenceAdapter,
     PwrAnovaAdapter,
     PwrProportionAdapter,
     PwrTAdapter,
     TrialSizeMcNemarAdapter,
-    TrialSizeMeanEquivalenceAdapter,
     TrialSizeProportionAdapter,
     TrialSizeProportionMarginAdapter,
     GsDesignBinomialAdapter,
@@ -179,15 +179,54 @@ class ProportionPairedMethod:
 
 
 class MeanEquivalenceMethod:
-    def __init__(self, engine): self.adapter = TrialSizeMeanEquivalenceAdapter(engine)
+    def __init__(self, engine): self.adapter = PowerTOSTMeanEquivalenceAdapter(engine)
     def calculate(self, spec, values, solve_mode):
-        result = self.adapter.calculate(expected_difference=values["expected_difference"], sd=values["sd"], equivalence_margin=values["equivalence_margin"], allocation_ratio=values["allocation_ratio"], alpha=values["alpha"], power=values["power"])
-        nt, nc = int(result.raw["analysis_n_treatment"]), int(result.raw["analysis_n_control"])
-        rt, rc = _ceil_dropout(nt, values["dropout_rate"]), _ceil_dropout(nc, values["dropout_rate"])
-        return _result(spec, values, result, solve_mode=solve_mode, analysis_total=nt+nc, randomized_total=rt+rc, per_group={"treatment": nt, "control": nc},
-            derived={"beta": 1-values["power"], "analyzable_treatment": nt, "analyzable_control": nc, "randomized_treatment": rt, "randomized_control": rc},
-            rounding=["ceil TrialSize treatment n", "ceil implied control n", "ceil dropout inflation per arm"], sidedness="two_one_sided_tests",
-            benchmark_eligible=False, implementation_version="round-5.2a", benchmark_id="not_assigned")
+        common = dict(expected_difference=values["expected_difference"], sd=values["sd"], equivalence_margin=values["equivalence_margin"], alpha=values["alpha"])
+        if solve_mode == "sample_size":
+            result = self.adapter.calculate(**common, allocation_ratio=values["allocation_ratio"], power=values["power"])
+        else:
+            result = self.adapter.power(**common, n_treatment=values["analyzable_treatment"], n_control=values["analyzable_control"])
+        raw = result.raw
+        arm_values = ({"analysis_n_treatment": raw.get("analysis_n_treatment"), "analysis_n_control": raw.get("analysis_n_control")}
+                      if solve_mode == "sample_size" else
+                      {"analysis_n_treatment": values["analyzable_treatment"], "analysis_n_control": values["analyzable_control"]})
+        for name in ("analysis_n_treatment", "analysis_n_control", "achieved_power"):
+            value = raw.get(name) if name == "achieved_power" else arm_values[name]
+            if not isinstance(value, (int, float)) or isinstance(value, bool) or not math.isfinite(value):
+                raise PackageExecutionError(f"PowerTOST returned invalid {name}")
+        nt = int(arm_values["analysis_n_treatment"])
+        nc = int(arm_values["analysis_n_control"])
+        if nt < 2 or nc < 2 or nt > self.adapter.maximum_per_arm or nc > self.adapter.maximum_per_arm:
+            raise PackageExecutionError("PowerTOST returned analyzable arm size outside the frozen domain")
+        if solve_mode == "sample_size":
+            expected_nt = math.ceil(values["allocation_ratio"] * nc)
+            if nt != expected_nt:
+                raise PackageExecutionError("PowerTOST search output violates deterministic allocation realization")
+            has_previous = nc > 2
+            previous_power = raw.get("preceding_power")
+            if bool(raw.get("has_preceding_candidate")) != has_previous:
+                raise PackageExecutionError("PowerTOST search output has inconsistent preceding-candidate metadata")
+            if has_previous and (not isinstance(previous_power, (int, float)) or isinstance(previous_power, bool) or not math.isfinite(previous_power) or previous_power >= values["power"]):
+                raise PackageExecutionError("PowerTOST search output does not prove minimality")
+            rt, rc = _ceil_dropout(nt, values["dropout_rate"]), _ceil_dropout(nc, values["dropout_rate"])
+            randomized_total = rt + rc
+            rounding = ["enumerate control N from 2", "ceil treatment N from allocation ratio", "accept first exact PowerTOST power at target", "ceil dropout inflation per arm"]
+        else:
+            rt = rc = randomized_total = None
+            has_previous = False
+            previous_power = None
+            rounding = []
+        derived = {
+            "lower_equivalence_bound": -values["equivalence_margin"], "upper_equivalence_bound": values["equivalence_margin"],
+            "analyzable_treatment": nt, "analyzable_control": nc, "analyzable_total": nt + nc,
+            "realized_allocation_ratio": nt / nc, "randomized_treatment": rt, "randomized_control": rc,
+            "randomized_total": randomized_total, "minimal_control_arm_under_declared_search": solve_mode == "sample_size",
+            "preceding_candidate_power": previous_power, "search_iterations": raw.get("search_iterations"),
+            "authoritative_package_calls": raw.get("authoritative_package_calls", 1),
+        }
+        return _result(spec, values, result, solve_mode=solve_mode, analysis_total=nt+nc, randomized_total=randomized_total, per_group={"treatment": nt, "control": nc},
+            derived=derived, rounding=rounding, sidedness="two_one_sided_tests",
+            benchmark_eligible=True, implementation_version="round-5.3d", benchmark_id="round5-equivalence-powertost-v1")
 
 
 class ProportionMarginMethod:

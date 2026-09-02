@@ -66,5 +66,8 @@ class EquivalenceRepairedSpecificationTests(unittest.TestCase):
         power={'expected_difference':0.1,'sd':1,'equivalence_margin':0.5,'alpha':0.05,'analyzable_treatment':100,'analyzable_control':50}
         self.assertEqual(100,validate_request(load_frozen_spec('equivalence'),'power',power)['analyzable_treatment'])
         with self.assertRaises(RequestValidationError): validate_request(load_frozen_spec('equivalence'),'power',{**power,'dropout_rate':.1})
+        for name in ('analyzable_treatment','analyzable_control'):
+            with self.assertRaises(RequestValidationError):
+                validate_request(load_frozen_spec('equivalence'),'power',{**power,name:1000001})
 
 if __name__=='__main__': unittest.main()

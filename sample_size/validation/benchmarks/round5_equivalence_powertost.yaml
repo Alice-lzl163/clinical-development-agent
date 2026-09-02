@@ -1,0 +1,309 @@
+schema_version: 1
+benchmark_id: round5-equivalence-powertost-v1
+status: FROZEN_VALIDATED
+predeclared_tolerances:
+  direct_package_absolute: 1.0e-12
+  independent_integral_absolute: 1.0e-09
+  simulation: max(0.01, 3*MCSE)
+cases:
+- id: eq_centered_sample
+  solve_mode: sample_size
+  inputs:
+    expected_difference: 0.0
+    sd: 1.0
+    equivalence_margin: 0.5
+    allocation_ratio: 1.0
+    alpha: 0.05
+    power: 0.8
+    dropout_rate: 0.0
+  validation_status: FROZEN_VALIDATED
+  exact_package_arguments:
+    alpha: 0.05
+    logscale: false
+    theta0: 0.0
+    theta1: -0.5
+    theta2: 0.5
+    CV: 1.0
+    n:
+    - 70
+    - 70
+    design: parallel
+    method: exact
+    robust: false
+  analyzable:
+    groups:
+      treatment: 70
+      control: 70
+    total: 140
+  randomized:
+    treatment: 70
+    control: 70
+    total: 140
+  achieved_power: 0.8059311816274025
+  preceding_candidate_power: 0.7985117775368249
+  independent_exact_integral:
+    result: 0.8059311816273298
+    absolute_difference: 7.271960811294775e-14
+    tolerance: 1.0e-09
+    status: PASS
+  spec_sha256: sha256:cc20b080709a8996d9b95b672128aebcedfe8fcdc404eb2ffd32c8bb3e5aea88
+  implementation_version: round-5.3d
+  validation_gates:
+    direct_package_reproduction: PASS
+    independent_exact_reference: PASS
+    search_minimality: PASS
+    allocation_dropout_rounding: PASS
+    edge_cases_monotonicity: PASS
+    simulation: PASS
+    reproducibility_versions: PASS
+- id: eq_k2_repaired
+  solve_mode: sample_size
+  historical_diagnostic_id: eq_k2
+  inputs:
+    expected_difference: 0.1
+    sd: 1.0
+    equivalence_margin: 0.5
+    allocation_ratio: 2.0
+    alpha: 0.05
+    power: 0.8
+    dropout_rate: 0.1
+  validation_status: FROZEN_VALIDATED
+  exact_package_arguments:
+    alpha: 0.05
+    logscale: false
+    theta0: 0.1
+    theta1: -0.5
+    theta2: 0.5
+    CV: 1.0
+    n:
+    - 124
+    - 62
+    design: parallel
+    method: exact
+    robust: false
+  analyzable:
+    groups:
+      treatment: 124
+      control: 62
+    total: 186
+  randomized:
+    treatment: 138
+    control: 69
+    total: 207
+  achieved_power: 0.8065493607543245
+  preceding_candidate_power: 0.7998664843513544
+  independent_exact_integral:
+    result: 0.8065493607542102
+    absolute_difference: 1.142419492339286e-13
+    tolerance: 1.0e-09
+    status: PASS
+  spec_sha256: sha256:cc20b080709a8996d9b95b672128aebcedfe8fcdc404eb2ffd32c8bb3e5aea88
+  implementation_version: round-5.3d
+  validation_gates:
+    direct_package_reproduction: PASS
+    independent_exact_reference: PASS
+    search_minimality: PASS
+    allocation_dropout_rounding: PASS
+    edge_cases_monotonicity: PASS
+    simulation: PASS
+    reproducibility_versions: PASS
+- id: eq_khalf_repaired
+  solve_mode: sample_size
+  historical_diagnostic_id: eq_khalf
+  inputs:
+    expected_difference: -0.1
+    sd: 1.2
+    equivalence_margin: 0.5
+    allocation_ratio: 0.5
+    alpha: 0.05
+    power: 0.9
+    dropout_rate: 0.2
+  validation_status: FROZEN_VALIDATED
+  exact_package_arguments:
+    alpha: 0.05
+    logscale: false
+    theta0: -0.1
+    theta1: -0.5
+    theta2: 0.5
+    CV: 1.2
+    n:
+    - 118
+    - 235
+    design: parallel
+    method: exact
+    robust: false
+  analyzable:
+    groups:
+      treatment: 118
+      control: 235
+    total: 353
+  randomized:
+    treatment: 148
+    control: 294
+    total: 442
+  achieved_power: 0.9011199416062228
+  preceding_candidate_power: 0.8991870226695483
+  independent_exact_integral:
+    result: 0.9011199416057372
+    absolute_difference: 4.856115509710435e-13
+    tolerance: 1.0e-09
+    status: PASS
+  spec_sha256: sha256:cc20b080709a8996d9b95b672128aebcedfe8fcdc404eb2ffd32c8bb3e5aea88
+  implementation_version: round-5.3d
+  validation_gates:
+    direct_package_reproduction: PASS
+    independent_exact_reference: PASS
+    search_minimality: PASS
+    allocation_dropout_rounding: PASS
+    edge_cases_monotonicity: PASS
+    simulation: PASS
+    reproducibility_versions: PASS
+- id: eq_centered_power
+  solve_mode: power
+  inputs:
+    expected_difference: 0.0
+    sd: 1.0
+    equivalence_margin: 0.5
+    alpha: 0.05
+    analyzable_treatment: 80
+    analyzable_control: 80
+  validation_status: FROZEN_VALIDATED
+  exact_package_arguments:
+    alpha: 0.05
+    logscale: false
+    theta0: 0.0
+    theta1: -0.5
+    theta2: 0.5
+    CV: 1.0
+    n:
+    - 80
+    - 80
+    design: parallel
+    method: exact
+    robust: false
+  analyzable:
+    groups:
+      treatment: 80
+      control: 80
+    total: 160
+  randomized:
+    treatment: null
+    control: null
+    total: null
+  achieved_power: 0.8673773151111428
+  preceding_candidate_power: null
+  independent_exact_integral:
+    result: 0.8673773151110692
+    absolute_difference: 7.360778653264788e-14
+    tolerance: 1.0e-09
+    status: PASS
+  spec_sha256: sha256:cc20b080709a8996d9b95b672128aebcedfe8fcdc404eb2ffd32c8bb3e5aea88
+  implementation_version: round-5.3d
+  validation_gates:
+    direct_package_reproduction: PASS
+    independent_exact_reference: PASS
+    search_minimality: PASS
+    allocation_dropout_rounding: PASS
+    edge_cases_monotonicity: PASS
+    simulation: PASS
+    reproducibility_versions: PASS
+- id: eq_k2_historical_arms_power
+  solve_mode: power
+  historical_diagnostic_id: eq_k2
+  inputs:
+    expected_difference: 0.1
+    sd: 1.0
+    equivalence_margin: 0.5
+    alpha: 0.05
+    analyzable_treatment: 161
+    analyzable_control: 81
+  validation_status: FROZEN_VALIDATED
+  exact_package_arguments:
+    alpha: 0.05
+    logscale: false
+    theta0: 0.1
+    theta1: -0.5
+    theta2: 0.5
+    CV: 1.0
+    n:
+    - 161
+    - 81
+    design: parallel
+    method: exact
+    robust: false
+  analyzable:
+    groups:
+      treatment: 161
+      control: 81
+    total: 242
+  randomized:
+    treatment: null
+    control: null
+    total: null
+  achieved_power: 0.8972844142790725
+  preceding_candidate_power: null
+  independent_exact_integral:
+    result: 0.8972844142785337
+    absolute_difference: 5.387912338505885e-13
+    tolerance: 1.0e-09
+    status: PASS
+  spec_sha256: sha256:cc20b080709a8996d9b95b672128aebcedfe8fcdc404eb2ffd32c8bb3e5aea88
+  implementation_version: round-5.3d
+  validation_gates:
+    direct_package_reproduction: PASS
+    independent_exact_reference: PASS
+    search_minimality: PASS
+    allocation_dropout_rounding: PASS
+    edge_cases_monotonicity: PASS
+    simulation: PASS
+    reproducibility_versions: PASS
+- id: eq_khalf_historical_arms_power
+  solve_mode: power
+  historical_diagnostic_id: eq_khalf
+  inputs:
+    expected_difference: -0.1
+    sd: 1.2
+    equivalence_margin: 0.5
+    alpha: 0.05
+    analyzable_treatment: 147
+    analyzable_control: 293
+  validation_status: FROZEN_VALIDATED
+  exact_package_arguments:
+    alpha: 0.05
+    logscale: false
+    theta0: -0.1
+    theta1: -0.5
+    theta2: 0.5
+    CV: 1.2
+    n:
+    - 147
+    - 293
+    design: parallel
+    method: exact
+    robust: false
+  analyzable:
+    groups:
+      treatment: 147
+      control: 293
+    total: 440
+  randomized:
+    treatment: null
+    control: null
+    total: null
+  achieved_power: 0.949830835624301
+  preceding_candidate_power: null
+  independent_exact_integral:
+    result: 0.9498308356241735
+    absolute_difference: 1.2756462552943049e-13
+    tolerance: 1.0e-09
+    status: PASS
+  spec_sha256: sha256:cc20b080709a8996d9b95b672128aebcedfe8fcdc404eb2ffd32c8bb3e5aea88
+  implementation_version: round-5.3d
+  validation_gates:
+    direct_package_reproduction: PASS
+    independent_exact_reference: PASS
+    search_minimality: PASS
+    allocation_dropout_rounding: PASS
+    edge_cases_monotonicity: PASS
+    simulation: PASS
+    reproducibility_versions: PASS

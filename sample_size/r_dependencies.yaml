@@ -21,7 +21,7 @@ statistical_packages:
     validated_version: 1.4.1
   PowerTOST:
     functions: [sampleN.TOST, power.TOST]
-    methods: [be_tost]
+    methods: [be_tost, equivalence]
     version_policy: exact
     validated_version: 1.5.7
   gsDesign:
@@ -30,6 +30,6 @@ statistical_packages:
     version_policy: exact
     validated_version: 3.11.0
 validation_provenance:
-  round: "4.2 and 5.3"
+  round: "4.2, 5.3, and 5.3D"
   date: "2026-09-02"
   basis_commit: 702f8d19bb48b4d710118ce2be4f2d1721602baa

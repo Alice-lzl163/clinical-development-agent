@@ -83,17 +83,49 @@ class Round52CalculatorTests(unittest.TestCase):
                 calculate_sample_size({"test_key": "proportion_paired", "parameters": invalid}, engine=engine)
 
     def test_equivalence_mapping_allocation_dropout_and_boundary(self):
-        engine = RecordingEngine(raw(package_version="1.4.1", analysis_n_treatment=45, analysis_n_control=30))
+        engine = RecordingEngine(raw(package_version="1.5.7", analysis_n_treatment=45, analysis_n_control=30,
+                                     has_preceding_candidate=True, preceding_power=.79,
+                                     search_iterations=29, authoritative_package_calls=29))
         parameters = {"expected_difference": .1, "sd": 1.2, "equivalence_margin": .3, "allocation_ratio": 1.5, "alpha": .05, "power": .8, "dropout_rate": .1}
         result = calculate_sample_size({"test_key": "equivalence", "parameters": parameters}, engine=engine)
-        self.assertAlmostEqual(.2, result.package_arguments["beta"])
-        self.assertEqual({"alpha": .05, "sigma": 1.2, "k": 1.5, "delta": .3, "margin": .1}, {key: result.package_arguments[key] for key in ("alpha", "sigma", "k", "delta", "margin")})
+        self.assertEqual({"alpha": .05, "logscale": False, "theta0": .1, "theta1": -.3,
+                          "theta2": .3, "CV": 1.2, "n": [45, 30], "design": "parallel",
+                          "method": "exact", "robust": False}, result.package_arguments)
         self.assertEqual({"treatment": 45, "control": 30}, result.sample_size_per_group)
         self.assertEqual(75, result.analysis_required_sample_size)
         self.assertEqual(math.ceil(45/.9) + math.ceil(30/.9), result.randomized_sample_size)
-        self.assertEqual("IMPLEMENTED_UNVALIDATED", result.validation_status)
+        self.assertEqual("BENCHMARK_VALIDATED", result.validation_status)
+        self.assertEqual("round5-equivalence-powertost-v1", result.benchmark_id)
+        self.assertEqual(.79, result.derived_parameters["preceding_candidate_power"])
+        self.assertIn("PowerTOST::power.TOST", result.reproducible_code)
+        self.assertNotIn("TwoSampleMean.Equivalence", result.reproducible_code)
         invalid = dict(parameters, expected_difference=.3)
         with self.assertRaises(RequestValidationError): calculate_sample_size({"test_key": "equivalence", "parameters": invalid}, engine=engine)
+
+        power_engine = RecordingEngine(raw(package_version="1.5.7", achieved_power=.72))
+        powered = calculate_sample_size({"test_key": "equivalence", "solve_mode": "power", "parameters": {
+            "expected_difference": -.1, "sd": 1.2, "equivalence_margin": .3,
+            "alpha": .05, "analyzable_treatment": 40, "analyzable_control": 80,
+        }}, engine=power_engine)
+        self.assertEqual({"treatment": 40, "control": 80}, powered.sample_size_per_group)
+        self.assertIsNone(powered.randomized_sample_size)
+        self.assertEqual([40, 80], powered.package_arguments["n"])
+        self.assertNotIn("target_power", powered.package_arguments)
+
+    def test_equivalence_package_output_fails_closed(self):
+        parameters = {"expected_difference": .1, "sd": 1, "equivalence_margin": .5,
+                      "allocation_ratio": 2, "alpha": .05, "power": .8, "dropout_rate": 0}
+        bad_outputs = (
+            raw(package_version="1.5.7", analysis_n_treatment=123, analysis_n_control=62,
+                has_preceding_candidate=True, preceding_power=.79),
+            raw(package_version="1.5.7", analysis_n_treatment=124, analysis_n_control=62,
+                has_preceding_candidate=True, preceding_power=.81),
+            raw(package_version="1.5.7", analysis_n_treatment=124, analysis_n_control=62,
+                has_preceding_candidate=True, preceding_power=.79, achieved_power=float("nan")),
+        )
+        for output in bad_outputs:
+            with self.subTest(output=output), self.assertRaises(Exception):
+                calculate_sample_size({"test_key": "equivalence", "parameters": parameters}, engine=RecordingEngine(output))
 
     def test_ni_and_superiority_use_distinct_package_margins(self):
         base = {"control_probability": .5, "treatment_probability": .6, "allocation_ratio": 1.5, "alpha": .025, "power": .8, "dropout_rate": .1}
