@@ -2,7 +2,7 @@ import math
 import unittest
 
 from sample_size import calculate_sample_size
-from sample_size.engines.errors import RequestValidationError, RuntimeDependencyError, UnknownMethodError, UnsupportedSolveModeError
+from sample_size.engines.errors import RequestValidationError, RuntimeDependencyError, UnsupportedSolveModeError
 from sample_size.registry.method_registry import IMPLEMENTED_KEYS
 
 
@@ -32,12 +32,9 @@ def raw(**changes):
 
 
 class Round52CalculatorTests(unittest.TestCase):
-    def test_registry_adds_only_five_frozen_round5_methods(self):
+    def test_registry_includes_the_frozen_round5_methods(self):
         self.assertTrue({"proportion_one", "proportion_paired", "equivalence", "non_inferiority", "superiority_margin"}.issubset(IMPLEMENTED_KEYS))
-        self.assertFalse({"odds_ratio", "risk_ratio"} & IMPLEMENTED_KEYS)
-        for key in ("odds_ratio", "risk_ratio"):
-            with self.subTest(key=key), self.assertRaises(UnknownMethodError):
-                calculate_sample_size({"test_key": key, "parameters": {}})
+        self.assertTrue({"odds_ratio", "risk_ratio"}.issubset(IMPLEMENTED_KEYS))
 
     def test_one_sample_proportion_mapping_modes_and_dropout(self):
         engine = RecordingEngine(raw())

@@ -120,6 +120,10 @@ class Round51SpecificationTests(unittest.TestCase):
                 self.assertTrue(spec["solve_modes"]["power"])
                 self.assertEqual("one_sided", spec["alpha"]["sidedness"])
                 self.assertIn("INSTALLED_UNVALIDATED", spec["engine"]["package_version_policy"])
+                inputs = {item["name"]: item for item in spec["inputs"]}
+                self.assertEqual(["sample_size"], inputs["allocation_ratio"]["allowed_for_solve_modes"])
+                self.assertEqual(["power"], inputs["analyzable_treatment"]["required_for_solve_modes"])
+                self.assertEqual(["power"], inputs["analyzable_control"]["required_for_solve_modes"])
 
     def test_gsdesign_is_recorded_as_installed_not_validated(self):
         registry = yaml.safe_load((ROOT / "sample_size/validation/dependency_compatibility.yaml").read_text(encoding="utf-8"))

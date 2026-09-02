@@ -58,8 +58,9 @@ inputs:
   default: 1
   clinical_interpretation: Planned treatment-to-control sample-size ratio n_treatment
     / n_control.
-  required_for_solve_modes: *id001
-  allowed_for_solve_modes: *id001
+  required_for_solve_modes: &id004
+  - sample_size
+  allowed_for_solve_modes: *id004
 - name: alpha
   definition: Overall type-I error probability.
   type: number

@@ -1,7 +1,7 @@
 from sample_size.engines.errors import UnknownMethodError
-from sample_size.methods.fixed_designs import AnovaMethod, BioequivalenceMethod, MeanEquivalenceMethod, ProportionMarginMethod, ProportionOneMethod, ProportionPairedMethod, ProportionTwoMethod, TTestMethod
+from sample_size.methods.fixed_designs import AnovaMethod, BioequivalenceMethod, MeanEquivalenceMethod, ProportionMarginMethod, ProportionOneMethod, ProportionPairedMethod, ProportionTwoMethod, RatioBinomialMethod, TTestMethod
 
-IMPLEMENTED_KEYS = frozenset({"ttest_one", "ttest_paired", "ttest_ind", "anova", "proportion_two", "be_tost", "proportion_one", "proportion_paired", "equivalence", "non_inferiority", "superiority_margin"})
+IMPLEMENTED_KEYS = frozenset({"ttest_one", "ttest_paired", "ttest_ind", "anova", "proportion_two", "be_tost", "proportion_one", "proportion_paired", "equivalence", "non_inferiority", "superiority_margin", "odds_ratio", "risk_ratio"})
 
 
 def get_method(test_key, engine):
@@ -25,4 +25,6 @@ def get_method(test_key, engine):
         return MeanEquivalenceMethod(engine)
     if test_key in {"non_inferiority", "superiority_margin"}:
         return ProportionMarginMethod(engine, test_key)
+    if test_key in {"odds_ratio", "risk_ratio"}:
+        return RatioBinomialMethod(engine, test_key)
     raise UnknownMethodError(f"test_key is not implemented locally: {test_key!r}")

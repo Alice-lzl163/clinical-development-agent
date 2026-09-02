@@ -11,6 +11,7 @@ from sample_size.adapters import (
     TrialSizeMeanEquivalenceAdapter,
     TrialSizeProportionAdapter,
     TrialSizeProportionMarginAdapter,
+    GsDesignBinomialAdapter,
 )
 from sample_size.agent.result import SampleSizeResult
 from sample_size.engines.errors import PackageExecutionError, RequestValidationError
@@ -48,10 +49,13 @@ def _result(spec, values, adapter_result, *, solve_mode, analysis_total, randomi
         raise PackageExecutionError(f"{package} {package_version} is empirically incompatible with this calculator runtime")
     version_qualified = validation_environment in {"MATCHED_VALIDATED_ENVIRONMENT", "TESTED_COMPATIBLE_VERSION"}
     validation_status = "BENCHMARK_VALIDATED" if benchmark_eligible and version_qualified else "IMPLEMENTED_UNVALIDATED"
-    version_warnings = [] if version_qualified else [
-        f"Runtime versions differ from the validated R 4.6.1 / {package} "
-        f"{_VALIDATED_PACKAGE_VERSIONS.get(package)} environment; numerical validation status is not inherited."
-    ]
+    validated_package_version = _VALIDATED_PACKAGE_VERSIONS.get(package)
+    if version_qualified:
+        version_warnings = []
+    elif validated_package_version is None:
+        version_warnings = [f"{package} has no numerically validated package baseline; validation status is not inherited from installation or contract introspection."]
+    else:
+        version_warnings = [f"Runtime versions differ from the validated R 4.6.1 / {package} {validated_package_version} environment; numerical validation status is not inherited."]
     validation_warnings = [] if benchmark_eligible else [
         "This Round 5.2A calculator is implemented but has not completed numerical benchmark validation."
     ]
@@ -198,3 +202,49 @@ class ProportionMarginMethod:
             derived={"beta": 1-values["power"], "expected_risk_difference": delta, "package_margin": margin, "analyzable_treatment": nt, "analyzable_control": nc, "randomized_treatment": rt, "randomized_control": rc},
             rounding=["ceil TrialSize treatment n", "ceil implied control n", "ceil dropout inflation per arm"], sidedness="one_sided",
             benchmark_eligible=False, implementation_version="round-5.2a", benchmark_id="not_assigned")
+
+
+class RatioBinomialMethod:
+    def __init__(self, engine, test_key):
+        self.adapter = GsDesignBinomialAdapter(engine); self.test_key = test_key
+
+    @staticmethod
+    def _require_positive_finite(raw, names):
+        for name in names:
+            value = raw.get(name)
+            if not isinstance(value, (int, float)) or isinstance(value, bool) or not math.isfinite(value) or value <= 0:
+                raise PackageExecutionError(f"gsDesign returned invalid {name}")
+
+    def calculate(self, spec, values, solve_mode):
+        control = values["control_probability"]
+        ratio_name = "alternative_odds_ratio" if self.test_key == "odds_ratio" else "alternative_risk_ratio"
+        null_name = "null_odds_ratio" if self.test_key == "odds_ratio" else "null_risk_ratio"
+        scale = "OR" if self.test_key == "odds_ratio" else "RR"
+        effect_ratio, null_ratio = values[ratio_name], values[null_name]
+        if self.test_key == "odds_ratio":
+            treatment = effect_ratio * control / (1 - control + effect_ratio * control)
+        else:
+            treatment = effect_ratio * control
+        delta0 = math.log(null_ratio)
+        if solve_mode == "sample_size":
+            result = self.adapter.calculate(treatment_probability=treatment, control_probability=control, null_ratio=null_ratio, allocation_ratio=values["allocation_ratio"], alpha=values["alpha"], power=values["power"], scale=scale)
+            self._require_positive_finite(result.raw, ("package_total", "package_n1", "package_n2", "analysis_n_treatment", "analysis_n_control", "achieved_power", "checked_n1", "checked_n2", "realized_package_ratio"))
+            if abs(result.raw["package_n1"] + result.raw["package_n2"] - result.raw["package_total"]) > 1e-6:
+                raise PackageExecutionError("gsDesign total n is inconsistent with n1+n2")
+            nt, nc = int(result.raw["analysis_n_treatment"]), int(result.raw["analysis_n_control"])
+            if abs(result.raw["checked_n1"] - nt) > 1e-6 or abs(result.raw["checked_n2"] - nc) > 1e-6:
+                raise PackageExecutionError("gsDesign forward allocation is inconsistent with integer analyzable arm sizes")
+            rt, rc = _ceil_dropout(nt, values["dropout_rate"]), _ceil_dropout(nc, values["dropout_rate"])
+            randomized_total = rt + rc
+            rounding = ["ceil gsDesign n1 for treatment", "ceil gsDesign n2 for control", "forward power recheck at integer total and realized ratio", "deterministic allocation-preserving increments if required", "ceil dropout inflation per arm"]
+        else:
+            nt, nc = values["analyzable_treatment"], values["analyzable_control"]
+            result = self.adapter.power(treatment_probability=treatment, control_probability=control, null_ratio=null_ratio, n_treatment=nt, n_control=nc, alpha=values["alpha"], scale=scale)
+            self._require_positive_finite(result.raw, ("achieved_power", "checked_n1", "checked_n2", "realized_package_ratio"))
+            if abs(result.raw["checked_n1"] - nt) > 1e-6 or abs(result.raw["checked_n2"] - nc) > 1e-6:
+                raise PackageExecutionError("gsDesign power output is inconsistent with supplied analyzable arm sizes")
+            rt = rc = randomized_total = None; rounding = []
+        derived = {"alternative_treatment_probability": treatment, "package_delta0": delta0, "package_ratio": nc/nt, "analyzable_treatment": nt, "analyzable_control": nc, "analyzable_total": nt+nc, "randomized_treatment": rt, "randomized_control": rc}
+        if solve_mode == "sample_size":
+            derived.update({"package_continuous_total": result.raw["package_total"], "package_continuous_n1": result.raw["package_n1"], "package_continuous_n2": result.raw["package_n2"], "rounding_increments": int(result.raw["rounding_increments"]), "constrained_null_treatment_probability": result.raw["constrained_null_p1"], "constrained_null_control_probability": result.raw["constrained_null_p2"]})
+        return _result(spec, values, result, solve_mode=solve_mode, analysis_total=nt+nc, randomized_total=randomized_total, per_group={"treatment": nt, "control": nc}, derived=derived, rounding=rounding, sidedness="one_sided", benchmark_eligible=False, implementation_version="round-5.2b", benchmark_id="not_assigned")

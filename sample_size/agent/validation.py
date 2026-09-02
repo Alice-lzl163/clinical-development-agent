@@ -92,4 +92,15 @@ def validate_request(spec: dict[str, Any], solve_mode: str, parameters: Any) -> 
     if spec["test_key"] == "superiority_margin":
         if values["treatment_probability"] - values["control_probability"] <= values["superiority_margin"]:
             raise RequestValidationError("expected treatment-control difference must exceed superiority_margin")
+    if spec["test_key"] in {"odds_ratio", "risk_ratio"}:
+        ratio_name = "alternative_odds_ratio" if spec["test_key"] == "odds_ratio" else "alternative_risk_ratio"
+        null_name = "null_odds_ratio" if spec["test_key"] == "odds_ratio" else "null_risk_ratio"
+        if values[ratio_name] <= values[null_name]:
+            raise RequestValidationError(f"{ratio_name} must exceed {null_name} for the frozen upper-tail contract")
+        if spec["test_key"] == "odds_ratio":
+            treatment = values[ratio_name] * values["control_probability"] / (1 - values["control_probability"] + values[ratio_name] * values["control_probability"])
+        else:
+            treatment = values[ratio_name] * values["control_probability"]
+        if not 0 < treatment < 1:
+            raise RequestValidationError("derived treatment probability must be strictly between 0 and 1")
     return values
