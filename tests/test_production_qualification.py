@@ -2,7 +2,9 @@ import json
 import platform
 import subprocess
 import sys
+import tempfile
 import unittest
+from copy import deepcopy
 from pathlib import Path
 from unittest.mock import patch
 
@@ -46,6 +48,16 @@ class ProductionQualificationTests(unittest.TestCase):
         self.assertEqual(0, process.returncode, process.stderr)
         self.assertIn("--evidence-output", process.stdout)
 
+    def test_ci_comparator_installs_declared_requirements_before_execution(self):
+        workflow = yaml.load((ROOT / ".github/workflows/sample-size-runtime-qualification.yml").read_text(encoding="utf-8"), Loader=yaml.BaseLoader)
+        steps = workflow["jobs"]["compare-platforms"]["steps"]
+        install_at = next(index for index, step in enumerate(steps) if step.get("run") == "python -m pip install -r requirements.txt")
+        compare_at = next(index for index, step in enumerate(steps) if "sample_size.validation.compare_platform_evidence" in step.get("run", ""))
+        self.assertLess(install_at, compare_at)
+        command = steps[compare_at]["run"]
+        for platform_name in ("windows-latest", "ubuntu-latest", "macos-latest"):
+            self.assertIn(f"--expected-platform {platform_name}", command)
+
     def test_machine_readable_assessment_has_six_unpromoted_methods(self):
         data = yaml.safe_load((ROOT / "sample_size/validation/production_qualification.yaml").read_text(encoding="utf-8"))
         self.assertEqual(6, len(data["method_assessment"]))
@@ -64,10 +76,38 @@ class ProductionQualificationTests(unittest.TestCase):
         self.assertEqual("PENDING", os_data["cross_platform_comparison"]["status"])
 
     def test_cross_platform_comparator_accepts_identical_evidence(self):
-        evidence = ROOT / "sample_size/validation/round42_evidence.json"
-        result = compare([evidence, evidence])
-        self.assertEqual("PASS", result["status"])
-        self.assertEqual(24, result["fixture_count"])
+        source = json.loads((ROOT / "sample_size/validation/round42_evidence.json").read_text(encoding="utf-8"))
+        for fixture in source["fixtures"].values():
+            if "agent_result" in fixture: fixture["agent_result"]["benchmark_id"] = "fixed-design-round4-v1"
+        with tempfile.TemporaryDirectory() as directory:
+            paths = []
+            for platform_name in ("windows-latest", "ubuntu-latest", "macos-latest"):
+                path = Path(directory) / f"sample-size-runtime-{platform_name}" / "numerical-evidence.json"
+                path.parent.mkdir(); path.write_text(json.dumps(source), encoding="utf-8"); paths.append(path)
+            result = compare(paths, expected_platforms=["windows-latest", "ubuntu-latest", "macos-latest"])
+        self.assertEqual("PASS", result["status"]); self.assertEqual(24, result["fixture_count"])
+        self.assertEqual("fixed-design-round4-v1", result["benchmark_id"])
+
+    def test_cross_platform_comparator_fails_closed_on_bad_evidence(self):
+        source = json.loads((ROOT / "sample_size/validation/round42_evidence.json").read_text(encoding="utf-8"))
+        for fixture in source["fixtures"].values():
+            if "agent_result" in fixture: fixture["agent_result"]["benchmark_id"] = "fixed-design-round4-v1"
+        with tempfile.TemporaryDirectory() as directory:
+            paths = []
+            for platform_name in ("windows-latest", "ubuntu-latest", "macos-latest"):
+                path = Path(directory) / f"sample-size-runtime-{platform_name}" / "numerical-evidence.json"
+                path.parent.mkdir(); path.write_text(json.dumps(source), encoding="utf-8"); paths.append(path)
+            with self.assertRaises(ValueError): compare(paths[:2], expected_platforms=["windows-latest", "ubuntu-latest", "macos-latest"])
+            changed = deepcopy(source); changed["fixtures"].pop(next(iter(changed["fixtures"])))
+            paths[1].write_text(json.dumps(changed), encoding="utf-8")
+            with self.assertRaises(ValueError): compare(paths, expected_platforms=["windows-latest", "ubuntu-latest", "macos-latest"])
+            changed = deepcopy(source)
+            fixture = next(item for item in changed["fixtures"].values() if "agent_result" in item)
+            fixture["agent_result"]["benchmark_id"] = "different-benchmark"
+            paths[1].write_text(json.dumps(changed), encoding="utf-8")
+            with self.assertRaises(ValueError): compare(paths, expected_platforms=["windows-latest", "ubuntu-latest", "macos-latest"])
+            paths[1].write_text("not json", encoding="utf-8")
+            with self.assertRaises(ValueError): compare(paths, expected_platforms=["windows-latest", "ubuntu-latest", "macos-latest"])
 
     def test_input_contract_fails_closed(self):
         invalid = [
