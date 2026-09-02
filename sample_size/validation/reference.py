@@ -32,6 +32,22 @@ def mean_equivalence_normal_power(*, n_treatment, n_control, difference, sd, mar
     return float(max(0, norm.cdf((margin - difference) / se - z) - norm.cdf((-margin - difference) / se + z)))
 
 
+def mean_equivalence_exact_tost_power(*, n_treatment, n_control, difference, sd, margin, alpha):
+    """Validation-only exact pooled-variance TOST power by chi-square integration."""
+    from scipy.integrate import quad
+    from scipy.stats import chi2, norm, t
+    df = n_treatment + n_control - 2
+    se = sd * math.sqrt(1 / n_treatment + 1 / n_control)
+    critical = t.ppf(1 - alpha, df)
+    q_max = df * (margin / (critical * se)) ** 2
+    def integrand(q):
+        width = critical * se * math.sqrt(q / df)
+        conditional = max(0.0, norm.cdf((margin-width-difference)/se) - norm.cdf((-margin+width-difference)/se))
+        return conditional * chi2.pdf(q, df)
+    value, _ = quad(integrand, 0, q_max, epsabs=1e-12, epsrel=1e-11, limit=300)
+    return float(value)
+
+
 def risk_difference_margin_power(*, n_treatment, n_control, p1, p2, margin, alpha):
     from scipy.stats import norm
     se = math.sqrt(p1 * (1 - p1) / n_treatment + p2 * (1 - p2) / n_control)

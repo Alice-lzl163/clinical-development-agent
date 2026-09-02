@@ -19,6 +19,8 @@ class Round53EvidenceTests(unittest.TestCase):
         self.assertEqual(96,evidence['live_execution']['successful'])
         self.assertEqual(20,summary['fixtures']['passed'])
         self.assertEqual('STATISTICAL_CONTRACT_DEFECT',evidence['method_gates']['equivalence']['blocker'])
+        repair=(ROOT/'sample_size/docs/ROUND53B_EQUIVALENCE_CONTRACT_REPAIR.md').read_text(encoding='utf-8')
+        self.assertIn('SPEC_REPAIR_REQUIRED',repair)
         validated={k for k,v in evidence['method_gates'].items() if v['validation_status']=='BENCHMARK_VALIDATED'}
         self.assertEqual({'proportion_one','proportion_paired','non_inferiority','superiority_margin','odds_ratio','risk_ratio'},validated)
 
