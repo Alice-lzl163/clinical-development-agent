@@ -1,191 +1,203 @@
-{
-  "test_key": "proportion_paired",
-  "method_id": "binary_paired_mcnemar",
-  "display_name": "Paired proportions / McNemar",
-  "endpoint_family": "binary",
-  "design_family": "paired",
-  "estimand": "Difference between the two directional discordance probabilities.",
-  "hypothesis": {
-    "null": "p_treatment_only = p_control_only",
-    "alternative": "p_treatment_only differs from or exceeds p_control_only",
-    "effect_measure": "discordant_pair_difference",
-    "beneficial_direction": "higher_or_lower_as_prespecified"
-  },
-  "inputs": [
-    {
-      "name": "p_control_only",
-      "definition": "Probability of discordance favoring control (treatment no event, control event orientation must be declared).",
-      "type": "number",
-      "unit": "dimensionless",
-      "required": true,
-      "valid_range": {
-        "minimum": 0,
-        "maximum": 1
-      },
-      "default": null,
-      "clinical_interpretation": "Probability of discordance favoring control (treatment no event, control event orientation must be declared)."
-    },
-    {
-      "name": "p_treatment_only",
-      "definition": "Probability of discordance favoring treatment.",
-      "type": "number",
-      "unit": "dimensionless",
-      "required": true,
-      "valid_range": {
-        "minimum": 0,
-        "maximum": 1
-      },
-      "default": null,
-      "clinical_interpretation": "Probability of discordance favoring treatment."
-    },
-    {
-      "name": "alpha",
-      "definition": "Overall type-I error probability.",
-      "type": "number",
-      "unit": "dimensionless",
-      "required": true,
-      "valid_range": {
-        "exclusive_minimum": 0,
-        "exclusive_maximum": 1
-      },
-      "default": 0.05,
-      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis."
-    },
-    {
-      "name": "power",
-      "definition": "Target probability of rejecting the null under the design alternative.",
-      "type": "number",
-      "unit": "dimensionless",
-      "required": true,
-      "valid_range": {
-        "exclusive_minimum": 0,
-        "exclusive_maximum": 1
-      },
-      "default": 0.8,
-      "clinical_interpretation": "Target probability of rejecting the null under the design alternative."
-    },
-    {
-      "name": "dropout_rate",
-      "definition": "Expected proportion without an analyzable primary endpoint.",
-      "type": "number",
-      "unit": "dimensionless",
-      "required": true,
-      "valid_range": {
-        "minimum": 0,
-        "exclusive_maximum": 1
-      },
-      "default": 0,
-      "clinical_interpretation": "Anticipated loss applied only after the analysis-required sample size is obtained."
-    }
-  ],
-  "alpha": {
-    "sidedness": "one_or_two_sided",
-    "convention": "Overall alpha; one-sided uses alpha and two-sided divides alpha equally between tails."
-  },
-  "allocation": {
-    "ratio_definition": "Not applicable.",
-    "supported": false,
-    "rounding_rule": "Not applicable."
-  },
-  "solve_modes": {
-    "sample_size": true,
-    "power": true,
-    "events": false,
-    "operating_characteristics": false
-  },
-  "engine": {
-    "engine_family": "trialsize",
-    "package": "TrialSize",
-    "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
-    "function": "TrialSize::McNemar.Test",
-    "parameter_mapping": [
-      {
-        "package_argument": "alpha",
-        "source_type": "clinical_input",
-        "source": "alpha",
-        "transformation": null
-      },
-      {
-        "package_argument": "beta",
-        "source_type": "unresolved",
-        "source": null,
-        "transformation": "Historical prose requires adapter specification"
-      },
-      {
-        "package_argument": "psai",
-        "source_type": "unresolved",
-        "source": null,
-        "transformation": "Historical prose requires adapter specification"
-      },
-      {
-        "package_argument": "paid",
-        "source_type": "unresolved",
-        "source": null,
-        "transformation": "Historical prose requires adapter specification"
-      }
-    ],
-    "output_mapping": [
-      {
-        "package_output": "complete matched pairs",
-        "semantic_output": "sample_size",
-        "unit": "package-defined"
-      }
-    ],
-    "runtime": "R",
-    "formal_arguments": [
-      {
-        "name": "alpha",
-        "required": true,
-        "package_default": null,
-        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
-      },
-      {
-        "name": "beta",
-        "required": true,
-        "package_default": null,
-        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
-      },
-      {
-        "name": "psai",
-        "required": true,
-        "package_default": null,
-        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
-      },
-      {
-        "name": "paid",
-        "required": true,
-        "package_default": null,
-        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
-      }
-    ]
-  },
-  "method_type": "analytical_asymptotic",
-  "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
-  "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
-  "assumptions": [
-    "The binary endpoint model and paired design are correctly specified.",
-    "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
-    "The planned primary analysis matches the hypothesis and engine mapping in this specification."
-  ],
-  "unsupported_domains": [
-    "Marginal paired probabilities without the joint discordance probabilities."
-  ],
-  "warnings": [
-    "DO_NOT_REPRODUCE_HISTORICAL_BEHAVIOR: Do not power marginal independent proportions as if they were McNemar discordant pairs."
-  ],
-  "validation_grade": "V4",
-  "migration_action": "REPLACE",
-  "lifecycle_status": "VALIDATION_PENDING",
-  "primary_reference": "McNemar (1947); Chow et al.",
-  "package_reference": "https://search.r-project.org/CRAN/refmans/TrialSize/html/00Index.html",
-  "guideline_reference": "ICH E9",
-  "benchmark_requirements": [
-    "Reproduce TrialSize example; enumerate discordant binomial outcomes; simulate paired 2\u00d72 tables",
-    "Reproduce official package examples for the pinned version.",
-    "Compare forward power and inverse sample-size results on a prespecified grid.",
-    "Verify null-boundary type-I error and clinically relevant alternatives independently."
-  ],
-  "specification_status": "DRAFT",
-  "design_components": [],
-  "derived_parameters": []
-}
+test_key: proportion_paired
+method_id: binary_paired_mcnemar_asymptotic
+display_name: Paired proportions / McNemar
+endpoint_family: binary
+design_family: paired
+estimand: P(treatment success, control failure) minus P(treatment failure, control
+  success).
+hypothesis:
+  'null': p_treatment_only = p_control_only
+  alternative: p_treatment_only != p_control_only
+  effect_measure: directional_discordance_difference
+  beneficial_direction: Treatment success is favorable; only the two-sided package
+    method is declared.
+inputs:
+- name: p_control_only
+  definition: Probability of discordance favoring control (treatment no event, control
+    event orientation must be declared).
+  type: number
+  unit: dimensionless
+  required: true
+  valid_range:
+    minimum: 0
+    maximum: 1
+  default: null
+  clinical_interpretation: Probability of discordance favoring control (treatment
+    no event, control event orientation must be declared).
+  required_for_solve_modes: &id001
+  - sample_size
+  allowed_for_solve_modes: *id001
+- name: p_treatment_only
+  definition: Probability of discordance favoring treatment.
+  type: number
+  unit: dimensionless
+  required: true
+  valid_range:
+    minimum: 0
+    maximum: 1
+  default: null
+  clinical_interpretation: Probability of discordance favoring treatment.
+  required_for_solve_modes: *id001
+  allowed_for_solve_modes: *id001
+- name: alpha
+  definition: Overall type-I error probability.
+  type: number
+  unit: dimensionless
+  required: true
+  valid_range:
+    exclusive_minimum: 0
+    exclusive_maximum: 1
+  default: 0.05
+  clinical_interpretation: Maximum prespecified probability of a false positive across
+    the tested hypothesis.
+  required_for_solve_modes: *id001
+  allowed_for_solve_modes: *id001
+- name: power
+  definition: Target probability of rejecting the null under the design alternative.
+  type: number
+  unit: dimensionless
+  required: true
+  valid_range:
+    exclusive_minimum: 0
+    exclusive_maximum: 1
+  default: 0.8
+  clinical_interpretation: Target probability of rejecting the null under the design
+    alternative.
+  required_for_solve_modes: *id001
+  allowed_for_solve_modes: *id001
+- name: dropout_rate
+  definition: Expected proportion without an analyzable primary endpoint.
+  type: number
+  unit: dimensionless
+  required: true
+  valid_range:
+    minimum: 0
+    exclusive_maximum: 1
+  default: 0
+  clinical_interpretation: Anticipated loss applied only after the analysis-required
+    sample size is obtained.
+  required_for_solve_modes: *id001
+  allowed_for_solve_modes: *id001
+alpha:
+  sidedness: one_or_two_sided
+  convention: Overall alpha; one-sided uses alpha and two-sided divides alpha equally
+    between tails.
+allocation:
+  ratio_definition: Not applicable.
+  supported: false
+  rounding_rule: Not applicable.
+solve_modes:
+  sample_size: true
+  power: false
+  events: false
+  operating_characteristics: false
+engine:
+  engine_family: trialsize
+  package: TrialSize
+  package_version_policy: Pin exact validated version in the project lockfile; any
+    version change triggers documented revalidation.
+  function: TrialSize::McNemar.Test
+  parameter_mapping:
+  - package_argument: alpha
+    source_type: clinical_input
+    source: alpha
+    transformation: null
+  - package_argument: beta
+    source_type: derived_parameter
+    source: beta
+    transformation: null
+  - package_argument: psai
+    source_type: derived_parameter
+    source: discordance_ratio
+    transformation: null
+  - package_argument: paid
+    source_type: derived_parameter
+    source: total_discordance_probability
+    transformation: null
+  output_mapping:
+  - package_output: returned scalar n
+    semantic_output: analyzable_paired_participants
+    unit: complete matched pairs
+  runtime: R
+  formal_arguments:
+  - name: alpha
+    required: true
+    package_default: null
+    semantic_role: Package formal populated from one or more declared user inputs
+      or derived quantities in parameter_mapping.
+  - name: beta
+    required: true
+    package_default: null
+    semantic_role: Package formal populated from one or more declared user inputs
+      or derived quantities in parameter_mapping.
+  - name: psai
+    required: true
+    package_default: null
+    semantic_role: Package formal populated from one or more declared user inputs
+      or derived quantities in parameter_mapping.
+  - name: paid
+    required: true
+    package_default: null
+    semantic_role: Package formal populated from one or more declared user inputs
+      or derived quantities in parameter_mapping.
+method_type: analytical_asymptotic
+dropout_handling: After analyzable N is determined, inflate each applicable analyzable
+  group or pair total using ceil(n / (1 - dropout_rate)); dropout never changes the
+  statistical calculation.
+rounding_rule: Ceil the authoritative analyzable quantity, derive integer group quantities
+  under the declared allocation, then apply dropout inflation per group; no randomized
+  N is accepted as a power input.
+assumptions:
+- The binary endpoint model and paired design are correctly specified.
+- All required design-identifying inputs are fixed prospectively and use mutually
+  consistent units, orientation, and analysis populations.
+- The planned primary analysis matches the hypothesis and engine mapping in this specification.
+unsupported_domains:
+- Marginal paired probabilities without both directional discordance probabilities.
+- p_control_only <= 0, p_treatment_only <= 0, or their sum > 1.
+- One-sided McNemar alternatives; TrialSize::McNemar.Test uses qnorm(1-alpha/2).
+- Exact McNemar claims, clustered pairs, multiple observations per participant, or
+  incomplete-pair analysis.
+- Power solve mode until an authoritative forward-power implementation is independently
+  specified.
+warnings:
+- 'DO_NOT_REPRODUCE_HISTORICAL_BEHAVIOR: Do not power marginal independent proportions
+  as if they were McNemar discordant pairs.'
+validation_grade: V4
+migration_action: REPLACE
+lifecycle_status: VALIDATION_PENDING
+primary_reference: McNemar (1947); Chow et al.
+package_reference: https://search.r-project.org/CRAN/refmans/TrialSize/html/00Index.html
+guideline_reference: ICH E9
+benchmark_requirements:
+- Reproduce TrialSize example; enumerate discordant binomial outcomes; simulate paired
+  2��2 tables
+- Reproduce official package examples for the pinned version.
+- Compare forward power and inverse sample-size results on a prespecified grid.
+- Verify null-boundary type-I error and clinically relevant alternatives independently.
+specification_status: SPEC_FROZEN
+design_components: []
+derived_parameters:
+- name: beta
+  formula: 1 - power
+  inputs:
+  - power
+  output_unit: probability
+  assumptions:
+  - TrialSize documents beta as one minus power.
+- name: discordance_ratio
+  formula: p_treatment_only / p_control_only
+  inputs:
+  - p_treatment_only
+  - p_control_only
+  output_unit: dimensionless
+  assumptions:
+  - TrialSize psai is documented as p01/p10; p01 is treatment-only under this contract.
+- name: total_discordance_probability
+  formula: p_treatment_only + p_control_only
+  inputs:
+  - p_treatment_only
+  - p_control_only
+  output_unit: probability
+  assumptions:
+  - The two discordant cells are mutually exclusive.

@@ -1,245 +1,232 @@
-{
-  "test_key": "equivalence",
-  "method_id": "mean_equivalence_tost",
-  "display_name": "Two-mean equivalence / TOST",
-  "endpoint_family": "continuous",
-  "design_family": "fixed_parallel_equivalence",
-  "estimand": "Mean difference relative to prespecified equivalence bounds.",
-  "hypothesis": {
-    "null": "difference <= -lower_bound OR difference >= upper_bound",
-    "alternative": "-lower_bound < difference < upper_bound",
-    "effect_measure": "mean_difference",
-    "beneficial_direction": "inside_equivalence_interval"
-  },
-  "inputs": [
-    {
-      "name": "expected_difference",
-      "definition": "Expected treatment minus control mean.",
-      "type": "number",
-      "unit": "endpoint units",
-      "required": true,
-      "valid_range": null,
-      "default": null,
-      "clinical_interpretation": "Expected treatment minus control mean."
-    },
-    {
-      "name": "sd",
-      "definition": "Common outcome SD.",
-      "type": "number",
-      "unit": "endpoint units",
-      "required": true,
-      "valid_range": {
-        "exclusive_minimum": 0
-      },
-      "default": null,
-      "clinical_interpretation": "Common outcome SD."
-    },
-    {
-      "name": "lower_bound",
-      "definition": "Positive magnitude of lower equivalence bound.",
-      "type": "number",
-      "unit": "endpoint units",
-      "required": true,
-      "valid_range": {
-        "exclusive_minimum": 0
-      },
-      "default": null,
-      "clinical_interpretation": "Positive magnitude of lower equivalence bound."
-    },
-    {
-      "name": "upper_bound",
-      "definition": "Positive upper equivalence bound.",
-      "type": "number",
-      "unit": "endpoint units",
-      "required": true,
-      "valid_range": {
-        "exclusive_minimum": 0
-      },
-      "default": null,
-      "clinical_interpretation": "Positive upper equivalence bound."
-    },
-    {
-      "name": "allocation_ratio",
-      "definition": "Planned treatment-to-control sample-size ratio n_treatment / n_control.",
-      "type": "number",
-      "unit": "dimensionless",
-      "required": true,
-      "valid_range": {
-        "exclusive_minimum": 0
-      },
-      "default": 1,
-      "clinical_interpretation": "Planned treatment-to-control sample-size ratio n_treatment / n_control."
-    },
-    {
-      "name": "alpha",
-      "definition": "Overall type-I error probability.",
-      "type": "number",
-      "unit": "dimensionless",
-      "required": true,
-      "valid_range": {
-        "exclusive_minimum": 0,
-        "exclusive_maximum": 1
-      },
-      "default": 0.05,
-      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis."
-    },
-    {
-      "name": "power",
-      "definition": "Target probability of rejecting the null under the design alternative.",
-      "type": "number",
-      "unit": "dimensionless",
-      "required": true,
-      "valid_range": {
-        "exclusive_minimum": 0,
-        "exclusive_maximum": 1
-      },
-      "default": 0.8,
-      "clinical_interpretation": "Target probability of rejecting the null under the design alternative."
-    },
-    {
-      "name": "dropout_rate",
-      "definition": "Expected proportion without an analyzable primary endpoint.",
-      "type": "number",
-      "unit": "dimensionless",
-      "required": true,
-      "valid_range": {
-        "minimum": 0,
-        "exclusive_maximum": 1
-      },
-      "default": 0,
-      "clinical_interpretation": "Anticipated loss applied only after the analysis-required sample size is obtained."
-    }
-  ],
-  "alpha": {
-    "sidedness": "one_or_two_sided",
-    "convention": "Overall alpha; one-sided uses alpha and two-sided divides alpha equally between tails."
-  },
-  "allocation": {
-    "ratio_definition": "n_treatment / n_control",
-    "supported": true,
-    "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power."
-  },
-  "solve_modes": {
-    "sample_size": true,
-    "power": true,
-    "events": false,
-    "operating_characteristics": false
-  },
-  "engine": {
-    "engine_family": "trialsize",
-    "package": "TrialSize",
-    "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
-    "function": "TrialSize::TwoSampleMean.Equivalence",
-    "parameter_mapping": [
-      {
-        "package_argument": "alpha",
-        "source_type": "clinical_input",
-        "source": "alpha",
-        "transformation": null
-      },
-      {
-        "package_argument": "beta",
-        "source_type": "unresolved",
-        "source": null,
-        "transformation": "Historical prose requires adapter specification"
-      },
-      {
-        "package_argument": "sigma",
-        "source_type": "clinical_input",
-        "source": "sd",
-        "transformation": null
-      },
-      {
-        "package_argument": "k",
-        "source_type": "clinical_input",
-        "source": "allocation_ratio",
-        "transformation": null
-      },
-      {
-        "package_argument": "delta",
-        "source_type": "unresolved",
-        "source": null,
-        "transformation": "Historical prose requires adapter specification"
-      },
-      {
-        "package_argument": "margin",
-        "source_type": "clinical_input",
-        "source": "expected_difference",
-        "transformation": null
-      }
-    ],
-    "output_mapping": [
-      {
-        "package_output": "arm sample sizes",
-        "semantic_output": "sample_size",
-        "unit": "package-defined"
-      }
-    ],
-    "runtime": "R",
-    "formal_arguments": [
-      {
-        "name": "alpha",
-        "required": true,
-        "package_default": null,
-        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
-      },
-      {
-        "name": "beta",
-        "required": true,
-        "package_default": null,
-        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
-      },
-      {
-        "name": "sigma",
-        "required": true,
-        "package_default": null,
-        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
-      },
-      {
-        "name": "k",
-        "required": true,
-        "package_default": null,
-        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
-      },
-      {
-        "name": "delta",
-        "required": true,
-        "package_default": null,
-        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
-      },
-      {
-        "name": "margin",
-        "required": true,
-        "package_default": null,
-        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
-      }
-    ]
-  },
-  "method_type": "analytical_exact",
-  "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
-  "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
-  "assumptions": [
-    "The continuous endpoint model and fixed_parallel_equivalence design are correctly specified.",
-    "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
-    "The planned primary analysis matches the hypothesis and engine mapping in this specification."
-  ],
-  "unsupported_domains": [],
-  "warnings": [
-    "TrialSize supports a symmetric bound; asymmetric bounds require a separately verified engine and must not be silently symmetrized."
-  ],
-  "validation_grade": "V2",
-  "migration_action": "KEEP_AND_VALIDATE",
-  "lifecycle_status": "VALIDATION_PENDING",
-  "primary_reference": "Chow, Shao, Wang & Lokhnygina; Schuirmann (1987)",
-  "package_reference": "https://search.r-project.org/CRAN/refmans/TrialSize/html/00Index.html",
-  "guideline_reference": "ICH E9; ICH E10",
-  "benchmark_requirements": [
-    "Compare TrialSize with two one-sided noncentral-t calculations and a commercial/textbook benchmark",
-    "Reproduce official package examples for the pinned version.",
-    "Compare forward power and inverse sample-size results on a prespecified grid.",
-    "Verify null-boundary type-I error and clinically relevant alternatives independently."
-  ],
-  "specification_status": "DRAFT",
-  "design_components": [],
-  "derived_parameters": []
-}
+test_key: equivalence
+method_id: mean_parallel_equivalence_symmetric_normal
+display_name: Two-mean equivalence / TOST
+endpoint_family: continuous
+design_family: fixed_parallel_equivalence
+estimand: Treatment minus control mean relative to a symmetric equivalence interval
+  (-equivalence_margin, +equivalence_margin).
+hypothesis:
+  'null': mean_difference <= -equivalence_margin OR mean_difference >= equivalence_margin
+  alternative: -equivalence_margin < mean_difference < equivalence_margin
+  effect_measure: mean_difference
+  beneficial_direction: Inside the symmetric equivalence interval.
+inputs:
+- name: expected_difference
+  definition: Expected treatment minus control mean.
+  type: number
+  unit: endpoint units
+  required: true
+  valid_range: null
+  default: null
+  clinical_interpretation: Expected treatment minus control mean.
+  required_for_solve_modes: &id001
+  - sample_size
+  allowed_for_solve_modes: *id001
+- name: sd
+  definition: Common outcome SD.
+  type: number
+  unit: endpoint units
+  required: true
+  valid_range:
+    exclusive_minimum: 0
+  default: null
+  clinical_interpretation: Common outcome SD.
+  required_for_solve_modes: *id001
+  allowed_for_solve_modes: *id001
+- name: equivalence_margin
+  definition: Positive symmetric equivalence-margin magnitude on the original endpoint
+    scale.
+  type: number
+  unit: endpoint units
+  required: true
+  valid_range:
+    exclusive_minimum: 0
+  default: null
+  clinical_interpretation: Positive symmetric equivalence-margin magnitude on the
+    original endpoint scale.
+  required_for_solve_modes: *id001
+  allowed_for_solve_modes: *id001
+- name: allocation_ratio
+  definition: Planned treatment-to-control sample-size ratio n_treatment / n_control.
+  type: number
+  unit: dimensionless
+  required: true
+  valid_range:
+    exclusive_minimum: 0
+  default: 1
+  clinical_interpretation: Planned treatment-to-control sample-size ratio n_treatment
+    / n_control.
+  required_for_solve_modes: *id001
+  allowed_for_solve_modes: *id001
+- name: alpha
+  definition: Overall type-I error probability.
+  type: number
+  unit: dimensionless
+  required: true
+  valid_range:
+    exclusive_minimum: 0
+    exclusive_maximum: 1
+  default: 0.05
+  clinical_interpretation: Maximum prespecified probability of a false positive across
+    the tested hypothesis.
+  required_for_solve_modes: *id001
+  allowed_for_solve_modes: *id001
+- name: power
+  definition: Target probability of rejecting the null under the design alternative.
+  type: number
+  unit: dimensionless
+  required: true
+  valid_range:
+    exclusive_minimum: 0
+    exclusive_maximum: 1
+  default: 0.8
+  clinical_interpretation: Target probability of rejecting the null under the design
+    alternative.
+  required_for_solve_modes: *id001
+  allowed_for_solve_modes: *id001
+- name: dropout_rate
+  definition: Expected proportion without an analyzable primary endpoint.
+  type: number
+  unit: dimensionless
+  required: true
+  valid_range:
+    minimum: 0
+    exclusive_maximum: 1
+  default: 0
+  clinical_interpretation: Anticipated loss applied only after the analysis-required
+    sample size is obtained.
+  required_for_solve_modes: *id001
+  allowed_for_solve_modes: *id001
+alpha:
+  sidedness: two_one_sided_tests
+  convention: alpha is the one-sided level for each component of TOST; it is not divided
+    by two by the adapter.
+allocation:
+  ratio_definition: n_treatment / n_control
+  supported: true
+  rounding_rule: Return integer arm sizes satisfying allocation; round upward and
+    re-evaluate achieved power.
+solve_modes:
+  sample_size: true
+  power: false
+  events: false
+  operating_characteristics: false
+engine:
+  engine_family: trialsize
+  package: TrialSize
+  package_version_policy: Pin exact validated version in the project lockfile; any
+    version change triggers documented revalidation.
+  function: TrialSize::TwoSampleMean.Equivalence
+  parameter_mapping:
+  - package_argument: alpha
+    source_type: clinical_input
+    source: alpha
+    transformation: null
+  - package_argument: beta
+    source_type: derived_parameter
+    source: beta
+    transformation: null
+  - package_argument: sigma
+    source_type: clinical_input
+    source: sd
+    transformation: null
+  - package_argument: k
+    source_type: clinical_input
+    source: allocation_ratio
+    transformation: null
+  - package_argument: delta
+    source_type: clinical_input
+    source: equivalence_margin
+    transformation: null
+  - package_argument: margin
+    source_type: clinical_input
+    source: expected_difference
+    transformation: null
+  output_mapping:
+  - package_output: returned scalar n1
+    semantic_output: analyzable_treatment_sample_size
+    unit: participants in treatment group
+  runtime: R
+  formal_arguments:
+  - name: alpha
+    required: true
+    package_default: null
+    semantic_role: Package formal populated from one or more declared user inputs
+      or derived quantities in parameter_mapping.
+  - name: beta
+    required: true
+    package_default: null
+    semantic_role: Package formal populated from one or more declared user inputs
+      or derived quantities in parameter_mapping.
+  - name: sigma
+    required: true
+    package_default: null
+    semantic_role: Package formal populated from one or more declared user inputs
+      or derived quantities in parameter_mapping.
+  - name: k
+    required: true
+    package_default: null
+    semantic_role: Package formal populated from one or more declared user inputs
+      or derived quantities in parameter_mapping.
+  - name: delta
+    required: true
+    package_default: null
+    semantic_role: Package formal populated from one or more declared user inputs
+      or derived quantities in parameter_mapping.
+  - name: margin
+    required: true
+    package_default: null
+    semantic_role: Package formal populated from one or more declared user inputs
+      or derived quantities in parameter_mapping.
+method_type: analytical_asymptotic
+dropout_handling: After analyzable N is determined, inflate each applicable analyzable
+  group or pair total using ceil(n / (1 - dropout_rate)); dropout never changes the
+  statistical calculation.
+rounding_rule: Ceil the authoritative analyzable quantity, derive integer group quantities
+  under the declared allocation, then apply dropout inflation per group; no randomized
+  N is accepted as a power input.
+assumptions:
+- The continuous endpoint model and fixed_parallel_equivalence design are correctly
+  specified.
+- All required design-identifying inputs are fixed prospectively and use mutually
+  consistent units, orientation, and analysis populations.
+- The planned primary analysis matches the hypothesis and engine mapping in this specification.
+unsupported_domains:
+- Asymmetric equivalence bounds; the selected TrialSize function accepts one symmetric
+  delta.
+- Bioequivalence, log-scale ratios, crossover designs, unequal variances, paired means,
+  or covariate-adjusted analyses.
+- abs(expected_difference) >= equivalence_margin.
+- Power solve mode until a matching forward-power method is specified.
+warnings:
+- TrialSize supports a symmetric bound; asymmetric bounds require a separately verified
+  engine and must not be silently symmetrized.
+validation_grade: V2
+migration_action: KEEP_AND_VALIDATE
+lifecycle_status: VALIDATION_PENDING
+primary_reference: Chow, Shao, Wang & Lokhnygina; Schuirmann (1987)
+package_reference: https://search.r-project.org/CRAN/refmans/TrialSize/html/00Index.html
+guideline_reference: ICH E9; ICH E10
+benchmark_requirements:
+- Compare TrialSize with two one-sided noncentral-t calculations and a commercial/textbook
+  benchmark
+- Reproduce official package examples for the pinned version.
+- Compare forward power and inverse sample-size results on a prespecified grid.
+- Verify null-boundary type-I error and clinically relevant alternatives independently.
+specification_status: SPEC_FROZEN
+design_components: []
+derived_parameters:
+- name: beta
+  formula: 1 - power
+  inputs:
+  - power
+  output_unit: probability
+  assumptions:
+  - TrialSize documents beta as one minus power.
+- name: analyzable_control_sample_size
+  formula: ceil(analyzable_treatment_sample_size / allocation_ratio)
+  inputs:
+  - allocation_ratio
+  output_unit: participants
+  assumptions:
+  - TrialSize defines k=n1/n2; integer allocation is rechecked after rounding.

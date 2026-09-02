@@ -1,262 +1,253 @@
-{
-  "test_key": "odds_ratio",
-  "method_id": "binary_farrington_manning_or",
-  "display_name": "Two-group odds-ratio test",
-  "endpoint_family": "binary",
-  "design_family": "fixed_parallel",
-  "estimand": "Treatment-to-control odds ratio anchored by control risk.",
-  "hypothesis": {
-    "null": "OR = null_odds_ratio",
-    "alternative": "OR = alternative_odds_ratio",
-    "effect_measure": "odds_ratio",
-    "beneficial_direction": "greater_or_less_as_prespecified"
-  },
-  "inputs": [
-    {
-      "name": "control_probability",
-      "definition": "Control event probability anchoring the OR.",
-      "type": "number",
-      "unit": "dimensionless",
-      "required": true,
-      "valid_range": {
-        "minimum": 0,
-        "maximum": 1
-      },
-      "default": null,
-      "clinical_interpretation": "Control event probability anchoring the OR."
-    },
-    {
-      "name": "alternative_odds_ratio",
-      "definition": "Treatment-to-control odds ratio under the alternative.",
-      "type": "number",
-      "unit": "dimensionless",
-      "required": true,
-      "valid_range": {
-        "exclusive_minimum": 0
-      },
-      "default": null,
-      "clinical_interpretation": "Treatment-to-control odds ratio under the alternative."
-    },
-    {
-      "name": "null_odds_ratio",
-      "definition": "Odds-ratio null value.",
-      "type": "number",
-      "unit": "dimensionless",
-      "required": true,
-      "valid_range": {
-        "exclusive_minimum": 0
-      },
-      "default": null,
-      "clinical_interpretation": "Odds-ratio null value."
-    },
-    {
-      "name": "allocation_ratio",
-      "definition": "Planned treatment-to-control sample-size ratio n_treatment / n_control.",
-      "type": "number",
-      "unit": "dimensionless",
-      "required": true,
-      "valid_range": {
-        "exclusive_minimum": 0
-      },
-      "default": 1,
-      "clinical_interpretation": "Planned treatment-to-control sample-size ratio n_treatment / n_control."
-    },
-    {
-      "name": "alpha",
-      "definition": "Overall type-I error probability.",
-      "type": "number",
-      "unit": "dimensionless",
-      "required": true,
-      "valid_range": {
-        "exclusive_minimum": 0,
-        "exclusive_maximum": 1
-      },
-      "default": 0.05,
-      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis."
-    },
-    {
-      "name": "power",
-      "definition": "Target probability of rejecting the null under the design alternative.",
-      "type": "number",
-      "unit": "dimensionless",
-      "required": true,
-      "valid_range": {
-        "exclusive_minimum": 0,
-        "exclusive_maximum": 1
-      },
-      "default": 0.8,
-      "clinical_interpretation": "Target probability of rejecting the null under the design alternative."
-    },
-    {
-      "name": "dropout_rate",
-      "definition": "Expected proportion without an analyzable primary endpoint.",
-      "type": "number",
-      "unit": "dimensionless",
-      "required": true,
-      "valid_range": {
-        "minimum": 0,
-        "exclusive_maximum": 1
-      },
-      "default": 0,
-      "clinical_interpretation": "Anticipated loss applied only after the analysis-required sample size is obtained."
-    }
-  ],
-  "alpha": {
-    "sidedness": "one_or_two_sided",
-    "convention": "Overall alpha; one-sided uses alpha and two-sided divides alpha equally between tails."
-  },
-  "allocation": {
-    "ratio_definition": "n_treatment / n_control",
-    "supported": true,
-    "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power."
-  },
-  "solve_modes": {
-    "sample_size": true,
-    "power": true,
-    "events": false,
-    "operating_characteristics": false
-  },
-  "engine": {
-    "engine_family": "gsdesign",
-    "package": "gsDesign",
-    "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
-    "function": "gsDesign::nBinomial",
-    "parameter_mapping": [
-      {
-        "package_argument": "p1",
-        "source_type": "clinical_input",
-        "source": "control_probability",
-        "transformation": null
-      },
-      {
-        "package_argument": "p2",
-        "source_type": "unresolved",
-        "source": null,
-        "transformation": "Historical prose requires adapter specification"
-      },
-      {
-        "package_argument": "beta",
-        "source_type": "unresolved",
-        "source": null,
-        "transformation": "Historical prose requires adapter specification"
-      },
-      {
-        "package_argument": "alpha",
-        "source_type": "clinical_input",
-        "source": "alpha",
-        "transformation": null
-      },
-      {
-        "package_argument": "ratio",
-        "source_type": "clinical_input",
-        "source": "allocation_ratio",
-        "transformation": null
-      },
-      {
-        "package_argument": "delta0",
-        "source_type": "unresolved",
-        "source": null,
-        "transformation": "Historical prose requires adapter specification"
-      },
-      {
-        "package_argument": "scale",
-        "source_type": "constant",
-        "source": "constant",
-        "transformation": null
-      }
-    ],
-    "output_mapping": [
-      {
-        "package_output": "total analyzable sample size",
-        "semantic_output": "n",
-        "unit": "package-defined"
-      }
-    ],
-    "runtime": "R",
-    "formal_arguments": [
-      {
-        "name": "p1",
-        "required": true,
-        "package_default": null,
-        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
-      },
-      {
-        "name": "p2",
-        "required": true,
-        "package_default": null,
-        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
-      },
-      {
-        "name": "beta",
-        "required": false,
-        "package_default": "0.1",
-        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
-      },
-      {
-        "name": "alpha",
-        "required": false,
-        "package_default": "0.025",
-        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
-      },
-      {
-        "name": "sided",
-        "required": false,
-        "package_default": "1",
-        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
-      },
-      {
-        "name": "delta0",
-        "required": false,
-        "package_default": "0",
-        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
-      },
-      {
-        "name": "ratio",
-        "required": false,
-        "package_default": "1",
-        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
-      },
-      {
-        "name": "scale",
-        "required": false,
-        "package_default": "c(\"Difference\", \"RR\", \"OR\")",
-        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
-      },
-      {
-        "name": "np",
-        "required": false,
-        "package_default": "1",
-        "semantic_role": "Package-level control/default; the adapter may use it only as declared by the frozen method specification."
-      }
-    ]
-  },
-  "method_type": "analytical_asymptotic",
-  "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
-  "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
-  "assumptions": [
-    "The binary endpoint model and fixed_parallel design are correctly specified.",
-    "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
-    "The planned primary analysis matches the hypothesis and engine mapping in this specification."
-  ],
-  "unsupported_domains": [
-    "OR without baseline control risk or null OR."
-  ],
-  "warnings": [
-    "DO_NOT_REPRODUCE_HISTORICAL_BEHAVIOR: Do not transform the OR to a risk and power an arcsine risk-difference surrogate."
-  ],
-  "validation_grade": "V4",
-  "migration_action": "REPLACE",
-  "lifecycle_status": "VALIDATION_PENDING",
-  "primary_reference": "Farrington & Manning (1990)",
-  "package_reference": "https://keaven.github.io/gsDesign/reference/nBinomial.html",
-  "guideline_reference": "ICH E9",
-  "benchmark_requirements": [
-    "Reproduce `nBinomial` examples; independently compute achieved power and compare with binomial simulation across baseline risks",
-    "Reproduce official package examples for the pinned version.",
-    "Compare forward power and inverse sample-size results on a prespecified grid.",
-    "Verify null-boundary type-I error and clinically relevant alternatives independently."
-  ],
-  "specification_status": "DRAFT",
-  "design_components": [],
-  "derived_parameters": []
-}
+test_key: odds_ratio
+method_id: binary_farrington_manning_or
+display_name: Two-group odds-ratio test
+endpoint_family: binary
+design_family: fixed_parallel
+estimand: Treatment-to-control odds ratio for independent binary outcomes, anchored
+  by the control event probability.
+hypothesis:
+  'null': OR = null_odds_ratio
+  alternative: OR = alternative_odds_ratio in the prespecified direction
+  effect_measure: odds_ratio
+  beneficial_direction: Declared explicitly; ratio greater than one is not automatically
+    favorable.
+inputs:
+- name: control_probability
+  definition: Control event probability anchoring the OR.
+  type: number
+  unit: dimensionless
+  required: true
+  valid_range:
+    minimum: 0
+    maximum: 1
+  default: null
+  clinical_interpretation: Control event probability anchoring the OR.
+  required_for_solve_modes: &id001
+  - sample_size
+  allowed_for_solve_modes: *id001
+- name: alternative_odds_ratio
+  definition: Treatment-to-control odds ratio under the alternative.
+  type: number
+  unit: dimensionless
+  required: true
+  valid_range:
+    exclusive_minimum: 0
+  default: null
+  clinical_interpretation: Treatment-to-control odds ratio under the alternative.
+  required_for_solve_modes: *id001
+  allowed_for_solve_modes: *id001
+- name: null_odds_ratio
+  definition: Odds-ratio null value.
+  type: number
+  unit: dimensionless
+  required: true
+  valid_range:
+    exclusive_minimum: 0
+  default: null
+  clinical_interpretation: Odds-ratio null value.
+  required_for_solve_modes: *id001
+  allowed_for_solve_modes: *id001
+- name: allocation_ratio
+  definition: Planned treatment-to-control sample-size ratio n_treatment / n_control.
+  type: number
+  unit: dimensionless
+  required: true
+  valid_range:
+    exclusive_minimum: 0
+  default: 1
+  clinical_interpretation: Planned treatment-to-control sample-size ratio n_treatment
+    / n_control.
+  required_for_solve_modes: *id001
+  allowed_for_solve_modes: *id001
+- name: alpha
+  definition: Overall type-I error probability.
+  type: number
+  unit: dimensionless
+  required: true
+  valid_range:
+    exclusive_minimum: 0
+    exclusive_maximum: 1
+  default: 0.05
+  clinical_interpretation: Maximum prespecified probability of a false positive across
+    the tested hypothesis.
+  required_for_solve_modes: *id001
+  allowed_for_solve_modes: *id001
+- name: power
+  definition: Target probability of rejecting the null under the design alternative.
+  type: number
+  unit: dimensionless
+  required: true
+  valid_range:
+    exclusive_minimum: 0
+    exclusive_maximum: 1
+  default: 0.8
+  clinical_interpretation: Target probability of rejecting the null under the design
+    alternative.
+  required_for_solve_modes: *id001
+  allowed_for_solve_modes: *id001
+- name: dropout_rate
+  definition: Expected proportion without an analyzable primary endpoint.
+  type: number
+  unit: dimensionless
+  required: true
+  valid_range:
+    minimum: 0
+    exclusive_maximum: 1
+  default: 0
+  clinical_interpretation: Anticipated loss applied only after the analysis-required
+    sample size is obtained.
+  required_for_solve_modes: *id001
+  allowed_for_solve_modes: *id001
+alpha:
+  sidedness: one_or_two_sided
+  convention: Overall alpha; one-sided uses alpha and two-sided divides alpha equally
+    between tails.
+allocation:
+  ratio_definition: n_treatment / n_control
+  supported: true
+  rounding_rule: Return integer arm sizes satisfying allocation; round upward and
+    re-evaluate achieved power.
+solve_modes:
+  sample_size: true
+  power: false
+  events: false
+  operating_characteristics: false
+engine:
+  engine_family: gsdesign
+  package: gsDesign
+  package_version_policy: Pin exact validated version in the project lockfile; any
+    version change triggers documented revalidation.
+  function: gsDesign::nBinomial
+  parameter_mapping:
+  - package_argument: p1
+    source_type: clinical_input
+    source: control_probability
+    transformation: null
+  - package_argument: p2
+    source_type: unresolved
+    source: null
+    transformation: Historical prose requires adapter specification
+  - package_argument: beta
+    source_type: unresolved
+    source: null
+    transformation: Historical prose requires adapter specification
+  - package_argument: alpha
+    source_type: clinical_input
+    source: alpha
+    transformation: null
+  - package_argument: ratio
+    source_type: clinical_input
+    source: allocation_ratio
+    transformation: null
+  - package_argument: delta0
+    source_type: unresolved
+    source: null
+    transformation: Historical prose requires adapter specification
+  - package_argument: scale
+    source_type: constant
+    source: constant
+    transformation: null
+  output_mapping:
+  - package_output: total analyzable sample size
+    semantic_output: n
+    unit: package-defined
+  runtime: R
+  formal_arguments:
+  - name: p1
+    required: true
+    package_default: null
+    semantic_role: Package formal populated from one or more declared user inputs
+      or derived quantities in parameter_mapping.
+  - name: p2
+    required: true
+    package_default: null
+    semantic_role: Package formal populated from one or more declared user inputs
+      or derived quantities in parameter_mapping.
+  - name: beta
+    required: false
+    package_default: '0.1'
+    semantic_role: Package formal populated from one or more declared user inputs
+      or derived quantities in parameter_mapping.
+  - name: alpha
+    required: false
+    package_default: '0.025'
+    semantic_role: Package formal populated from one or more declared user inputs
+      or derived quantities in parameter_mapping.
+  - name: sided
+    required: false
+    package_default: '1'
+    semantic_role: Package-level control/default; the adapter may use it only as declared
+      by the frozen method specification.
+  - name: delta0
+    required: false
+    package_default: '0'
+    semantic_role: Package formal populated from one or more declared user inputs
+      or derived quantities in parameter_mapping.
+  - name: ratio
+    required: false
+    package_default: '1'
+    semantic_role: Package formal populated from one or more declared user inputs
+      or derived quantities in parameter_mapping.
+  - name: scale
+    required: false
+    package_default: c("Difference", "RR", "OR")
+    semantic_role: Package formal populated from one or more declared user inputs
+      or derived quantities in parameter_mapping.
+  - name: np
+    required: false
+    package_default: '1'
+    semantic_role: Package-level control/default; the adapter may use it only as declared
+      by the frozen method specification.
+method_type: analytical_asymptotic
+dropout_handling: After analyzable N is determined, inflate each applicable analyzable
+  group or pair total using ceil(n / (1 - dropout_rate)); dropout never changes the
+  statistical calculation.
+rounding_rule: Ceil the authoritative analyzable quantity, derive integer group quantities
+  under the declared allocation, then apply dropout inflation per group; no randomized
+  N is accepted as a power input.
+assumptions:
+- The binary endpoint model and fixed_parallel design are correctly specified.
+- All required design-identifying inputs are fixed prospectively and use mutually
+  consistent units, orientation, and analysis populations.
+- The planned primary analysis matches the hypothesis and engine mapping in this specification.
+unsupported_domains:
+- OR without an explicit baseline control probability and null OR.
+- Infeasible derived treatment probability outside (0,1).
+- Logistic-regression, case-control, matched, clustered, stratified, or covariate-adjusted
+  designs.
+- Zero-event boundary cases.
+- Power solve mode until gsDesign argument orientation and forward-power semantics
+  are formally verified.
+warnings:
+- 'DO_NOT_REPRODUCE_HISTORICAL_BEHAVIOR: Do not transform the OR to a risk and power
+  an arcsine risk-difference surrogate.'
+validation_grade: V4
+migration_action: REPLACE
+lifecycle_status: VALIDATION_PENDING
+primary_reference: Farrington & Manning (1990)
+package_reference: https://keaven.github.io/gsDesign/reference/nBinomial.html
+guideline_reference: ICH E9
+benchmark_requirements:
+- Reproduce `nBinomial` examples; independently compute achieved power and compare
+  with binomial simulation across baseline risks
+- Reproduce official package examples for the pinned version.
+- Compare forward power and inverse sample-size results on a prespecified grid.
+- Verify null-boundary type-I error and clinically relevant alternatives independently.
+specification_status: DRAFT
+design_components: []
+derived_parameters:
+- name: beta
+  formula: 1 - power
+  inputs:
+  - power
+  output_unit: probability
+  assumptions:
+  - Package beta is one minus target power.
+- name: alternative_treatment_probability
+  formula: alternative_odds_ratio*control_probability/(1-control_probability+alternative_odds_ratio*control_probability)
+  inputs:
+  - control_probability
+  - alternative_odds_ratio
+  output_unit: probability
+  assumptions:
+  - Derived probability must be strictly between zero and one.

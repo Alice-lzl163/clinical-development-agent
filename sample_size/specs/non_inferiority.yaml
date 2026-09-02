@@ -1,245 +1,255 @@
-{
-  "test_key": "non_inferiority",
-  "method_id": "binary_risk_difference_margin",
-  "display_name": "Binary non-inferiority",
-  "endpoint_family": "binary",
-  "design_family": "fixed_parallel_noninferiority",
-  "estimand": "Risk difference relative to a justified NI margin.",
-  "hypothesis": {
-    "null": "difference <= -margin under beneficial-higher orientation",
-    "alternative": "difference > -margin",
-    "effect_measure": "risk_difference",
-    "beneficial_direction": "higher_or_lower_explicit"
-  },
-  "inputs": [
-    {
-      "name": "control_probability",
-      "definition": "Control-arm event probability.",
-      "type": "number",
-      "unit": "dimensionless",
-      "required": true,
-      "valid_range": {
-        "minimum": 0,
-        "maximum": 1
-      },
-      "default": null,
-      "clinical_interpretation": "Control-arm event probability."
-    },
-    {
-      "name": "treatment_probability",
-      "definition": "Treatment-arm event probability.",
-      "type": "number",
-      "unit": "dimensionless",
-      "required": true,
-      "valid_range": {
-        "minimum": 0,
-        "maximum": 1
-      },
-      "default": null,
-      "clinical_interpretation": "Treatment-arm event probability."
-    },
-    {
-      "name": "noninferiority_margin",
-      "definition": "Risk-difference NI margin with explicit event orientation.",
-      "type": "number",
-      "unit": "probability difference",
-      "required": true,
-      "valid_range": null,
-      "default": null,
-      "clinical_interpretation": "Risk-difference NI margin with explicit event orientation."
-    },
-    {
-      "name": "allocation_ratio",
-      "definition": "Planned treatment-to-control sample-size ratio n_treatment / n_control.",
-      "type": "number",
-      "unit": "dimensionless",
-      "required": true,
-      "valid_range": {
-        "exclusive_minimum": 0
-      },
-      "default": 1,
-      "clinical_interpretation": "Planned treatment-to-control sample-size ratio n_treatment / n_control."
-    },
-    {
-      "name": "alpha",
-      "definition": "Overall type-I error probability.",
-      "type": "number",
-      "unit": "dimensionless",
-      "required": true,
-      "valid_range": {
-        "exclusive_minimum": 0,
-        "exclusive_maximum": 1
-      },
-      "default": 0.05,
-      "clinical_interpretation": "Maximum prespecified probability of a false positive across the tested hypothesis."
-    },
-    {
-      "name": "power",
-      "definition": "Target probability of rejecting the null under the design alternative.",
-      "type": "number",
-      "unit": "dimensionless",
-      "required": true,
-      "valid_range": {
-        "exclusive_minimum": 0,
-        "exclusive_maximum": 1
-      },
-      "default": 0.8,
-      "clinical_interpretation": "Target probability of rejecting the null under the design alternative."
-    },
-    {
-      "name": "dropout_rate",
-      "definition": "Expected proportion without an analyzable primary endpoint.",
-      "type": "number",
-      "unit": "dimensionless",
-      "required": true,
-      "valid_range": {
-        "minimum": 0,
-        "exclusive_maximum": 1
-      },
-      "default": 0,
-      "clinical_interpretation": "Anticipated loss applied only after the analysis-required sample size is obtained."
-    }
-  ],
-  "alpha": {
-    "sidedness": "one_sided",
-    "convention": "One-sided alpha; event orientation and margin sign are frozen before mapping."
-  },
-  "allocation": {
-    "ratio_definition": "n_treatment / n_control",
-    "supported": true,
-    "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power."
-  },
-  "solve_modes": {
-    "sample_size": true,
-    "power": true,
-    "events": false,
-    "operating_characteristics": false
-  },
-  "engine": {
-    "engine_family": "trialsize",
-    "package": "TrialSize",
-    "package_version_policy": "Pin exact validated version in the project lockfile; any version change triggers documented revalidation.",
-    "function": "TrialSize::TwoSampleProportion.NIS",
-    "parameter_mapping": [
-      {
-        "package_argument": "alpha",
-        "source_type": "clinical_input",
-        "source": "alpha",
-        "transformation": null
-      },
-      {
-        "package_argument": "beta",
-        "source_type": "unresolved",
-        "source": null,
-        "transformation": "Historical prose requires adapter specification"
-      },
-      {
-        "package_argument": "p1",
-        "source_type": "clinical_input",
-        "source": "treatment_probability",
-        "transformation": null
-      },
-      {
-        "package_argument": "p2",
-        "source_type": "clinical_input",
-        "source": "control_probability",
-        "transformation": null
-      },
-      {
-        "package_argument": "k",
-        "source_type": "clinical_input",
-        "source": "allocation_ratio",
-        "transformation": null
-      },
-      {
-        "package_argument": "delta",
-        "source_type": "unresolved",
-        "source": null,
-        "transformation": "Historical prose requires adapter specification"
-      },
-      {
-        "package_argument": "margin",
-        "source_type": "unresolved",
-        "source": null,
-        "transformation": "Historical prose requires adapter specification"
-      }
-    ],
-    "output_mapping": [
-      {
-        "package_output": "arm sizes",
-        "semantic_output": "sample_size",
-        "unit": "package-defined"
-      }
-    ],
-    "runtime": "R",
-    "formal_arguments": [
-      {
-        "name": "alpha",
-        "required": true,
-        "package_default": null,
-        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
-      },
-      {
-        "name": "beta",
-        "required": true,
-        "package_default": null,
-        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
-      },
-      {
-        "name": "p1",
-        "required": true,
-        "package_default": null,
-        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
-      },
-      {
-        "name": "p2",
-        "required": true,
-        "package_default": null,
-        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
-      },
-      {
-        "name": "k",
-        "required": true,
-        "package_default": null,
-        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
-      },
-      {
-        "name": "delta",
-        "required": true,
-        "package_default": null,
-        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
-      },
-      {
-        "name": "margin",
-        "required": true,
-        "package_default": null,
-        "semantic_role": "Package formal populated from one or more declared user inputs or derived quantities in parameter_mapping."
-      }
-    ]
-  },
-  "method_type": "analytical_exact",
-  "dropout_handling": "Inflate the analysis-required total using ceil(N / (1 - dropout_rate)); round randomized arm totals afterward.",
-  "rounding_rule": "Return integer arm sizes satisfying allocation; round upward and re-evaluate achieved power.",
-  "assumptions": [
-    "The binary endpoint model and fixed_parallel_noninferiority design are correctly specified.",
-    "All required design-identifying inputs are fixed prospectively and use mutually consistent units, orientation, and analysis populations.",
-    "The planned primary analysis matches the hypothesis and engine mapping in this specification."
-  ],
-  "unsupported_domains": [],
-  "warnings": [],
-  "validation_grade": "V2",
-  "migration_action": "KEEP_AND_VALIDATE",
-  "lifecycle_status": "VALIDATION_PENDING",
-  "primary_reference": "Chow et al.",
-  "package_reference": "https://search.r-project.org/CRAN/refmans/TrialSize/html/00Index.html",
-  "guideline_reference": "[FDA Non-Inferiority Guidance][fda-ni]; ICH E10",
-  "benchmark_requirements": [
-    "Reproduce package examples and protocol scenarios; verify H0 boundary by simulation and commercial benchmark",
-    "Reproduce official package examples for the pinned version.",
-    "Compare forward power and inverse sample-size results on a prespecified grid.",
-    "Verify null-boundary type-I error and clinically relevant alternatives independently."
-  ],
-  "specification_status": "DRAFT",
-  "design_components": [],
-  "derived_parameters": []
-}
+test_key: non_inferiority
+method_id: binary_parallel_risk_difference_margin_normal
+display_name: Binary non-inferiority
+endpoint_family: binary
+design_family: fixed_parallel_noninferiority
+estimand: Treatment event probability minus control event probability.
+hypothesis:
+  'null': p_treatment - p_control <= -noninferiority_margin
+  alternative: p_treatment - p_control > -noninferiority_margin
+  effect_measure: risk_difference
+  beneficial_direction: Higher event probability is favorable; lower-is-better endpoints
+    require explicit recoding before use.
+inputs:
+- name: control_probability
+  definition: Control-arm event probability.
+  type: number
+  unit: dimensionless
+  required: true
+  valid_range:
+    minimum: 0
+    maximum: 1
+  default: null
+  clinical_interpretation: Control-arm event probability.
+  required_for_solve_modes: &id001
+  - sample_size
+  allowed_for_solve_modes: *id001
+- name: treatment_probability
+  definition: Treatment-arm event probability.
+  type: number
+  unit: dimensionless
+  required: true
+  valid_range:
+    minimum: 0
+    maximum: 1
+  default: null
+  clinical_interpretation: Treatment-arm event probability.
+  required_for_solve_modes: *id001
+  allowed_for_solve_modes: *id001
+- name: noninferiority_margin
+  definition: Risk-difference NI margin with explicit event orientation.
+  type: number
+  unit: probability difference
+  required: true
+  valid_range: null
+  default: null
+  clinical_interpretation: Risk-difference NI margin with explicit event orientation.
+  required_for_solve_modes: *id001
+  allowed_for_solve_modes: *id001
+- name: allocation_ratio
+  definition: Planned treatment-to-control sample-size ratio n_treatment / n_control.
+  type: number
+  unit: dimensionless
+  required: true
+  valid_range:
+    exclusive_minimum: 0
+  default: 1
+  clinical_interpretation: Planned treatment-to-control sample-size ratio n_treatment
+    / n_control.
+  required_for_solve_modes: *id001
+  allowed_for_solve_modes: *id001
+- name: alpha
+  definition: Overall type-I error probability.
+  type: number
+  unit: dimensionless
+  required: true
+  valid_range:
+    exclusive_minimum: 0
+    exclusive_maximum: 1
+  default: 0.05
+  clinical_interpretation: Maximum prespecified probability of a false positive across
+    the tested hypothesis.
+  required_for_solve_modes: *id001
+  allowed_for_solve_modes: *id001
+- name: power
+  definition: Target probability of rejecting the null under the design alternative.
+  type: number
+  unit: dimensionless
+  required: true
+  valid_range:
+    exclusive_minimum: 0
+    exclusive_maximum: 1
+  default: 0.8
+  clinical_interpretation: Target probability of rejecting the null under the design
+    alternative.
+  required_for_solve_modes: *id001
+  allowed_for_solve_modes: *id001
+- name: dropout_rate
+  definition: Expected proportion without an analyzable primary endpoint.
+  type: number
+  unit: dimensionless
+  required: true
+  valid_range:
+    minimum: 0
+    exclusive_maximum: 1
+  default: 0
+  clinical_interpretation: Anticipated loss applied only after the analysis-required
+    sample size is obtained.
+  required_for_solve_modes: *id001
+  allowed_for_solve_modes: *id001
+alpha:
+  sidedness: one_sided
+  convention: alpha is the one-sided type-I error passed directly to TrialSize.
+allocation:
+  ratio_definition: n_treatment / n_control
+  supported: true
+  rounding_rule: Return integer arm sizes satisfying allocation; round upward and
+    re-evaluate achieved power.
+solve_modes:
+  sample_size: true
+  power: false
+  events: false
+  operating_characteristics: false
+engine:
+  engine_family: trialsize
+  package: TrialSize
+  package_version_policy: Pin exact validated version in the project lockfile; any
+    version change triggers documented revalidation.
+  function: TrialSize::TwoSampleProportion.NIS
+  parameter_mapping:
+  - package_argument: alpha
+    source_type: clinical_input
+    source: alpha
+    transformation: null
+  - package_argument: beta
+    source_type: derived_parameter
+    source: beta
+    transformation: null
+  - package_argument: p1
+    source_type: clinical_input
+    source: treatment_probability
+    transformation: null
+  - package_argument: p2
+    source_type: clinical_input
+    source: control_probability
+    transformation: null
+  - package_argument: k
+    source_type: clinical_input
+    source: allocation_ratio
+    transformation: null
+  - package_argument: delta
+    source_type: derived_parameter
+    source: expected_risk_difference
+    transformation: null
+  - package_argument: margin
+    source_type: derived_parameter
+    source: package_margin
+    transformation: null
+  output_mapping:
+  - package_output: returned scalar n1
+    semantic_output: analyzable_treatment_sample_size
+    unit: participants in treatment group
+  runtime: R
+  formal_arguments:
+  - name: alpha
+    required: true
+    package_default: null
+    semantic_role: Package formal populated from one or more declared user inputs
+      or derived quantities in parameter_mapping.
+  - name: beta
+    required: true
+    package_default: null
+    semantic_role: Package formal populated from one or more declared user inputs
+      or derived quantities in parameter_mapping.
+  - name: p1
+    required: true
+    package_default: null
+    semantic_role: Package formal populated from one or more declared user inputs
+      or derived quantities in parameter_mapping.
+  - name: p2
+    required: true
+    package_default: null
+    semantic_role: Package formal populated from one or more declared user inputs
+      or derived quantities in parameter_mapping.
+  - name: k
+    required: true
+    package_default: null
+    semantic_role: Package formal populated from one or more declared user inputs
+      or derived quantities in parameter_mapping.
+  - name: delta
+    required: true
+    package_default: null
+    semantic_role: Package formal populated from one or more declared user inputs
+      or derived quantities in parameter_mapping.
+  - name: margin
+    required: true
+    package_default: null
+    semantic_role: Package formal populated from one or more declared user inputs
+      or derived quantities in parameter_mapping.
+method_type: analytical_asymptotic
+dropout_handling: After analyzable N is determined, inflate each applicable analyzable
+  group or pair total using ceil(n / (1 - dropout_rate)); dropout never changes the
+  statistical calculation.
+rounding_rule: Ceil the authoritative analyzable quantity, derive integer group quantities
+  under the declared allocation, then apply dropout inflation per group; no randomized
+  N is accepted as a power input.
+assumptions:
+- The binary endpoint model and fixed_parallel_noninferiority design are correctly
+  specified.
+- All required design-identifying inputs are fixed prospectively and use mutually
+  consistent units, orientation, and analysis populations.
+- The planned primary analysis matches the hypothesis and engine mapping in this specification.
+unsupported_domains:
+- Lower event probability is favorable unless the endpoint is explicitly recoded so
+  success is favorable.
+- Risk-ratio or odds-ratio margins, clustered/stratified/covariate-adjusted analyses,
+  or exact unconditional tests.
+- Expected treatment risk that does not satisfy the design alternative beyond the
+  declared margin.
+- Power solve mode until a matching forward-power method is specified.
+warnings: []
+validation_grade: V2
+migration_action: KEEP_AND_VALIDATE
+lifecycle_status: VALIDATION_PENDING
+primary_reference: Chow et al.
+package_reference: https://search.r-project.org/CRAN/refmans/TrialSize/html/00Index.html
+guideline_reference: '[FDA Non-Inferiority Guidance][fda-ni]; ICH E10'
+benchmark_requirements:
+- Reproduce package examples and protocol scenarios; verify H0 boundary by simulation
+  and commercial benchmark
+- Reproduce official package examples for the pinned version.
+- Compare forward power and inverse sample-size results on a prespecified grid.
+- Verify null-boundary type-I error and clinically relevant alternatives independently.
+specification_status: SPEC_FROZEN
+design_components: []
+derived_parameters:
+- name: beta
+  formula: 1 - power
+  inputs:
+  - power
+  output_unit: probability
+  assumptions:
+  - TrialSize documents beta as one minus power.
+- name: expected_risk_difference
+  formula: treatment_probability - control_probability
+  inputs:
+  - treatment_probability
+  - control_probability
+  output_unit: probability difference
+  assumptions:
+  - Treatment minus control orientation is fixed.
+- name: package_margin
+  formula: -noninferiority_margin
+  inputs:
+  - noninferiority_margin
+  output_unit: probability difference
+  assumptions:
+  - TrialSize tests p1-p2 > margin; NI therefore maps the positive clinical loss margin
+    to a negative package margin.
+- name: analyzable_control_sample_size
+  formula: ceil(analyzable_treatment_sample_size / allocation_ratio)
+  inputs:
+  - allocation_ratio
+  output_unit: participants
+  assumptions:
+  - TrialSize defines k=n1/n2; integer allocation is rechecked after rounding.
