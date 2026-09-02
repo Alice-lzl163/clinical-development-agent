@@ -2,8 +2,20 @@ name: Sample Size Runtime Qualification
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - "sample_size/**"
+      - "tests/**"
+      - "requirements*.txt"
+      - ".github/workflows/sample-size-runtime-qualification.yml"
   pull_request:
-    paths: ["sample_size/**", "tests/**", "requirements*.txt", ".github/workflows/sample-size-runtime-qualification.yml"]
+    paths:
+      - "sample_size/**"
+      - "tests/**"
+      - "requirements*.txt"
+      - ".github/workflows/sample-size-runtime-qualification.yml"
 
 jobs:
   qualify:
