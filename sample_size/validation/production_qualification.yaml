@@ -1,5 +1,5 @@
 schema_version: 1
-qualification_round: "4.5"
+qualification_round: "5.4"
 lifecycle_dimensions:
   statistical_specification:
     states:
@@ -30,6 +30,7 @@ version_policy:
     pwr: "1.3.0"
     TrialSize: "1.4.1"
     PowerTOST: "1.5.7"
+    gsDesign: "3.11.0"
   automatic_install_or_downgrade: false
 production_candidate_checklist:
   statistical_contract: [spec_frozen, estimand_hypothesis_explicit, alpha_sidedness_explicit, allocation_explicit, solve_modes_explicit, dropout_explicit, rounding_explicit, unsupported_domains_explicit]
@@ -133,3 +134,43 @@ method_assessment:
       os_evidence: sample_size/validation/os_qualification.yaml
       comparator_evidence: sample_size/validation/hosted_run_33595483882.yaml
       regression_evidence: GitHub Actions run 33595483882
+
+round5_method_assessment:
+  - &round5_common
+    test_key: proportion_one
+    statistical_specification: SPEC_FROZEN
+    implementation: IMPLEMENTED
+    numerical_validation: BENCHMARK_VALIDATED
+    production_qualification: NOT_ASSESSED
+    benchmark_validated: true
+    production_candidate: false
+    production: false
+    gate_matrix: {A_statistical_contract: PASS, B_numerical_validation: PASS, C_api_behavior: PASS, D_runtime_fail_closed: PASS, E_reproducibility: PASS, F_protocol_output: PASS, G_change_control: PASS, H_runtime_os: PENDING, I_environment_classification: PASS}
+    traceability:
+      specification_hash: sha256:0f274dad14c0b7a2749b4a364177f97c5264796b068106efaf2592decc9389a0
+      implementation_version: round-5.2a
+      benchmark_id: round5-fixed-design-v1
+      authoritative_package: pwr
+      validated_package_version: "1.3.0"
+      numerical_evidence: sample_size/validation/round5_fixed_design_evidence.json
+      local_qualification_evidence: sample_size/validation/round54_local_qualification.json
+      hosted_os_evidence: null
+    remaining_gaps: [Round 5 exact-version hosted qualification and cross-platform comparison have not executed.]
+  - <<: *round5_common
+    test_key: proportion_paired
+    traceability: {specification_hash: 'sha256:134e34cede70059709915a2f4c1e06a9fc978128feb3908b5ed4bbf71f56e1f1', implementation_version: round-5.2a, benchmark_id: round5-fixed-design-v1, authoritative_package: TrialSize, validated_package_version: '1.4.1', numerical_evidence: sample_size/validation/round5_fixed_design_evidence.json, local_qualification_evidence: sample_size/validation/round54_local_qualification.json, hosted_os_evidence: null}
+  - <<: *round5_common
+    test_key: equivalence
+    traceability: {specification_hash: 'sha256:cc20b080709a8996d9b95b672128aebcedfe8fcdc404eb2ffd32c8bb3e5aea88', implementation_version: round-5.3d, benchmark_id: round5-equivalence-powertost-v1, authoritative_package: PowerTOST, validated_package_version: '1.5.7', numerical_evidence: sample_size/validation/round5_equivalence_powertost_evidence.json, local_qualification_evidence: sample_size/validation/round54_local_qualification.json, hosted_os_evidence: null}
+  - <<: *round5_common
+    test_key: non_inferiority
+    traceability: {specification_hash: 'sha256:6a52b794f1910f384bddb35f8764f9aa59db02ed85b03c8c78cfd8948b288c6c', implementation_version: round-5.2a, benchmark_id: round5-fixed-design-v1, authoritative_package: TrialSize, validated_package_version: '1.4.1', numerical_evidence: sample_size/validation/round5_fixed_design_evidence.json, local_qualification_evidence: sample_size/validation/round54_local_qualification.json, hosted_os_evidence: null}
+  - <<: *round5_common
+    test_key: superiority_margin
+    traceability: {specification_hash: 'sha256:8e950496d6e99db466ab6838109197778b1d9ed64d07f45f726ed204cf835364', implementation_version: round-5.2a, benchmark_id: round5-fixed-design-v1, authoritative_package: TrialSize, validated_package_version: '1.4.1', numerical_evidence: sample_size/validation/round5_fixed_design_evidence.json, local_qualification_evidence: sample_size/validation/round54_local_qualification.json, hosted_os_evidence: null}
+  - <<: *round5_common
+    test_key: odds_ratio
+    traceability: {specification_hash: 'sha256:0f0dbd7f05bdd263fbe5a1eb0611709a025063e896dd7b4d1167abb9aaa46ca1', implementation_version: round-5.2b, benchmark_id: round5-fixed-design-v1, authoritative_package: gsDesign, validated_package_version: '3.11.0', numerical_evidence: sample_size/validation/round5_fixed_design_evidence.json, local_qualification_evidence: sample_size/validation/round54_local_qualification.json, hosted_os_evidence: null}
+  - <<: *round5_common
+    test_key: risk_ratio
+    traceability: {specification_hash: 'sha256:7bcd1c4bb46dded29224b317ef6490d5feef0ec60a1c92814ddd6227225fa534', implementation_version: round-5.2b, benchmark_id: round5-fixed-design-v1, authoritative_package: gsDesign, validated_package_version: '3.11.0', numerical_evidence: sample_size/validation/round5_fixed_design_evidence.json, local_qualification_evidence: sample_size/validation/round54_local_qualification.json, hosted_os_evidence: null}

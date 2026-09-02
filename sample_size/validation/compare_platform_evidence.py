@@ -6,6 +6,7 @@ from pathlib import Path
 
 
 INTEGER_FIELDS = ("analysis_required_sample_size", "randomized_sample_size")
+DERIVED_INTEGER_FIELDS = ("analyzable_treatment", "analyzable_control", "analyzable_total", "randomized_treatment", "randomized_control", "randomized_total", "complete_analyzable_pairs", "randomized_pairs")
 FLOAT_FIELDS = ("achieved_power",)
 REQUIRED_DOCUMENT_FIELDS = ("environment", "live_execution", "fixtures", "method_gates")
 
@@ -33,7 +34,7 @@ def _validate_fixture(fixture_id, result, path):
     agent = result.get("agent_result")
     if agent is None:
         return None
-    required = (*INTEGER_FIELDS, *FLOAT_FIELDS, "sample_size_per_group", "sample_size_per_sequence", "benchmark_id")
+    required = (*INTEGER_FIELDS, *FLOAT_FIELDS, "sample_size_per_group", "sample_size_per_sequence", "benchmark_id", "rounding_applied", "derived_parameters")
     if not isinstance(agent, dict) or any(field not in agent for field in required):
         raise ValueError(f"fixture {fixture_id} is missing required comparison fields in {path}")
     return agent
@@ -55,9 +56,9 @@ def compare(paths, expected_platforms=None):
     for name, document, path in documents:
         agents = [_validate_fixture(fixture_id, result, path) for fixture_id, result in document["fixtures"].items()]
         ids = {agent["benchmark_id"] for agent in agents if agent is not None}
-        if len(ids) != 1 or None in ids:
-            raise ValueError(f"evidence does not identify exactly one benchmark for {name}")
-        benchmark_ids[name] = ids.pop()
+        if not ids or None in ids:
+            raise ValueError(f"evidence does not identify benchmark IDs for {name}")
+        benchmark_ids[name] = tuple(sorted(ids))
     if len(set(benchmark_ids.values())) != 1:
         raise ValueError(f"benchmark IDs differ across platforms: {benchmark_ids}")
     documents = [(name, document) for name, document, _ in documents]
@@ -74,6 +75,8 @@ def compare(paths, expected_platforms=None):
             if (left is None) != (right is None):
                 raise ValueError(f"required comparison fields differ for fixture {fixture_id}")
             if not left or not right: continue
+            if left["benchmark_id"] != right["benchmark_id"]:
+                discrepancies.append({"platform": platform_name, "fixture": fixture_id, "field": "benchmark_id", "classification": "operating-system numerical difference", "baseline": left["benchmark_id"], "observed": right["benchmark_id"]})
             for field in INTEGER_FIELDS:
                 if left[field] != right[field]: discrepancies.append({"platform": platform_name, "fixture": fixture_id, "field": field, "classification": "operating-system numerical difference", "baseline": left[field], "observed": right[field]})
             if left.get("sample_size_per_group") != right.get("sample_size_per_group") or left.get("sample_size_per_sequence") != right.get("sample_size_per_sequence"):
@@ -81,7 +84,22 @@ def compare(paths, expected_platforms=None):
             for field in FLOAT_FIELDS:
                 difference = abs(left[field] - right[field])
                 if difference > 1e-6: discrepancies.append({"platform": platform_name, "fixture": fixture_id, "field": field, "classification": "operating-system numerical difference", "absolute_difference": difference})
-    return {"baseline": baseline_name, "platform_count": len(documents), "fixture_count": len(baseline["fixtures"]), "benchmark_id": next(iter(benchmark_ids.values())), "tolerances": {"integer": "exact", "achieved_power_absolute": 1e-6}, "status": "PASS" if not discrepancies else "FAIL", "discrepancies": discrepancies}
+            if left.get("rounding_applied") != right.get("rounding_applied"):
+                discrepancies.append({"platform": platform_name, "fixture": fixture_id, "field": "rounding_applied", "classification": "operating-system numerical difference"})
+            for field in DERIVED_INTEGER_FIELDS:
+                lvalue, rvalue = left.get("derived_parameters", {}).get(field), right.get("derived_parameters", {}).get(field)
+                if lvalue != rvalue:
+                    discrepancies.append({"platform": platform_name, "fixture": fixture_id, "field": f"derived_parameters.{field}", "classification": "operating-system numerical difference", "baseline": lvalue, "observed": rvalue})
+            derived_fields = set(left["derived_parameters"]) | set(right["derived_parameters"])
+            for field in derived_fields-set(DERIVED_INTEGER_FIELDS):
+                lvalue, rvalue = left["derived_parameters"].get(field), right["derived_parameters"].get(field)
+                if isinstance(lvalue, (int, float)) and not isinstance(lvalue, bool) and isinstance(rvalue, (int, float)) and not isinstance(rvalue, bool):
+                    if abs(lvalue-rvalue) > 1e-6:
+                        discrepancies.append({"platform": platform_name, "fixture": fixture_id, "field": f"derived_parameters.{field}", "classification": "operating-system numerical difference", "absolute_difference": abs(lvalue-rvalue)})
+                elif lvalue != rvalue:
+                    discrepancies.append({"platform": platform_name, "fixture": fixture_id, "field": f"derived_parameters.{field}", "classification": "operating-system numerical difference", "baseline": lvalue, "observed": rvalue})
+    ids = next(iter(benchmark_ids.values()))
+    return {"baseline": baseline_name, "platform_count": len(documents), "fixture_count": len(baseline["fixtures"]), "benchmark_id": ids[0] if len(ids) == 1 else None, "benchmark_ids": list(ids), "tolerances": {"integer": "exact", "achieved_power_absolute": 1e-6, "exposed_intermediate_absolute": 1e-6}, "status": "PASS" if not discrepancies else "FAIL", "discrepancies": discrepancies}
 
 
 if __name__ == "__main__":

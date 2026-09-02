@@ -34,6 +34,7 @@ jobs:
           remotes::install_version("pwr", version = "1.3.0", upgrade = "never")
           remotes::install_version("TrialSize", version = "1.4.1", upgrade = "never")
           remotes::install_version("PowerTOST", version = "1.5.7", upgrade = "never")
+          remotes::install_version("gsDesign", version = "3.11.0", upgrade = "never")
       - name: Install Python validation dependencies
         run: python -m pip install -r requirements.txt -r requirements-dev.txt
       - name: Create artifact directory
@@ -42,14 +43,16 @@ jobs:
         run: python -m sample_size.validation.environment_probe > qualification-artifacts/environment-probe.json
       - name: Run frozen numerical qualification
         run: python -m sample_size.validation.run_numerical_validation --evidence-output qualification-artifacts/numerical-evidence.json > qualification-artifacts/numerical-summary.json
+      - name: Run Round 5 frozen qualification
+        run: python -m sample_size.validation.run_round5_hosted_qualification --output qualification-artifacts/round5-evidence.json > qualification-artifacts/round5-summary.json
       - name: Run production qualification tests
-        run: python -m unittest tests.test_production_qualification -v 2>&1 | tee qualification-artifacts/production-tests.txt
+        run: python -m unittest tests.test_production_qualification tests.test_round54_production_qualification -v 2>&1 | tee qualification-artifacts/production-tests.txt
       - name: Run full regression suite
         run: python -m unittest discover -s tests -v 2>&1 | tee qualification-artifacts/full-tests.txt
       - name: Capture installed versions
         shell: Rscript {0}
         run: |
-          versions <- sapply(c("jsonlite", "pwr", "TrialSize", "PowerTOST"), function(x) as.character(packageVersion(x)))
+          versions <- sapply(c("jsonlite", "pwr", "TrialSize", "PowerTOST", "gsDesign"), function(x) as.character(packageVersion(x)))
           writeLines(jsonlite::toJSON(list(R=R.version.string, platform=R.version$platform, packages=versions), auto_unbox=TRUE, pretty=TRUE), "qualification-artifacts/r-versions.json")
       - uses: actions/upload-artifact@v4
         if: always()
@@ -74,10 +77,14 @@ jobs:
           path: platform-evidence
       - name: Compare frozen fixture outputs
         run: python -m sample_size.validation.compare_platform_evidence platform-evidence/*/numerical-evidence.json --expected-platform windows-latest --expected-platform ubuntu-latest --expected-platform macos-latest --output cross-platform-comparison.json
+      - name: Compare Round 5 fixture outputs
+        run: python -m sample_size.validation.compare_platform_evidence platform-evidence/*/round5-evidence.json --expected-platform windows-latest --expected-platform ubuntu-latest --expected-platform macos-latest --output round5-cross-platform-comparison.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: sample-size-cross-platform-comparison
-          path: cross-platform-comparison.json
+          path: |
+            cross-platform-comparison.json
+            round5-cross-platform-comparison.json
           if-no-files-found: error
           retention-days: 30

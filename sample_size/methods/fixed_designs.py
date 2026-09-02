@@ -70,6 +70,7 @@ def _result(spec, values, adapter_result, *, solve_mode, analysis_total, randomi
         engine=spec["engine"]["engine_family"], runtime="R", package=package,
         package_version=package_version, function=adapter_result.function, package_arguments=adapter_result.package_arguments,
         warnings=list(spec["warnings"]) + list(raw.get("warnings", [])) + version_warnings + validation_warnings, assumptions=list(spec["assumptions"]),
+        unsupported_domains=list(spec["unsupported_domains"]),
         validation_status=validation_status, reproducible_code=adapter_result.reproducible_code,
         r_version=r_version, session_info=str(raw["session_info"]),
         validation_environment=validation_environment,

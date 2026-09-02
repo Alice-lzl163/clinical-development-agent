@@ -69,3 +69,8 @@ adjacent_version_strategy:
   jsonlite: {nearest_previous: NOT_TESTABLE, nearest_newer: NOT_TESTABLE, reason: No isolated reproducible adjacent-version runtime was available in this round.}
 incompatible_versions: []
 installed_unvalidated: []
+round5_production_qualification:
+  local_exact_version_preflight: PASS
+  local_evidence: sample_size/validation/round54_local_qualification.json
+  hosted_method_specific_qualification: PENDING
+  compatibility_inference_permitted: false

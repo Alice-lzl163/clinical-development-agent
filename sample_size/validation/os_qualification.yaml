@@ -83,3 +83,16 @@ cross_platform_comparison:
   hosted_job: 100138838095
   hosted_artifact: 9833336025
   evidence_reference: sample_size/validation/hosted_run_33595483882.yaml
+
+round5_hosted_qualification:
+  status: PENDING
+  methods: [proportion_one, proportion_paired, equivalence, non_inferiority, superiority_margin, odds_ratio, risk_ratio]
+  required_platforms: [windows-latest, ubuntu-latest, macos-latest]
+  workflow: .github/workflows/sample-size-runtime-qualification.yml
+  local_preflight: {status: PASS, fixtures_passed: 25, fixtures_total: 25, live_R_calls_passed: 50, live_R_calls_total: 50, evidence_reference: sample_size/validation/round54_local_qualification.json}
+  hosted_platforms:
+    windows-latest: {execution_status: NOT_RUN, qualification_status: UNQUALIFIED, evidence_reference: null}
+    ubuntu-latest: {execution_status: NOT_RUN, qualification_status: UNQUALIFIED, evidence_reference: null}
+    macos-latest: {execution_status: NOT_RUN, qualification_status: UNQUALIFIED, evidence_reference: null}
+  cross_platform_comparison: {execution_status: NOT_RUN, status: PENDING, evidence_reference: null, tolerances_changed: false}
+  blocker: A hosted workflow rerun is required after this commit; local evidence cannot substitute for OS qualification.

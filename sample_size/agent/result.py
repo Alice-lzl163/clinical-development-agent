@@ -29,6 +29,7 @@ class SampleSizeResult:
     package_arguments: dict[str, Any]
     warnings: list[str] = field(default_factory=list)
     assumptions: list[str] = field(default_factory=list)
+    unsupported_domains: list[str] = field(default_factory=list)
     validation_status: str = "IMPLEMENTED_UNVALIDATED"
     reproducible_code: str = ""
     r_version: str = ""
@@ -82,7 +83,7 @@ class SampleSizeResult:
             },
             "interpretation": {
                 "assumptions": self.assumptions, "warnings": self.warnings,
-                "unsupported_extrapolations": [],
+                "unsupported_extrapolations": self.unsupported_domains,
                 "effect_assumptions": self.effect_parameters,
             },
             "reproducibility": {
