@@ -79,7 +79,7 @@ class ProductionQualificationTests(unittest.TestCase):
 
     def test_dependency_and_os_registries_are_evidence_bounded(self):
         dependencies = yaml.safe_load((ROOT / "sample_size/validation/dependency_compatibility.yaml").read_text(encoding="utf-8"))
-        self.assertEqual({"pwr", "TrialSize", "PowerTOST", "jsonlite"}, {item["dependency"] for item in dependencies["qualifications"]})
+        self.assertEqual({"pwr", "TrialSize", "PowerTOST", "jsonlite", "gsDesign"}, {item["dependency"] for item in dependencies["qualifications"]})
         self.assertEqual([], dependencies["incompatible_versions"])
         self.assertTrue(all(item["qualification_status"] == "MATCHED_VALIDATED_ENVIRONMENT" for item in dependencies["qualifications"]))
         self.assertEqual("UNVALIDATED_VERSION", classify_runtime("pwr", "9.9.9", "R version 4.6.1", operating_system="Windows", architecture="AMD64"))

@@ -48,9 +48,9 @@ class Round52BRatioCalculatorTests(unittest.TestCase):
         self.assertEqual(528, result.analysis_required_sample_size)
         self.assertEqual(math.ceil(352/.9)+math.ceil(176/.9), result.randomized_sample_size)
         self.assertAlmostEqual(treatment, result.derived_parameters["alternative_treatment_probability"])
-        self.assertEqual("IMPLEMENTED_UNVALIDATED", result.validation_status)
+        self.assertEqual("BENCHMARK_VALIDATED", result.validation_status)
         self.assertEqual("round-5.2b", result.implementation_version)
-        self.assertEqual("not_assigned", result.benchmark_id)
+        self.assertEqual("round5-fixed-design-v1", result.benchmark_id)
         self.assertIn("gsDesign::nBinomial", result.reproducible_code)
         self.assertIn("while (checked$power", result.reproducible_code)
 
@@ -78,7 +78,7 @@ class Round52BRatioCalculatorTests(unittest.TestCase):
         self.assertEqual(41/80, result.package_arguments["ratio"])
         self.assertIsNone(result.package_arguments["beta"])
         self.assertEqual(.77, result.achieved_power)
-        self.assertEqual("IMPLEMENTED_UNVALIDATED", result.validation_status)
+        self.assertEqual("BENCHMARK_VALIDATED", result.validation_status)
         with self.assertRaises(RequestValidationError):
             calculate_sample_size({"test_key": "risk_ratio", "solve_mode": "power", "parameters": {**parameters, "allocation_ratio": 2}}, engine=engine)
 

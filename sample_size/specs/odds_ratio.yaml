@@ -141,9 +141,8 @@ solve_modes:
 engine:
   engine_family: gsdesign
   package: gsDesign
-  package_version_policy: gsDesign 3.11.0 is the exact introspected version and remains
-    INSTALLED_UNVALIDATED until numerical validation; any version change requires
-    contract re-introspection.
+  package_version_policy: Pin validated gsDesign 3.11.0 exactly; any version change
+    requires documented numerical revalidation.
   function: gsDesign::nBinomial
   parameter_mapping:
   - package_argument: p1

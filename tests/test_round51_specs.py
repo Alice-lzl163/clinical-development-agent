@@ -119,19 +119,19 @@ class Round51SpecificationTests(unittest.TestCase):
                 self.assertTrue(spec["solve_modes"]["sample_size"])
                 self.assertTrue(spec["solve_modes"]["power"])
                 self.assertEqual("one_sided", spec["alpha"]["sidedness"])
-                self.assertIn("INSTALLED_UNVALIDATED", spec["engine"]["package_version_policy"])
+                self.assertIn("3.11.0", spec["engine"]["package_version_policy"])
                 inputs = {item["name"]: item for item in spec["inputs"]}
                 self.assertEqual(["sample_size"], inputs["allocation_ratio"]["allowed_for_solve_modes"])
                 self.assertEqual(["power"], inputs["analyzable_treatment"]["required_for_solve_modes"])
                 self.assertEqual(["power"], inputs["analyzable_control"]["required_for_solve_modes"])
 
-    def test_gsdesign_is_recorded_as_installed_not_validated(self):
+    def test_gsdesign_is_round53_validated_for_or_rr_only(self):
         registry = yaml.safe_load((ROOT / "sample_size/validation/dependency_compatibility.yaml").read_text(encoding="utf-8"))
-        record = next(item for item in registry["installed_unvalidated"] if item["dependency"] == "gsDesign")
+        record = next(item for item in registry["qualifications"] if item["dependency"] == "gsDesign")
         self.assertEqual("3.11.0", record["version"])
-        self.assertEqual("INSTALLED_UNVALIDATED", record["qualification_status"])
-        self.assertEqual("NOT_RUN", record["numerical_validation"])
-        self.assertNotIn("gsDesign", {item["dependency"] for item in registry["qualifications"]})
+        self.assertEqual("MATCHED_VALIDATED_ENVIRONMENT", record["qualification_status"])
+        self.assertEqual(["odds_ratio", "risk_ratio"], record["tested_methods"])
+        self.assertEqual([], registry["installed_unvalidated"])
 
     def test_unsupported_power_mode_benchmarks_do_not_claim_public_power(self):
         for key in ("proportion_paired", "equivalence", "non_inferiority", "superiority_margin"):

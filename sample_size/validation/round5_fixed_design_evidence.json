@@ -1,0 +1,2003 @@
+{
+  "schema_version": 1,
+  "benchmark_id": "round5-fixed-design-v1",
+  "benchmark_status": "PARTIALLY_VALIDATED",
+  "validation_date": "2026-09-02",
+  "basis_commit": "702f8d19bb48b4d710118ce2be4f2d1721602baa",
+  "environment": {
+    "python": {
+      "version": "3.12.7 (tags/v3.12.7:0b05ead, Oct  1 2024, 03:06:41) [MSC v.1941 64 bit (AMD64)]",
+      "executable": "C:\\Users\\ZhuoChang\\Documents\\Codex\\2026-09-01\\you-are-working-on-a-new\\clinical-development-agent\\.venv\\Scripts\\python.exe",
+      "platform": "Windows-11-10.0.26100-SP0",
+      "architecture": "AMD64"
+    },
+    "scipy": {
+      "status": "FOUND",
+      "version": "1.18.1",
+      "path": "C:\\Users\\ZhuoChang\\Documents\\Codex\\2026-09-01\\you-are-working-on-a-new\\clinical-development-agent\\.venv\\Lib\\site-packages\\scipy\\__init__.py"
+    },
+    "rscript": {
+      "status": "FOUND",
+      "candidates": [
+        "C:\\Program Files\\R\\R-4.6.1\\bin\\Rscript.exe",
+        "C:\\Program Files\\R\\R-4.6.1\\bin\\x64\\Rscript.exe"
+      ],
+      "selected": "C:\\Program Files\\R\\R-4.6.1\\bin\\x64\\Rscript.exe"
+    },
+    "r": {
+      "version": "R version 4.6.1 (2026-06-24 ucrt)",
+      "platform": "x86_64-w64-mingw32"
+    },
+    "packages": {
+      "jsonlite": {
+        "status": "FOUND",
+        "version": "2.0.0",
+        "library_path": "C:/Users/ZhuoChang/AppData/Local/R/win-library/4.6",
+        "functions": {}
+      },
+      "pwr": {
+        "status": "FOUND",
+        "version": "1.3.0",
+        "library_path": "C:/Users/ZhuoChang/AppData/Local/R/win-library/4.6",
+        "functions": {
+          "pwr.p.test": true
+        }
+      },
+      "TrialSize": {
+        "status": "FOUND",
+        "version": "1.4.1",
+        "library_path": "C:/Users/ZhuoChang/AppData/Local/R/win-library/4.6",
+        "functions": {
+          "McNemar.Test": true,
+          "TwoSampleMean.Equivalence": true,
+          "TwoSampleProportion.NIS": true
+        }
+      },
+      "PowerTOST": {
+        "status": "FOUND",
+        "version": "1.5.7",
+        "library_path": "C:/Users/ZhuoChang/AppData/Local/R/win-library/4.6",
+        "functions": {
+          "sampleN.TOST": true,
+          "power.TOST": true
+        }
+      },
+      "gsDesign": {
+        "status": "FOUND",
+        "version": "3.11.0",
+        "library_path": "C:/Users/ZhuoChang/AppData/Local/R/win-library/4.6",
+        "functions": {
+          "nBinomial": true
+        }
+      }
+    },
+    "live_calculations_executed": 0
+  },
+  "live_execution": {
+    "executed": 96,
+    "successful": 96,
+    "failed": 0
+  },
+  "fixtures": {
+    "p1_greater": {
+      "status": "PASS",
+      "clinical_inputs": {
+        "null_probability": 0.3,
+        "alternative_probability": 0.45,
+        "alpha": 0.05,
+        "power": 0.8,
+        "dropout_rate": 0,
+        "alternative": "greater"
+      },
+      "derived_parameters": {
+        "signed_cohen_h": 0.3113494249059283,
+        "analyzable_subjects": 64,
+        "randomized_subjects": 64
+      },
+      "package_arguments": {
+        "h": 0.3113494249059283,
+        "sig.level": 0.05,
+        "power": 0.8,
+        "alternative": "greater"
+      },
+      "raw_authoritative_outputs": {
+        "package_n": 63.778163577190035,
+        "analysis_n": 64,
+        "achieved_power": 0.8012073860448622,
+        "warnings": [],
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "package_version": "1.3.0",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1 pwr_1.3-0      jsonlite_2.0.0"
+      },
+      "integer_analyzable_outputs": {
+        "total": 64,
+        "groups": {
+          "one_sample": 64
+        },
+        "sequences": null
+      },
+      "randomized_outputs": {
+        "total": 64
+      },
+      "achieved_power": 0.8012073860448622,
+      "direct_package": {
+        "absolute_difference": 0.0,
+        "status": "PASS"
+      },
+      "independent_reference": {
+        "method": "independent SciPy/Python analytical equation",
+        "result": 0.8012073860448623,
+        "absolute_difference": 1.1102230246251565e-16,
+        "tolerance": 1e-10,
+        "status": "PASS"
+      },
+      "allocation_rounding_dropout": "PASS",
+      "spec_sha256": "sha256:0f274dad14c0b7a2749b4a364177f97c5264796b068106efaf2592decc9389a0",
+      "implementation_version": "round-5.2a",
+      "reproducible_r_code": "library(pwr)\n\nresult <- pwr::pwr.p.test(\n  h = 0.3113494249059283, sig.level = 0.05, power = 0.8,\n  alternative = \"greater\"\n)\nanalysis_n <- ceiling(result$n)\nforward <- pwr::pwr.p.test(\n  h = 0.3113494249059283, n = analysis_n, sig.level = 0.05,\n  alternative = \"greater\"\n)\nlist(package_n = unname(result$n), analysis_n = analysis_n,\n     achieved_power = unname(forward$power))"
+    },
+    "p1_less": {
+      "status": "PASS",
+      "clinical_inputs": {
+        "null_probability": 0.5,
+        "alternative_probability": 0.35,
+        "alpha": 0.025,
+        "power": 0.85,
+        "dropout_rate": 0.1,
+        "alternative": "less"
+      },
+      "derived_parameters": {
+        "signed_cohen_h": -0.3046926540153978,
+        "analyzable_subjects": 97,
+        "randomized_subjects": 108
+      },
+      "package_arguments": {
+        "h": -0.3046926540153978,
+        "sig.level": 0.025,
+        "power": 0.85,
+        "alternative": "less"
+      },
+      "raw_authoritative_outputs": {
+        "package_n": 96.71078550542418,
+        "analysis_n": 97,
+        "achieved_power": 0.851041488006437,
+        "warnings": [],
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "package_version": "1.3.0",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1 pwr_1.3-0      jsonlite_2.0.0"
+      },
+      "integer_analyzable_outputs": {
+        "total": 97,
+        "groups": {
+          "one_sample": 97
+        },
+        "sequences": null
+      },
+      "randomized_outputs": {
+        "total": 108
+      },
+      "achieved_power": 0.851041488006437,
+      "direct_package": {
+        "absolute_difference": 0.0,
+        "status": "PASS"
+      },
+      "independent_reference": {
+        "method": "independent SciPy/Python analytical equation",
+        "result": 0.8510414880064369,
+        "absolute_difference": 1.1102230246251565e-16,
+        "tolerance": 1e-10,
+        "status": "PASS"
+      },
+      "allocation_rounding_dropout": "PASS",
+      "spec_sha256": "sha256:0f274dad14c0b7a2749b4a364177f97c5264796b068106efaf2592decc9389a0",
+      "implementation_version": "round-5.2a",
+      "reproducible_r_code": "library(pwr)\n\nresult <- pwr::pwr.p.test(\n  h = -0.3046926540153978, sig.level = 0.025, power = 0.85,\n  alternative = \"less\"\n)\nanalysis_n <- ceiling(result$n)\nforward <- pwr::pwr.p.test(\n  h = -0.3046926540153978, n = analysis_n, sig.level = 0.025,\n  alternative = \"less\"\n)\nlist(package_n = unname(result$n), analysis_n = analysis_n,\n     achieved_power = unname(forward$power))"
+    },
+    "p1_two_sided": {
+      "status": "PASS",
+      "clinical_inputs": {
+        "null_probability": 0.3,
+        "alternative_probability": 0.45,
+        "alpha": 0.05,
+        "power": 0.9,
+        "dropout_rate": 0.2,
+        "alternative": "two_sided"
+      },
+      "derived_parameters": {
+        "signed_cohen_h": 0.3113494249059283,
+        "analyzable_subjects": 109,
+        "randomized_subjects": 137
+      },
+      "package_arguments": {
+        "h": 0.3113494249059283,
+        "sig.level": 0.05,
+        "power": 0.9,
+        "alternative": "two.sided"
+      },
+      "raw_authoritative_outputs": {
+        "package_n": 108.3927041034043,
+        "analysis_n": 109,
+        "achieved_power": 0.9015822588024863,
+        "warnings": [],
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "package_version": "1.3.0",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1 pwr_1.3-0      jsonlite_2.0.0"
+      },
+      "integer_analyzable_outputs": {
+        "total": 109,
+        "groups": {
+          "one_sample": 109
+        },
+        "sequences": null
+      },
+      "randomized_outputs": {
+        "total": 137
+      },
+      "achieved_power": 0.9015822588024863,
+      "direct_package": {
+        "absolute_difference": 0.0,
+        "status": "PASS"
+      },
+      "independent_reference": {
+        "method": "independent SciPy/Python analytical equation",
+        "result": 0.9015822588024862,
+        "absolute_difference": 1.1102230246251565e-16,
+        "tolerance": 1e-10,
+        "status": "PASS"
+      },
+      "allocation_rounding_dropout": "PASS",
+      "spec_sha256": "sha256:0f274dad14c0b7a2749b4a364177f97c5264796b068106efaf2592decc9389a0",
+      "implementation_version": "round-5.2a",
+      "reproducible_r_code": "library(pwr)\n\nresult <- pwr::pwr.p.test(\n  h = 0.3113494249059283, sig.level = 0.05, power = 0.9,\n  alternative = \"two.sided\"\n)\nanalysis_n <- ceiling(result$n)\nforward <- pwr::pwr.p.test(\n  h = 0.3113494249059283, n = analysis_n, sig.level = 0.05,\n  alternative = \"two.sided\"\n)\nlist(package_n = unname(result$n), analysis_n = analysis_n,\n     achieved_power = unname(forward$power))"
+    },
+    "p1_power": {
+      "status": "PASS",
+      "clinical_inputs": {
+        "null_probability": 0.3,
+        "alternative_probability": 0.45,
+        "alpha": 0.05,
+        "alternative": "greater",
+        "analyzable_sample_size": 69
+      },
+      "derived_parameters": {
+        "signed_cohen_h": 0.3113494249059283,
+        "analyzable_subjects": 69,
+        "randomized_subjects": null
+      },
+      "package_arguments": {
+        "h": 0.3113494249059283,
+        "n": 69,
+        "sig.level": 0.05,
+        "alternative": "greater"
+      },
+      "raw_authoritative_outputs": {
+        "achieved_power": 0.8267523319177071,
+        "warnings": [],
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "package_version": "1.3.0",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1 pwr_1.3-0      jsonlite_2.0.0"
+      },
+      "integer_analyzable_outputs": {
+        "total": 69,
+        "groups": {
+          "one_sample": 69
+        },
+        "sequences": null
+      },
+      "randomized_outputs": {
+        "total": null
+      },
+      "achieved_power": 0.8267523319177071,
+      "direct_package": {
+        "absolute_difference": 0.0,
+        "status": "PASS"
+      },
+      "independent_reference": {
+        "method": "independent SciPy/Python analytical equation",
+        "result": 0.8267523319177073,
+        "absolute_difference": 1.1102230246251565e-16,
+        "tolerance": 1e-10,
+        "status": "PASS"
+      },
+      "allocation_rounding_dropout": "PASS",
+      "spec_sha256": "sha256:0f274dad14c0b7a2749b4a364177f97c5264796b068106efaf2592decc9389a0",
+      "implementation_version": "round-5.2a",
+      "reproducible_r_code": "library(pwr)\n\nresult <- pwr::pwr.p.test(\n  h = 0.3113494249059283, n = 69, sig.level = 0.05,\n  alternative = \"greater\"\n)\nlist(achieved_power = unname(result$power))"
+    },
+    "paired_required": {
+      "status": "PASS",
+      "clinical_inputs": {
+        "p_treatment_only": 0.2,
+        "p_control_only": 0.5,
+        "alpha": 0.05,
+        "power": 0.8,
+        "dropout_rate": 0
+      },
+      "derived_parameters": {
+        "beta": 0.19999999999999996,
+        "discordance_ratio": 0.4,
+        "total_discordance_probability": 0.7,
+        "complete_analyzable_pairs": 59,
+        "randomized_pairs": 59
+      },
+      "package_arguments": {
+        "alpha": 0.05,
+        "beta": 0.19999999999999996,
+        "psai": 0.4,
+        "paid": 0.7
+      },
+      "raw_authoritative_outputs": {
+        "package_n": 58.632237910611785,
+        "analysis_n": 59,
+        "achieved_power": 0.8025683632434663,
+        "warnings": [],
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "package_version": "1.4.1",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1  TrialSize_1.4.1 jsonlite_2.0.0 "
+      },
+      "integer_analyzable_outputs": {
+        "total": 59,
+        "groups": null,
+        "sequences": {
+          "complete_matched_pairs": 59
+        }
+      },
+      "randomized_outputs": {
+        "total": 59
+      },
+      "achieved_power": 0.8025683632434663,
+      "direct_package": {
+        "absolute_difference": 0.0,
+        "status": "PASS"
+      },
+      "independent_reference": {
+        "method": "independent SciPy/Python analytical equation",
+        "result": 0.802568363243466,
+        "absolute_difference": 2.220446049250313e-16,
+        "tolerance": 1e-10,
+        "status": "PASS"
+      },
+      "allocation_rounding_dropout": "PASS",
+      "spec_sha256": "sha256:134e34cede70059709915a2f4c1e06a9fc978128feb3908b5ed4bbf71f56e1f1",
+      "implementation_version": "round-5.2a",
+      "reproducible_r_code": "library(TrialSize)\n\npackage_n <- TrialSize::McNemar.Test(\n  alpha = 0.05, beta = 0.19999999999999996,\n  psai = 0.4, paid = 0.7\n)\nanalysis_n <- ceiling(as.numeric(package_n))\nz_alpha <- stats::qnorm(1 - 0.05 / 2)\nnumerator_scale <- sqrt((0.4 + 1)^2 - (0.4 - 1)^2 * 0.7)\nz_beta <- (sqrt(analysis_n * (0.4 - 1)^2 * 0.7) -\n  z_alpha * (0.4 + 1)) / numerator_scale\nlist(package_n = as.numeric(package_n), analysis_n = analysis_n,\n     achieved_power = stats::pnorm(z_beta))"
+    },
+    "paired_reverse": {
+      "status": "PASS",
+      "clinical_inputs": {
+        "p_treatment_only": 0.5,
+        "p_control_only": 0.2,
+        "alpha": 0.05,
+        "power": 0.8,
+        "dropout_rate": 0.1
+      },
+      "derived_parameters": {
+        "beta": 0.19999999999999996,
+        "discordance_ratio": 2.5,
+        "total_discordance_probability": 0.7,
+        "complete_analyzable_pairs": 59,
+        "randomized_pairs": 66
+      },
+      "package_arguments": {
+        "alpha": 0.05,
+        "beta": 0.19999999999999996,
+        "psai": 2.5,
+        "paid": 0.7
+      },
+      "raw_authoritative_outputs": {
+        "package_n": 58.6322379106118,
+        "analysis_n": 59,
+        "achieved_power": 0.8025683632434663,
+        "warnings": [],
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "package_version": "1.4.1",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1  TrialSize_1.4.1 jsonlite_2.0.0 "
+      },
+      "integer_analyzable_outputs": {
+        "total": 59,
+        "groups": null,
+        "sequences": {
+          "complete_matched_pairs": 59
+        }
+      },
+      "randomized_outputs": {
+        "total": 66
+      },
+      "achieved_power": 0.8025683632434663,
+      "direct_package": {
+        "absolute_difference": 0.0,
+        "status": "PASS"
+      },
+      "independent_reference": {
+        "method": "independent SciPy/Python analytical equation",
+        "result": 0.802568363243466,
+        "absolute_difference": 2.220446049250313e-16,
+        "tolerance": 1e-10,
+        "status": "PASS"
+      },
+      "allocation_rounding_dropout": "PASS",
+      "spec_sha256": "sha256:134e34cede70059709915a2f4c1e06a9fc978128feb3908b5ed4bbf71f56e1f1",
+      "implementation_version": "round-5.2a",
+      "reproducible_r_code": "library(TrialSize)\n\npackage_n <- TrialSize::McNemar.Test(\n  alpha = 0.05, beta = 0.19999999999999996,\n  psai = 2.5, paid = 0.7\n)\nanalysis_n <- ceiling(as.numeric(package_n))\nz_alpha <- stats::qnorm(1 - 0.05 / 2)\nnumerator_scale <- sqrt((2.5 + 1)^2 - (2.5 - 1)^2 * 0.7)\nz_beta <- (sqrt(analysis_n * (2.5 - 1)^2 * 0.7) -\n  z_alpha * (2.5 + 1)) / numerator_scale\nlist(package_n = as.numeric(package_n), analysis_n = analysis_n,\n     achieved_power = stats::pnorm(z_beta))"
+    },
+    "paired_close": {
+      "status": "PASS",
+      "clinical_inputs": {
+        "p_treatment_only": 0.3,
+        "p_control_only": 0.2,
+        "alpha": 0.05,
+        "power": 0.8,
+        "dropout_rate": 0.2
+      },
+      "derived_parameters": {
+        "beta": 0.19999999999999996,
+        "discordance_ratio": 1.4999999999999998,
+        "total_discordance_probability": 0.5,
+        "complete_analyzable_pairs": 391,
+        "randomized_pairs": 489
+      },
+      "package_arguments": {
+        "alpha": 0.05,
+        "beta": 0.19999999999999996,
+        "psai": 1.4999999999999998,
+        "paid": 0.5
+      },
+      "raw_authoritative_outputs": {
+        "package_n": 390.0777818507088,
+        "analysis_n": 391,
+        "achieved_power": 0.8009318857801138,
+        "warnings": [],
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "package_version": "1.4.1",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1  TrialSize_1.4.1 jsonlite_2.0.0 "
+      },
+      "integer_analyzable_outputs": {
+        "total": 391,
+        "groups": null,
+        "sequences": {
+          "complete_matched_pairs": 391
+        }
+      },
+      "randomized_outputs": {
+        "total": 489
+      },
+      "achieved_power": 0.8009318857801138,
+      "direct_package": {
+        "absolute_difference": 0.0,
+        "status": "PASS"
+      },
+      "independent_reference": {
+        "method": "independent SciPy/Python analytical equation",
+        "result": 0.8009318857801135,
+        "absolute_difference": 2.220446049250313e-16,
+        "tolerance": 1e-10,
+        "status": "PASS"
+      },
+      "allocation_rounding_dropout": "PASS",
+      "spec_sha256": "sha256:134e34cede70059709915a2f4c1e06a9fc978128feb3908b5ed4bbf71f56e1f1",
+      "implementation_version": "round-5.2a",
+      "reproducible_r_code": "library(TrialSize)\n\npackage_n <- TrialSize::McNemar.Test(\n  alpha = 0.05, beta = 0.19999999999999996,\n  psai = 1.4999999999999998, paid = 0.5\n)\nanalysis_n <- ceiling(as.numeric(package_n))\nz_alpha <- stats::qnorm(1 - 0.05 / 2)\nnumerator_scale <- sqrt((1.4999999999999998 + 1)^2 - (1.4999999999999998 - 1)^2 * 0.5)\nz_beta <- (sqrt(analysis_n * (1.4999999999999998 - 1)^2 * 0.5) -\n  z_alpha * (1.4999999999999998 + 1)) / numerator_scale\nlist(package_n = as.numeric(package_n), analysis_n = analysis_n,\n     achieved_power = stats::pnorm(z_beta))"
+    },
+    "eq_k1": {
+      "status": "PASS",
+      "clinical_inputs": {
+        "expected_difference": 0,
+        "sd": 1,
+        "equivalence_margin": 0.5,
+        "allocation_ratio": 1,
+        "alpha": 0.05,
+        "power": 0.8,
+        "dropout_rate": 0
+      },
+      "derived_parameters": {
+        "beta": 0.19999999999999996,
+        "analyzable_treatment": 69,
+        "analyzable_control": 69,
+        "randomized_treatment": 69,
+        "randomized_control": 69
+      },
+      "package_arguments": {
+        "alpha": 0.05,
+        "beta": 0.19999999999999996,
+        "sigma": 1,
+        "k": 1,
+        "delta": 0.5,
+        "margin": 0
+      },
+      "raw_authoritative_outputs": {
+        "package_n_treatment": 68.51077880534379,
+        "analysis_n_treatment": 69,
+        "analysis_n_control": 69,
+        "achieved_power": 0.8036364154237092,
+        "warnings": [],
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "package_version": "1.4.1",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1  TrialSize_1.4.1 jsonlite_2.0.0 "
+      },
+      "integer_analyzable_outputs": {
+        "total": 138,
+        "groups": {
+          "treatment": 69,
+          "control": 69
+        },
+        "sequences": null
+      },
+      "randomized_outputs": {
+        "total": 138
+      },
+      "achieved_power": 0.8036364154237092,
+      "direct_package": {
+        "absolute_difference": 0.0,
+        "status": "PASS"
+      },
+      "independent_reference": {
+        "method": "independent SciPy/Python analytical equation",
+        "result": 0.8036364154237088,
+        "absolute_difference": 4.440892098500626e-16,
+        "tolerance": 0.02,
+        "status": "PASS"
+      },
+      "allocation_rounding_dropout": "PASS",
+      "spec_sha256": "sha256:0527efeedf99f79edc3fd5935a3545119a6400e9d59f3243453a41939392f904",
+      "implementation_version": "round-5.2a",
+      "reproducible_r_code": "library(TrialSize)\n\npackage_n1 <- TrialSize::TwoSampleMean.Equivalence(\n  alpha = 0.05, beta = 0.19999999999999996, sigma = 1,\n  k = 1, delta = 0.5,\n  margin = 0\n)\nn_treatment <- ceiling(as.numeric(package_n1))\nn_control <- ceiling(as.numeric(package_n1) / 1)\nk_realized <- n_treatment / n_control\nz_alpha <- stats::qnorm(1 - 0.05)\ngap <- 0.5 - abs(0)\nz_beta_half <- gap * sqrt(n_treatment / (k_realized * 1^2 * (1 + 1 / k_realized))) - z_alpha\nachieved_power <- 1 - 2 * (1 - stats::pnorm(z_beta_half))\nlist(package_n_treatment = as.numeric(package_n1), analysis_n_treatment = n_treatment,\n     analysis_n_control = n_control, achieved_power = achieved_power)"
+    },
+    "eq_k2": {
+      "status": "FAIL",
+      "clinical_inputs": {
+        "expected_difference": 0.1,
+        "sd": 1,
+        "equivalence_margin": 0.5,
+        "allocation_ratio": 2,
+        "alpha": 0.05,
+        "power": 0.8,
+        "dropout_rate": 0.1
+      },
+      "derived_parameters": {
+        "beta": 0.19999999999999996,
+        "analyzable_treatment": 161,
+        "analyzable_control": 81,
+        "randomized_treatment": 179,
+        "randomized_control": 90
+      },
+      "package_arguments": {
+        "alpha": 0.05,
+        "beta": 0.19999999999999996,
+        "sigma": 1,
+        "k": 2,
+        "delta": 0.5,
+        "margin": 0.1
+      },
+      "raw_authoritative_outputs": {
+        "package_n_treatment": 160.57213782502447,
+        "analysis_n_treatment": 161,
+        "analysis_n_control": 81,
+        "achieved_power": 0.8034682368420658,
+        "warnings": [],
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "package_version": "1.4.1",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1  TrialSize_1.4.1 jsonlite_2.0.0 "
+      },
+      "integer_analyzable_outputs": {
+        "total": 242,
+        "groups": {
+          "treatment": 161,
+          "control": 81
+        },
+        "sequences": null
+      },
+      "randomized_outputs": {
+        "total": 269
+      },
+      "achieved_power": 0.8034682368420658,
+      "direct_package": {
+        "absolute_difference": 0.0,
+        "status": "PASS"
+      },
+      "independent_reference": {
+        "method": "independent SciPy/Python analytical equation",
+        "result": 0.898841136048079,
+        "absolute_difference": 0.09537289920601322,
+        "tolerance": 0.02,
+        "status": "FAIL"
+      },
+      "allocation_rounding_dropout": "PASS",
+      "spec_sha256": "sha256:0527efeedf99f79edc3fd5935a3545119a6400e9d59f3243453a41939392f904",
+      "implementation_version": "round-5.2a",
+      "reproducible_r_code": "library(TrialSize)\n\npackage_n1 <- TrialSize::TwoSampleMean.Equivalence(\n  alpha = 0.05, beta = 0.19999999999999996, sigma = 1,\n  k = 2, delta = 0.5,\n  margin = 0.1\n)\nn_treatment <- ceiling(as.numeric(package_n1))\nn_control <- ceiling(as.numeric(package_n1) / 2)\nk_realized <- n_treatment / n_control\nz_alpha <- stats::qnorm(1 - 0.05)\ngap <- 0.5 - abs(0.1)\nz_beta_half <- gap * sqrt(n_treatment / (k_realized * 1^2 * (1 + 1 / k_realized))) - z_alpha\nachieved_power <- 1 - 2 * (1 - stats::pnorm(z_beta_half))\nlist(package_n_treatment = as.numeric(package_n1), analysis_n_treatment = n_treatment,\n     analysis_n_control = n_control, achieved_power = achieved_power)"
+    },
+    "eq_khalf": {
+      "status": "FAIL",
+      "clinical_inputs": {
+        "expected_difference": -0.1,
+        "sd": 1.2,
+        "equivalence_margin": 0.5,
+        "allocation_ratio": 0.5,
+        "alpha": 0.05,
+        "power": 0.9,
+        "dropout_rate": 0.2
+      },
+      "derived_parameters": {
+        "beta": 0.09999999999999998,
+        "analyzable_treatment": 147,
+        "analyzable_control": 293,
+        "randomized_treatment": 184,
+        "randomized_control": 367
+      },
+      "package_arguments": {
+        "alpha": 0.05,
+        "beta": 0.09999999999999998,
+        "sigma": 1.2,
+        "k": 0.5,
+        "delta": 0.5,
+        "margin": -0.1
+      },
+      "raw_authoritative_outputs": {
+        "package_n_treatment": 146.0993465211521,
+        "analysis_n_treatment": 147,
+        "analysis_n_control": 293,
+        "achieved_power": 0.9016900119055906,
+        "warnings": [],
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "package_version": "1.4.1",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1  TrialSize_1.4.1 jsonlite_2.0.0 "
+      },
+      "integer_analyzable_outputs": {
+        "total": 440,
+        "groups": {
+          "treatment": 147,
+          "control": 293
+        },
+        "sequences": null
+      },
+      "randomized_outputs": {
+        "total": 551
+      },
+      "achieved_power": 0.9016900119055906,
+      "direct_package": {
+        "absolute_difference": 0.0,
+        "status": "PASS"
+      },
+      "independent_reference": {
+        "method": "independent SciPy/Python analytical equation",
+        "result": 0.9503651536552606,
+        "absolute_difference": 0.048675141749670026,
+        "tolerance": 0.02,
+        "status": "FAIL"
+      },
+      "allocation_rounding_dropout": "PASS",
+      "spec_sha256": "sha256:0527efeedf99f79edc3fd5935a3545119a6400e9d59f3243453a41939392f904",
+      "implementation_version": "round-5.2a",
+      "reproducible_r_code": "library(TrialSize)\n\npackage_n1 <- TrialSize::TwoSampleMean.Equivalence(\n  alpha = 0.05, beta = 0.09999999999999998, sigma = 1.2,\n  k = 0.5, delta = 0.5,\n  margin = -0.1\n)\nn_treatment <- ceiling(as.numeric(package_n1))\nn_control <- ceiling(as.numeric(package_n1) / 0.5)\nk_realized <- n_treatment / n_control\nz_alpha <- stats::qnorm(1 - 0.05)\ngap <- 0.5 - abs(-0.1)\nz_beta_half <- gap * sqrt(n_treatment / (k_realized * 1.2^2 * (1 + 1 / k_realized))) - z_alpha\nachieved_power <- 1 - 2 * (1 - stats::pnorm(z_beta_half))\nlist(package_n_treatment = as.numeric(package_n1), analysis_n_treatment = n_treatment,\n     analysis_n_control = n_control, achieved_power = achieved_power)"
+    },
+    "ni_equal": {
+      "status": "PASS",
+      "clinical_inputs": {
+        "control_probability": 0.8,
+        "treatment_probability": 0.8,
+        "noninferiority_margin": 0.1,
+        "allocation_ratio": 1,
+        "alpha": 0.025,
+        "power": 0.8,
+        "dropout_rate": 0
+      },
+      "derived_parameters": {
+        "beta": 0.19999999999999996,
+        "expected_risk_difference": 0.0,
+        "package_margin": -0.1,
+        "analyzable_treatment": 252,
+        "analyzable_control": 252,
+        "randomized_treatment": 252,
+        "randomized_control": 252
+      },
+      "package_arguments": {
+        "alpha": 0.025,
+        "beta": 0.19999999999999996,
+        "p1": 0.8,
+        "p2": 0.8,
+        "k": 1,
+        "delta": 0.0,
+        "margin": -0.1
+      },
+      "raw_authoritative_outputs": {
+        "package_n_treatment": 251.16415149917066,
+        "analysis_n_treatment": 252,
+        "analysis_n_control": 252,
+        "achieved_power": 0.8013014554737192,
+        "warnings": [],
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "package_version": "1.4.1",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1  TrialSize_1.4.1 jsonlite_2.0.0 "
+      },
+      "integer_analyzable_outputs": {
+        "total": 504,
+        "groups": {
+          "treatment": 252,
+          "control": 252
+        },
+        "sequences": null
+      },
+      "randomized_outputs": {
+        "total": 504
+      },
+      "achieved_power": 0.8013014554737192,
+      "direct_package": {
+        "absolute_difference": 0.0,
+        "status": "PASS"
+      },
+      "independent_reference": {
+        "method": "independent SciPy/Python analytical equation",
+        "result": 0.801301455473719,
+        "absolute_difference": 2.220446049250313e-16,
+        "tolerance": 1e-10,
+        "status": "PASS"
+      },
+      "allocation_rounding_dropout": "PASS",
+      "spec_sha256": "sha256:6a52b794f1910f384bddb35f8764f9aa59db02ed85b03c8c78cfd8948b288c6c",
+      "implementation_version": "round-5.2a",
+      "reproducible_r_code": "library(TrialSize)\n\npackage_n1 <- TrialSize::TwoSampleProportion.NIS(\n  alpha = 0.025, beta = 0.19999999999999996,\n  p1 = 0.8, p2 = 0.8,\n  k = 1, delta = 0.0, margin = -0.1\n)\nn_treatment <- ceiling(as.numeric(package_n1))\nn_control <- ceiling(as.numeric(package_n1) / 1)\nk_realized <- n_treatment / n_control\nvariance_term <- 0.8 * (1 - 0.8) / k_realized +\n  0.8 * (1 - 0.8)\nz_beta <- (0.0 - -0.1) * sqrt(n_treatment / (k_realized * variance_term)) -\n  stats::qnorm(1 - 0.025)\nlist(package_n_treatment = as.numeric(package_n1), analysis_n_treatment = n_treatment,\n     analysis_n_control = n_control, achieved_power = stats::pnorm(z_beta))"
+    },
+    "ni_k2": {
+      "status": "PASS",
+      "clinical_inputs": {
+        "control_probability": 0.8,
+        "treatment_probability": 0.82,
+        "noninferiority_margin": 0.1,
+        "allocation_ratio": 2,
+        "alpha": 0.025,
+        "power": 0.9,
+        "dropout_rate": 0.1
+      },
+      "derived_parameters": {
+        "beta": 0.09999999999999998,
+        "expected_risk_difference": 0.019999999999999907,
+        "package_margin": -0.1,
+        "analyzable_treatment": 342,
+        "analyzable_control": 171,
+        "randomized_treatment": 380,
+        "randomized_control": 190
+      },
+      "package_arguments": {
+        "alpha": 0.025,
+        "beta": 0.09999999999999998,
+        "p1": 0.82,
+        "p2": 0.8,
+        "k": 2,
+        "delta": 0.019999999999999907,
+        "margin": -0.1
+      },
+      "raw_authoritative_outputs": {
+        "package_n_treatment": 341.1993766340028,
+        "analysis_n_treatment": 342,
+        "analysis_n_control": 171,
+        "achieved_power": 0.9006654236795095,
+        "warnings": [],
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "package_version": "1.4.1",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1  TrialSize_1.4.1 jsonlite_2.0.0 "
+      },
+      "integer_analyzable_outputs": {
+        "total": 513,
+        "groups": {
+          "treatment": 342,
+          "control": 171
+        },
+        "sequences": null
+      },
+      "randomized_outputs": {
+        "total": 570
+      },
+      "achieved_power": 0.9006654236795095,
+      "direct_package": {
+        "absolute_difference": 0.0,
+        "status": "PASS"
+      },
+      "independent_reference": {
+        "method": "independent SciPy/Python analytical equation",
+        "result": 0.9006654236795095,
+        "absolute_difference": 0.0,
+        "tolerance": 1e-10,
+        "status": "PASS"
+      },
+      "allocation_rounding_dropout": "PASS",
+      "spec_sha256": "sha256:6a52b794f1910f384bddb35f8764f9aa59db02ed85b03c8c78cfd8948b288c6c",
+      "implementation_version": "round-5.2a",
+      "reproducible_r_code": "library(TrialSize)\n\npackage_n1 <- TrialSize::TwoSampleProportion.NIS(\n  alpha = 0.025, beta = 0.09999999999999998,\n  p1 = 0.82, p2 = 0.8,\n  k = 2, delta = 0.019999999999999907, margin = -0.1\n)\nn_treatment <- ceiling(as.numeric(package_n1))\nn_control <- ceiling(as.numeric(package_n1) / 2)\nk_realized <- n_treatment / n_control\nvariance_term <- 0.82 * (1 - 0.82) / k_realized +\n  0.8 * (1 - 0.8)\nz_beta <- (0.019999999999999907 - -0.1) * sqrt(n_treatment / (k_realized * variance_term)) -\n  stats::qnorm(1 - 0.025)\nlist(package_n_treatment = as.numeric(package_n1), analysis_n_treatment = n_treatment,\n     analysis_n_control = n_control, achieved_power = stats::pnorm(z_beta))"
+    },
+    "ni_khalf": {
+      "status": "PASS",
+      "clinical_inputs": {
+        "control_probability": 0.6,
+        "treatment_probability": 0.62,
+        "noninferiority_margin": 0.08,
+        "allocation_ratio": 0.5,
+        "alpha": 0.025,
+        "power": 0.8,
+        "dropout_rate": 0.2
+      },
+      "derived_parameters": {
+        "beta": 0.19999999999999996,
+        "expected_risk_difference": 0.020000000000000018,
+        "package_margin": -0.08,
+        "analyzable_treatment": 280,
+        "analyzable_control": 559,
+        "randomized_treatment": 350,
+        "randomized_control": 699
+      },
+      "package_arguments": {
+        "alpha": 0.025,
+        "beta": 0.19999999999999996,
+        "p1": 0.62,
+        "p2": 0.6,
+        "k": 0.5,
+        "delta": 0.020000000000000018,
+        "margin": -0.08
+      },
+      "raw_authoritative_outputs": {
+        "package_n_treatment": 279.1061633534534,
+        "analysis_n_treatment": 280,
+        "analysis_n_control": 559,
+        "achieved_power": 0.8010163404724914,
+        "warnings": [],
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "package_version": "1.4.1",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1  TrialSize_1.4.1 jsonlite_2.0.0 "
+      },
+      "integer_analyzable_outputs": {
+        "total": 839,
+        "groups": {
+          "treatment": 280,
+          "control": 559
+        },
+        "sequences": null
+      },
+      "randomized_outputs": {
+        "total": 1049
+      },
+      "achieved_power": 0.8010163404724914,
+      "direct_package": {
+        "absolute_difference": 0.0,
+        "status": "PASS"
+      },
+      "independent_reference": {
+        "method": "independent SciPy/Python analytical equation",
+        "result": 0.801016340472491,
+        "absolute_difference": 3.3306690738754696e-16,
+        "tolerance": 1e-10,
+        "status": "PASS"
+      },
+      "allocation_rounding_dropout": "PASS",
+      "spec_sha256": "sha256:6a52b794f1910f384bddb35f8764f9aa59db02ed85b03c8c78cfd8948b288c6c",
+      "implementation_version": "round-5.2a",
+      "reproducible_r_code": "library(TrialSize)\n\npackage_n1 <- TrialSize::TwoSampleProportion.NIS(\n  alpha = 0.025, beta = 0.19999999999999996,\n  p1 = 0.62, p2 = 0.6,\n  k = 0.5, delta = 0.020000000000000018, margin = -0.08\n)\nn_treatment <- ceiling(as.numeric(package_n1))\nn_control <- ceiling(as.numeric(package_n1) / 0.5)\nk_realized <- n_treatment / n_control\nvariance_term <- 0.62 * (1 - 0.62) / k_realized +\n  0.6 * (1 - 0.6)\nz_beta <- (0.020000000000000018 - -0.08) * sqrt(n_treatment / (k_realized * variance_term)) -\n  stats::qnorm(1 - 0.025)\nlist(package_n_treatment = as.numeric(package_n1), analysis_n_treatment = n_treatment,\n     analysis_n_control = n_control, achieved_power = stats::pnorm(z_beta))"
+    },
+    "sup_k1": {
+      "status": "PASS",
+      "clinical_inputs": {
+        "control_probability": 0.4,
+        "treatment_probability": 0.6,
+        "superiority_margin": 0.05,
+        "allocation_ratio": 1,
+        "alpha": 0.025,
+        "power": 0.8,
+        "dropout_rate": 0
+      },
+      "derived_parameters": {
+        "beta": 0.19999999999999996,
+        "expected_risk_difference": 0.19999999999999996,
+        "package_margin": 0.05,
+        "analyzable_treatment": 168,
+        "analyzable_control": 168,
+        "randomized_treatment": 168,
+        "randomized_control": 168
+      },
+      "package_arguments": {
+        "alpha": 0.025,
+        "beta": 0.19999999999999996,
+        "p1": 0.6,
+        "p2": 0.4,
+        "k": 1,
+        "delta": 0.19999999999999996,
+        "margin": 0.05
+      },
+      "raw_authoritative_outputs": {
+        "package_n_treatment": 167.4427676661139,
+        "analysis_n_treatment": 168,
+        "analysis_n_control": 168,
+        "achieved_power": 0.801301455473719,
+        "warnings": [],
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "package_version": "1.4.1",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1  TrialSize_1.4.1 jsonlite_2.0.0 "
+      },
+      "integer_analyzable_outputs": {
+        "total": 336,
+        "groups": {
+          "treatment": 168,
+          "control": 168
+        },
+        "sequences": null
+      },
+      "randomized_outputs": {
+        "total": 336
+      },
+      "achieved_power": 0.801301455473719,
+      "direct_package": {
+        "absolute_difference": 0.0,
+        "status": "PASS"
+      },
+      "independent_reference": {
+        "method": "independent SciPy/Python analytical equation",
+        "result": 0.8013014554737188,
+        "absolute_difference": 2.220446049250313e-16,
+        "tolerance": 1e-10,
+        "status": "PASS"
+      },
+      "allocation_rounding_dropout": "PASS",
+      "spec_sha256": "sha256:8e950496d6e99db466ab6838109197778b1d9ed64d07f45f726ed204cf835364",
+      "implementation_version": "round-5.2a",
+      "reproducible_r_code": "library(TrialSize)\n\npackage_n1 <- TrialSize::TwoSampleProportion.NIS(\n  alpha = 0.025, beta = 0.19999999999999996,\n  p1 = 0.6, p2 = 0.4,\n  k = 1, delta = 0.19999999999999996, margin = 0.05\n)\nn_treatment <- ceiling(as.numeric(package_n1))\nn_control <- ceiling(as.numeric(package_n1) / 1)\nk_realized <- n_treatment / n_control\nvariance_term <- 0.6 * (1 - 0.6) / k_realized +\n  0.4 * (1 - 0.4)\nz_beta <- (0.19999999999999996 - 0.05) * sqrt(n_treatment / (k_realized * variance_term)) -\n  stats::qnorm(1 - 0.025)\nlist(package_n_treatment = as.numeric(package_n1), analysis_n_treatment = n_treatment,\n     analysis_n_control = n_control, achieved_power = stats::pnorm(z_beta))"
+    },
+    "sup_k2": {
+      "status": "PASS",
+      "clinical_inputs": {
+        "control_probability": 0.3,
+        "treatment_probability": 0.55,
+        "superiority_margin": 0.1,
+        "allocation_ratio": 2,
+        "alpha": 0.025,
+        "power": 0.9,
+        "dropout_rate": 0.1
+      },
+      "derived_parameters": {
+        "beta": 0.09999999999999998,
+        "expected_risk_difference": 0.25000000000000006,
+        "package_margin": 0.1,
+        "analyzable_treatment": 312,
+        "analyzable_control": 156,
+        "randomized_treatment": 347,
+        "randomized_control": 174
+      },
+      "package_arguments": {
+        "alpha": 0.025,
+        "beta": 0.09999999999999998,
+        "p1": 0.55,
+        "p2": 0.3,
+        "k": 2,
+        "delta": 0.25000000000000006,
+        "margin": 0.1
+      },
+      "raw_authoritative_outputs": {
+        "package_n_treatment": 311.7202174894048,
+        "analysis_n_treatment": 312,
+        "analysis_n_control": 156,
+        "achieved_power": 0.9002550025132887,
+        "warnings": [],
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "package_version": "1.4.1",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1  TrialSize_1.4.1 jsonlite_2.0.0 "
+      },
+      "integer_analyzable_outputs": {
+        "total": 468,
+        "groups": {
+          "treatment": 312,
+          "control": 156
+        },
+        "sequences": null
+      },
+      "randomized_outputs": {
+        "total": 521
+      },
+      "achieved_power": 0.9002550025132887,
+      "direct_package": {
+        "absolute_difference": 0.0,
+        "status": "PASS"
+      },
+      "independent_reference": {
+        "method": "independent SciPy/Python analytical equation",
+        "result": 0.9002550025132887,
+        "absolute_difference": 0.0,
+        "tolerance": 1e-10,
+        "status": "PASS"
+      },
+      "allocation_rounding_dropout": "PASS",
+      "spec_sha256": "sha256:8e950496d6e99db466ab6838109197778b1d9ed64d07f45f726ed204cf835364",
+      "implementation_version": "round-5.2a",
+      "reproducible_r_code": "library(TrialSize)\n\npackage_n1 <- TrialSize::TwoSampleProportion.NIS(\n  alpha = 0.025, beta = 0.09999999999999998,\n  p1 = 0.55, p2 = 0.3,\n  k = 2, delta = 0.25000000000000006, margin = 0.1\n)\nn_treatment <- ceiling(as.numeric(package_n1))\nn_control <- ceiling(as.numeric(package_n1) / 2)\nk_realized <- n_treatment / n_control\nvariance_term <- 0.55 * (1 - 0.55) / k_realized +\n  0.3 * (1 - 0.3)\nz_beta <- (0.25000000000000006 - 0.1) * sqrt(n_treatment / (k_realized * variance_term)) -\n  stats::qnorm(1 - 0.025)\nlist(package_n_treatment = as.numeric(package_n1), analysis_n_treatment = n_treatment,\n     analysis_n_control = n_control, achieved_power = stats::pnorm(z_beta))"
+    },
+    "sup_khalf": {
+      "status": "PASS",
+      "clinical_inputs": {
+        "control_probability": 0.45,
+        "treatment_probability": 0.6,
+        "superiority_margin": 0.05,
+        "allocation_ratio": 0.5,
+        "alpha": 0.025,
+        "power": 0.8,
+        "dropout_rate": 0.2
+      },
+      "derived_parameters": {
+        "beta": 0.19999999999999996,
+        "expected_risk_difference": 0.14999999999999997,
+        "package_margin": 0.05,
+        "analyzable_treatment": 286,
+        "analyzable_control": 572,
+        "randomized_treatment": 358,
+        "randomized_control": 715
+      },
+      "package_arguments": {
+        "alpha": 0.025,
+        "beta": 0.19999999999999996,
+        "p1": 0.6,
+        "p2": 0.45,
+        "k": 0.5,
+        "delta": 0.14999999999999997,
+        "margin": 0.05
+      },
+      "raw_authoritative_outputs": {
+        "package_n_treatment": 285.5030003369482,
+        "analysis_n_treatment": 286,
+        "analysis_n_control": 572,
+        "achieved_power": 0.80068168468477,
+        "warnings": [],
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "package_version": "1.4.1",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n[1] compiler_4.6.1  TrialSize_1.4.1 jsonlite_2.0.0 "
+      },
+      "integer_analyzable_outputs": {
+        "total": 858,
+        "groups": {
+          "treatment": 286,
+          "control": 572
+        },
+        "sequences": null
+      },
+      "randomized_outputs": {
+        "total": 1073
+      },
+      "achieved_power": 0.80068168468477,
+      "direct_package": {
+        "absolute_difference": 0.0,
+        "status": "PASS"
+      },
+      "independent_reference": {
+        "method": "independent SciPy/Python analytical equation",
+        "result": 0.8006816846847697,
+        "absolute_difference": 2.220446049250313e-16,
+        "tolerance": 1e-10,
+        "status": "PASS"
+      },
+      "allocation_rounding_dropout": "PASS",
+      "spec_sha256": "sha256:8e950496d6e99db466ab6838109197778b1d9ed64d07f45f726ed204cf835364",
+      "implementation_version": "round-5.2a",
+      "reproducible_r_code": "library(TrialSize)\n\npackage_n1 <- TrialSize::TwoSampleProportion.NIS(\n  alpha = 0.025, beta = 0.19999999999999996,\n  p1 = 0.6, p2 = 0.45,\n  k = 0.5, delta = 0.14999999999999997, margin = 0.05\n)\nn_treatment <- ceiling(as.numeric(package_n1))\nn_control <- ceiling(as.numeric(package_n1) / 0.5)\nk_realized <- n_treatment / n_control\nvariance_term <- 0.6 * (1 - 0.6) / k_realized +\n  0.45 * (1 - 0.45)\nz_beta <- (0.14999999999999997 - 0.05) * sqrt(n_treatment / (k_realized * variance_term)) -\n  stats::qnorm(1 - 0.025)\nlist(package_n_treatment = as.numeric(package_n1), analysis_n_treatment = n_treatment,\n     analysis_n_control = n_control, achieved_power = stats::pnorm(z_beta))"
+    },
+    "or_k1": {
+      "status": "PASS",
+      "clinical_inputs": {
+        "control_probability": 0.2,
+        "alternative_odds_ratio": 2,
+        "null_odds_ratio": 1,
+        "allocation_ratio": 1,
+        "alpha": 0.025,
+        "power": 0.8,
+        "dropout_rate": 0
+      },
+      "derived_parameters": {
+        "alternative_treatment_probability": 0.3333333333333333,
+        "package_delta0": 0.0,
+        "package_ratio": 1.0,
+        "analyzable_treatment": 170,
+        "analyzable_control": 170,
+        "analyzable_total": 340,
+        "randomized_treatment": 170,
+        "randomized_control": 170,
+        "package_continuous_total": 339.2398890136635,
+        "package_continuous_n1": 169.61994450683176,
+        "package_continuous_n2": 169.61994450683176,
+        "rounding_increments": 0,
+        "constrained_null_treatment_probability": 0.26666666666666666,
+        "constrained_null_control_probability": 0.26666666666666666
+      },
+      "package_arguments": {
+        "inverse": {
+          "p1": 0.3333333333333333,
+          "p2": 0.2,
+          "alpha": 0.025,
+          "beta": 0.19999999999999996,
+          "delta0": 0.0,
+          "ratio": 1.0,
+          "sided": 1,
+          "outtype": 3,
+          "scale": "OR",
+          "n": null
+        },
+        "forward_recheck": {
+          "p1": 0.3333333333333333,
+          "p2": 0.2,
+          "alpha": 0.025,
+          "delta0": 0.0,
+          "ratio": "analysis_n_control / analysis_n_treatment",
+          "sided": 1,
+          "outtype": 3,
+          "scale": "OR",
+          "n": "analysis_n_treatment + analysis_n_control"
+        }
+      },
+      "raw_authoritative_outputs": {
+        "package_total": 339.2398890136635,
+        "package_n1": 169.61994450683176,
+        "package_n2": 169.61994450683176,
+        "analysis_n_treatment": 170,
+        "analysis_n_control": 170,
+        "achieved_power": 0.8008619691127892,
+        "constrained_null_p1": 0.26666666666666666,
+        "constrained_null_p2": 0.26666666666666666,
+        "checked_n1": 170,
+        "checked_n2": 170,
+        "rounding_increments": 0,
+        "realized_package_ratio": 1,
+        "warnings": [],
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "package_version": "3.11.0",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n [1] vctrs_0.7.3        gsDesign_3.11.0    cli_3.6.6          gt_1.3.0          \n [5] rlang_1.3.0        purrr_1.2.2        generics_0.1.4     S7_0.2.2          \n [9] xtable_1.8-8       jsonlite_2.0.0     glue_1.8.1         htmltools_0.5.9   \n[13] scales_1.4.0       grid_4.6.1         tibble_3.3.1       fastmap_1.2.0     \n[17] lifecycle_1.0.5    compiler_4.6.1     dplyr_1.2.1        fs_2.1.0          \n[21] r2rtf_1.3.1        RColorBrewer_1.1-3 pkgconfig_2.0.3    tidyr_1.3.2       \n[25] farver_2.1.2       digest_0.6.39      R6_2.6.1           tidyselect_1.2.1  \n[29] pillar_1.11.1      magrittr_2.0.5     gtable_0.3.6       xml2_1.6.0        \n[33] ggplot2_4.0.3     "
+      },
+      "integer_analyzable_outputs": {
+        "total": 340,
+        "groups": {
+          "treatment": 170,
+          "control": 170
+        },
+        "sequences": null
+      },
+      "randomized_outputs": {
+        "total": 340
+      },
+      "achieved_power": 0.8008619691127892,
+      "direct_package": {
+        "absolute_difference": 0.0,
+        "status": "PASS"
+      },
+      "independent_reference": {
+        "method": "independent SciPy/Python analytical equation",
+        "result": {
+          "power": 0.8008619691127891,
+          "p10": 0.26666666666666666,
+          "p20": 0.26666666666666666,
+          "sigma0": 4.522670168666454,
+          "sigma1": 4.636809247747852
+        },
+        "absolute_difference": 1.1102230246251565e-16,
+        "tolerance": 1e-10,
+        "status": "PASS"
+      },
+      "allocation_rounding_dropout": "PASS",
+      "spec_sha256": "sha256:0f0dbd7f05bdd263fbe5a1eb0611709a025063e896dd7b4d1167abb9aaa46ca1",
+      "implementation_version": "round-5.2b",
+      "reproducible_r_code": "library(gsDesign)\n\ninverse <- gsDesign::nBinomial(\n  p1 = 0.3333333333333333, p2 = 0.2,\n  alpha = 0.025, beta = 0.19999999999999996, delta0 = 0.0,\n  ratio = 1.0, sided = 1, outtype = 3,\n  scale = \"OR\", n = NULL\n)\nraw_total <- as.numeric(inverse$n[[1]])\nraw_n1 <- as.numeric(inverse$n1[[1]])\nraw_n2 <- as.numeric(inverse$n2[[1]])\nn_treatment <- ceiling(raw_n1)\nn_control <- ceiling(raw_n2)\ntarget_power <- 0.8\nforward_power <- function(nt, nc) {\n  forward <- gsDesign::nBinomial(\n    p1 = 0.3333333333333333, p2 = 0.2,\n    alpha = 0.025, delta0 = 0.0, ratio = nc / nt,\n    sided = 1, outtype = 3, scale = \"OR\", n = nt + nc\n  )\n  list(power = as.numeric(forward$Power[[1]]), p10 = as.numeric(forward$p10[[1]]),\n       p20 = as.numeric(forward$p20[[1]]), n1 = as.numeric(forward$n1[[1]]),\n       n2 = as.numeric(forward$n2[[1]]))\n}\nchecked <- forward_power(n_treatment, n_control)\nincrements <- 0L\nwhile (checked$power + 1e-12 < target_power) {\n  if (n_treatment / 1 <= n_control) {\n    n_treatment <- n_treatment + 1L\n  } else {\n    n_control <- n_control + 1L\n  }\n  increments <- increments + 1L\n  if (increments > 100000L) stop(\"ROUNDING_CONVERGENCE_FAILURE\")\n  checked <- forward_power(n_treatment, n_control)\n}\nlist(package_total = raw_total, package_n1 = raw_n1, package_n2 = raw_n2,\n     analysis_n_treatment = n_treatment, analysis_n_control = n_control,\n     achieved_power = checked$power, constrained_null_p1 = checked$p10,\n     constrained_null_p2 = checked$p20, checked_n1 = checked$n1,\n     checked_n2 = checked$n2, rounding_increments = increments,\n     realized_package_ratio = n_control / n_treatment)"
+    },
+    "or_k2": {
+      "status": "PASS",
+      "clinical_inputs": {
+        "control_probability": 0.2,
+        "alternative_odds_ratio": 2,
+        "null_odds_ratio": 1,
+        "allocation_ratio": 2,
+        "alpha": 0.025,
+        "power": 0.8,
+        "dropout_rate": 0.1
+      },
+      "derived_parameters": {
+        "alternative_treatment_probability": 0.3333333333333333,
+        "package_delta0": 0.0,
+        "package_ratio": 0.50199203187251,
+        "analyzable_treatment": 251,
+        "analyzable_control": 126,
+        "analyzable_total": 377,
+        "randomized_treatment": 279,
+        "randomized_control": 140,
+        "package_continuous_total": 375.02388155508976,
+        "package_continuous_n1": 250.0159210367265,
+        "package_continuous_n2": 125.00796051836325,
+        "rounding_increments": 0,
+        "constrained_null_treatment_probability": 0.2887709991158267,
+        "constrained_null_control_probability": 0.2887709991158267
+      },
+      "package_arguments": {
+        "inverse": {
+          "p1": 0.3333333333333333,
+          "p2": 0.2,
+          "alpha": 0.025,
+          "beta": 0.19999999999999996,
+          "delta0": 0.0,
+          "ratio": 0.5,
+          "sided": 1,
+          "outtype": 3,
+          "scale": "OR",
+          "n": null
+        },
+        "forward_recheck": {
+          "p1": 0.3333333333333333,
+          "p2": 0.2,
+          "alpha": 0.025,
+          "delta0": 0.0,
+          "ratio": "analysis_n_control / analysis_n_treatment",
+          "sided": 1,
+          "outtype": 3,
+          "scale": "OR",
+          "n": "analysis_n_treatment + analysis_n_control"
+        }
+      },
+      "raw_authoritative_outputs": {
+        "package_total": 375.02388155508976,
+        "package_n1": 250.0159210367265,
+        "package_n2": 125.00796051836325,
+        "analysis_n_treatment": 251,
+        "analysis_n_control": 126,
+        "achieved_power": 0.8024134593691971,
+        "constrained_null_p1": 0.2887709991158267,
+        "constrained_null_p2": 0.2887709991158267,
+        "checked_n1": 251,
+        "checked_n2": 126.00000000000001,
+        "rounding_increments": 0,
+        "realized_package_ratio": 0.50199203187251,
+        "warnings": [],
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "package_version": "3.11.0",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n [1] vctrs_0.7.3        gsDesign_3.11.0    cli_3.6.6          gt_1.3.0          \n [5] rlang_1.3.0        purrr_1.2.2        generics_0.1.4     S7_0.2.2          \n [9] xtable_1.8-8       jsonlite_2.0.0     glue_1.8.1         htmltools_0.5.9   \n[13] scales_1.4.0       grid_4.6.1         tibble_3.3.1       fastmap_1.2.0     \n[17] lifecycle_1.0.5    compiler_4.6.1     dplyr_1.2.1        fs_2.1.0          \n[21] r2rtf_1.3.1        RColorBrewer_1.1-3 pkgconfig_2.0.3    tidyr_1.3.2       \n[25] farver_2.1.2       digest_0.6.39      R6_2.6.1           tidyselect_1.2.1  \n[29] pillar_1.11.1      magrittr_2.0.5     gtable_0.3.6       xml2_1.6.0        \n[33] ggplot2_4.0.3     "
+      },
+      "integer_analyzable_outputs": {
+        "total": 377,
+        "groups": {
+          "treatment": 251,
+          "control": 126
+        },
+        "sequences": null
+      },
+      "randomized_outputs": {
+        "total": 419
+      },
+      "achieved_power": 0.8024134593691971,
+      "direct_package": {
+        "absolute_difference": 0.0,
+        "status": "PASS"
+      },
+      "independent_reference": {
+        "method": "independent SciPy/Python analytical equation",
+        "result": {
+          "power": 0.802413459369197,
+          "p10": 0.2887709991158267,
+          "p20": 0.2887709991158267,
+          "sigma0": 4.677757466690688,
+          "sigma1": 5.045727001020083
+        },
+        "absolute_difference": 1.1102230246251565e-16,
+        "tolerance": 1e-10,
+        "status": "PASS"
+      },
+      "allocation_rounding_dropout": "PASS",
+      "spec_sha256": "sha256:0f0dbd7f05bdd263fbe5a1eb0611709a025063e896dd7b4d1167abb9aaa46ca1",
+      "implementation_version": "round-5.2b",
+      "reproducible_r_code": "library(gsDesign)\n\ninverse <- gsDesign::nBinomial(\n  p1 = 0.3333333333333333, p2 = 0.2,\n  alpha = 0.025, beta = 0.19999999999999996, delta0 = 0.0,\n  ratio = 0.5, sided = 1, outtype = 3,\n  scale = \"OR\", n = NULL\n)\nraw_total <- as.numeric(inverse$n[[1]])\nraw_n1 <- as.numeric(inverse$n1[[1]])\nraw_n2 <- as.numeric(inverse$n2[[1]])\nn_treatment <- ceiling(raw_n1)\nn_control <- ceiling(raw_n2)\ntarget_power <- 0.8\nforward_power <- function(nt, nc) {\n  forward <- gsDesign::nBinomial(\n    p1 = 0.3333333333333333, p2 = 0.2,\n    alpha = 0.025, delta0 = 0.0, ratio = nc / nt,\n    sided = 1, outtype = 3, scale = \"OR\", n = nt + nc\n  )\n  list(power = as.numeric(forward$Power[[1]]), p10 = as.numeric(forward$p10[[1]]),\n       p20 = as.numeric(forward$p20[[1]]), n1 = as.numeric(forward$n1[[1]]),\n       n2 = as.numeric(forward$n2[[1]]))\n}\nchecked <- forward_power(n_treatment, n_control)\nincrements <- 0L\nwhile (checked$power + 1e-12 < target_power) {\n  if (n_treatment / 2 <= n_control) {\n    n_treatment <- n_treatment + 1L\n  } else {\n    n_control <- n_control + 1L\n  }\n  increments <- increments + 1L\n  if (increments > 100000L) stop(\"ROUNDING_CONVERGENCE_FAILURE\")\n  checked <- forward_power(n_treatment, n_control)\n}\nlist(package_total = raw_total, package_n1 = raw_n1, package_n2 = raw_n2,\n     analysis_n_treatment = n_treatment, analysis_n_control = n_control,\n     achieved_power = checked$power, constrained_null_p1 = checked$p10,\n     constrained_null_p2 = checked$p20, checked_n1 = checked$n1,\n     checked_n2 = checked$n2, rounding_increments = increments,\n     realized_package_ratio = n_control / n_treatment)"
+    },
+    "or_khalf": {
+      "status": "PASS",
+      "clinical_inputs": {
+        "control_probability": 0.3,
+        "alternative_odds_ratio": 1.8,
+        "null_odds_ratio": 1,
+        "allocation_ratio": 0.5,
+        "alpha": 0.025,
+        "power": 0.9,
+        "dropout_rate": 0.2
+      },
+      "derived_parameters": {
+        "alternative_treatment_probability": 0.435483870967742,
+        "package_delta0": 0.0,
+        "package_ratio": 2.0,
+        "analyzable_treatment": 200,
+        "analyzable_control": 400,
+        "analyzable_total": 600,
+        "randomized_treatment": 250,
+        "randomized_control": 500,
+        "package_continuous_total": 598.6960805471141,
+        "package_continuous_n1": 199.56536018237136,
+        "package_continuous_n2": 399.13072036474273,
+        "rounding_increments": 0,
+        "constrained_null_treatment_probability": 0.3451612903225807,
+        "constrained_null_control_probability": 0.3451612903225807
+      },
+      "package_arguments": {
+        "inverse": {
+          "p1": 0.435483870967742,
+          "p2": 0.3,
+          "alpha": 0.025,
+          "beta": 0.09999999999999998,
+          "delta0": 0.0,
+          "ratio": 2.0,
+          "sided": 1,
+          "outtype": 3,
+          "scale": "OR",
+          "n": null
+        },
+        "forward_recheck": {
+          "p1": 0.435483870967742,
+          "p2": 0.3,
+          "alpha": 0.025,
+          "delta0": 0.0,
+          "ratio": "analysis_n_control / analysis_n_treatment",
+          "sided": 1,
+          "outtype": 3,
+          "scale": "OR",
+          "n": "analysis_n_treatment + analysis_n_control"
+        }
+      },
+      "raw_authoritative_outputs": {
+        "package_total": 598.6960805471141,
+        "package_n1": 199.56536018237136,
+        "package_n2": 399.13072036474273,
+        "analysis_n_treatment": 200,
+        "analysis_n_control": 400,
+        "achieved_power": 0.9006231421917749,
+        "constrained_null_p1": 0.3451612903225807,
+        "constrained_null_p2": 0.3451612903225807,
+        "checked_n1": 200,
+        "checked_n2": 400,
+        "rounding_increments": 0,
+        "realized_package_ratio": 2,
+        "warnings": [],
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "package_version": "3.11.0",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n [1] vctrs_0.7.3        gsDesign_3.11.0    cli_3.6.6          gt_1.3.0          \n [5] rlang_1.3.0        purrr_1.2.2        generics_0.1.4     S7_0.2.2          \n [9] xtable_1.8-8       jsonlite_2.0.0     glue_1.8.1         htmltools_0.5.9   \n[13] scales_1.4.0       grid_4.6.1         tibble_3.3.1       fastmap_1.2.0     \n[17] lifecycle_1.0.5    compiler_4.6.1     dplyr_1.2.1        fs_2.1.0          \n[21] r2rtf_1.3.1        RColorBrewer_1.1-3 pkgconfig_2.0.3    tidyr_1.3.2       \n[25] farver_2.1.2       digest_0.6.39      R6_2.6.1           tidyselect_1.2.1  \n[29] pillar_1.11.1      magrittr_2.0.5     gtable_0.3.6       xml2_1.6.0        \n[33] ggplot2_4.0.3     "
+      },
+      "integer_analyzable_outputs": {
+        "total": 600,
+        "groups": {
+          "treatment": 200,
+          "control": 400
+        },
+        "sequences": null
+      },
+      "randomized_outputs": {
+        "total": 750
+      },
+      "achieved_power": 0.9006231421917749,
+      "direct_package": {
+        "absolute_difference": 0.0,
+        "status": "PASS"
+      },
+      "independent_reference": {
+        "method": "independent SciPy/Python analytical equation",
+        "result": {
+          "power": 0.9006231421917748,
+          "p10": 0.3451612903225807,
+          "p20": 0.3451612903225807,
+          "sigma0": 4.461984352262578,
+          "sigma1": 4.398412411999555
+        },
+        "absolute_difference": 1.1102230246251565e-16,
+        "tolerance": 1e-10,
+        "status": "PASS"
+      },
+      "allocation_rounding_dropout": "PASS",
+      "spec_sha256": "sha256:0f0dbd7f05bdd263fbe5a1eb0611709a025063e896dd7b4d1167abb9aaa46ca1",
+      "implementation_version": "round-5.2b",
+      "reproducible_r_code": "library(gsDesign)\n\ninverse <- gsDesign::nBinomial(\n  p1 = 0.435483870967742, p2 = 0.3,\n  alpha = 0.025, beta = 0.09999999999999998, delta0 = 0.0,\n  ratio = 2.0, sided = 1, outtype = 3,\n  scale = \"OR\", n = NULL\n)\nraw_total <- as.numeric(inverse$n[[1]])\nraw_n1 <- as.numeric(inverse$n1[[1]])\nraw_n2 <- as.numeric(inverse$n2[[1]])\nn_treatment <- ceiling(raw_n1)\nn_control <- ceiling(raw_n2)\ntarget_power <- 0.9\nforward_power <- function(nt, nc) {\n  forward <- gsDesign::nBinomial(\n    p1 = 0.435483870967742, p2 = 0.3,\n    alpha = 0.025, delta0 = 0.0, ratio = nc / nt,\n    sided = 1, outtype = 3, scale = \"OR\", n = nt + nc\n  )\n  list(power = as.numeric(forward$Power[[1]]), p10 = as.numeric(forward$p10[[1]]),\n       p20 = as.numeric(forward$p20[[1]]), n1 = as.numeric(forward$n1[[1]]),\n       n2 = as.numeric(forward$n2[[1]]))\n}\nchecked <- forward_power(n_treatment, n_control)\nincrements <- 0L\nwhile (checked$power + 1e-12 < target_power) {\n  if (n_treatment / 0.5 <= n_control) {\n    n_treatment <- n_treatment + 1L\n  } else {\n    n_control <- n_control + 1L\n  }\n  increments <- increments + 1L\n  if (increments > 100000L) stop(\"ROUNDING_CONVERGENCE_FAILURE\")\n  checked <- forward_power(n_treatment, n_control)\n}\nlist(package_total = raw_total, package_n1 = raw_n1, package_n2 = raw_n2,\n     analysis_n_treatment = n_treatment, analysis_n_control = n_control,\n     achieved_power = checked$power, constrained_null_p1 = checked$p10,\n     constrained_null_p2 = checked$p20, checked_n1 = checked$n1,\n     checked_n2 = checked$n2, rounding_increments = increments,\n     realized_package_ratio = n_control / n_treatment)"
+    },
+    "rr_k1": {
+      "status": "PASS",
+      "clinical_inputs": {
+        "control_probability": 0.2,
+        "alternative_risk_ratio": 1.75,
+        "null_risk_ratio": 1,
+        "allocation_ratio": 1,
+        "alpha": 0.025,
+        "power": 0.8,
+        "dropout_rate": 0
+      },
+      "derived_parameters": {
+        "alternative_treatment_probability": 0.35000000000000003,
+        "package_delta0": 0.0,
+        "package_ratio": 1.0,
+        "analyzable_treatment": 138,
+        "analyzable_control": 138,
+        "analyzable_total": 276,
+        "randomized_treatment": 138,
+        "randomized_control": 138,
+        "package_continuous_total": 275.82950627110944,
+        "package_continuous_n1": 137.91475313555472,
+        "package_continuous_n2": 137.91475313555472,
+        "rounding_increments": 0,
+        "constrained_null_treatment_probability": 0.275,
+        "constrained_null_control_probability": 0.275
+      },
+      "package_arguments": {
+        "inverse": {
+          "p1": 0.35000000000000003,
+          "p2": 0.2,
+          "alpha": 0.025,
+          "beta": 0.19999999999999996,
+          "delta0": 0.0,
+          "ratio": 1.0,
+          "sided": 1,
+          "outtype": 3,
+          "scale": "RR",
+          "n": null
+        },
+        "forward_recheck": {
+          "p1": 0.35000000000000003,
+          "p2": 0.2,
+          "alpha": 0.025,
+          "delta0": 0.0,
+          "ratio": "analysis_n_control / analysis_n_treatment",
+          "sided": 1,
+          "outtype": 3,
+          "scale": "RR",
+          "n": "analysis_n_treatment + analysis_n_control"
+        }
+      },
+      "raw_authoritative_outputs": {
+        "package_total": 275.82950627110944,
+        "package_n1": 137.91475313555472,
+        "package_n2": 137.91475313555472,
+        "analysis_n_treatment": 138,
+        "analysis_n_control": 138,
+        "achieved_power": 0.8002447205692862,
+        "constrained_null_p1": 0.275,
+        "constrained_null_p2": 0.275,
+        "checked_n1": 138,
+        "checked_n2": 138,
+        "rounding_increments": 0,
+        "realized_package_ratio": 1,
+        "warnings": [],
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "package_version": "3.11.0",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n [1] vctrs_0.7.3        gsDesign_3.11.0    cli_3.6.6          gt_1.3.0          \n [5] rlang_1.3.0        purrr_1.2.2        generics_0.1.4     S7_0.2.2          \n [9] xtable_1.8-8       jsonlite_2.0.0     glue_1.8.1         htmltools_0.5.9   \n[13] scales_1.4.0       grid_4.6.1         tibble_3.3.1       fastmap_1.2.0     \n[17] lifecycle_1.0.5    compiler_4.6.1     dplyr_1.2.1        fs_2.1.0          \n[21] r2rtf_1.3.1        RColorBrewer_1.1-3 pkgconfig_2.0.3    tidyr_1.3.2       \n[25] farver_2.1.2       digest_0.6.39      R6_2.6.1           tidyselect_1.2.1  \n[29] pillar_1.11.1      magrittr_2.0.5     gtable_0.3.6       xml2_1.6.0        \n[33] ggplot2_4.0.3     "
+      },
+      "integer_analyzable_outputs": {
+        "total": 276,
+        "groups": {
+          "treatment": 138,
+          "control": 138
+        },
+        "sequences": null
+      },
+      "randomized_outputs": {
+        "total": 276
+      },
+      "achieved_power": 0.8002447205692862,
+      "direct_package": {
+        "absolute_difference": 0.0,
+        "status": "PASS"
+      },
+      "independent_reference": {
+        "method": "independent SciPy/Python analytical equation",
+        "result": {
+          "power": 0.800244720569286,
+          "p10": 0.27499999999999997,
+          "p20": 0.27499999999999997,
+          "sigma0": 0.8930285549745876,
+          "sigma1": 0.8803408430829505
+        },
+        "absolute_difference": 2.220446049250313e-16,
+        "tolerance": 1e-10,
+        "status": "PASS"
+      },
+      "allocation_rounding_dropout": "PASS",
+      "spec_sha256": "sha256:7bcd1c4bb46dded29224b317ef6490d5feef0ec60a1c92814ddd6227225fa534",
+      "implementation_version": "round-5.2b",
+      "reproducible_r_code": "library(gsDesign)\n\ninverse <- gsDesign::nBinomial(\n  p1 = 0.35000000000000003, p2 = 0.2,\n  alpha = 0.025, beta = 0.19999999999999996, delta0 = 0.0,\n  ratio = 1.0, sided = 1, outtype = 3,\n  scale = \"RR\", n = NULL\n)\nraw_total <- as.numeric(inverse$n[[1]])\nraw_n1 <- as.numeric(inverse$n1[[1]])\nraw_n2 <- as.numeric(inverse$n2[[1]])\nn_treatment <- ceiling(raw_n1)\nn_control <- ceiling(raw_n2)\ntarget_power <- 0.8\nforward_power <- function(nt, nc) {\n  forward <- gsDesign::nBinomial(\n    p1 = 0.35000000000000003, p2 = 0.2,\n    alpha = 0.025, delta0 = 0.0, ratio = nc / nt,\n    sided = 1, outtype = 3, scale = \"RR\", n = nt + nc\n  )\n  list(power = as.numeric(forward$Power[[1]]), p10 = as.numeric(forward$p10[[1]]),\n       p20 = as.numeric(forward$p20[[1]]), n1 = as.numeric(forward$n1[[1]]),\n       n2 = as.numeric(forward$n2[[1]]))\n}\nchecked <- forward_power(n_treatment, n_control)\nincrements <- 0L\nwhile (checked$power + 1e-12 < target_power) {\n  if (n_treatment / 1 <= n_control) {\n    n_treatment <- n_treatment + 1L\n  } else {\n    n_control <- n_control + 1L\n  }\n  increments <- increments + 1L\n  if (increments > 100000L) stop(\"ROUNDING_CONVERGENCE_FAILURE\")\n  checked <- forward_power(n_treatment, n_control)\n}\nlist(package_total = raw_total, package_n1 = raw_n1, package_n2 = raw_n2,\n     analysis_n_treatment = n_treatment, analysis_n_control = n_control,\n     achieved_power = checked$power, constrained_null_p1 = checked$p10,\n     constrained_null_p2 = checked$p20, checked_n1 = checked$n1,\n     checked_n2 = checked$n2, rounding_increments = increments,\n     realized_package_ratio = n_control / n_treatment)"
+    },
+    "rr_k2": {
+      "status": "PASS",
+      "clinical_inputs": {
+        "control_probability": 0.2,
+        "alternative_risk_ratio": 1.75,
+        "null_risk_ratio": 1,
+        "allocation_ratio": 2,
+        "alpha": 0.025,
+        "power": 0.8,
+        "dropout_rate": 0.1
+      },
+      "derived_parameters": {
+        "alternative_treatment_probability": 0.35000000000000003,
+        "package_delta0": 0.0,
+        "package_ratio": 0.5023696682464455,
+        "analyzable_treatment": 211,
+        "analyzable_control": 106,
+        "analyzable_total": 317,
+        "randomized_treatment": 235,
+        "randomized_control": 118,
+        "package_continuous_total": 316.36642620600304,
+        "package_continuous_n1": 210.91095080400203,
+        "package_continuous_n2": 105.45547540200101,
+        "rounding_increments": 0,
+        "constrained_null_treatment_probability": 0.2998422712933754,
+        "constrained_null_control_probability": 0.2998422712933754
+      },
+      "package_arguments": {
+        "inverse": {
+          "p1": 0.35000000000000003,
+          "p2": 0.2,
+          "alpha": 0.025,
+          "beta": 0.19999999999999996,
+          "delta0": 0.0,
+          "ratio": 0.5,
+          "sided": 1,
+          "outtype": 3,
+          "scale": "RR",
+          "n": null
+        },
+        "forward_recheck": {
+          "p1": 0.35000000000000003,
+          "p2": 0.2,
+          "alpha": 0.025,
+          "delta0": 0.0,
+          "ratio": "analysis_n_control / analysis_n_treatment",
+          "sided": 1,
+          "outtype": 3,
+          "scale": "RR",
+          "n": "analysis_n_treatment + analysis_n_control"
+        }
+      },
+      "raw_authoritative_outputs": {
+        "package_total": 316.36642620600304,
+        "package_n1": 210.91095080400203,
+        "package_n2": 105.45547540200101,
+        "analysis_n_treatment": 211,
+        "analysis_n_control": 106,
+        "achieved_power": 0.8015121736634228,
+        "constrained_null_p1": 0.2998422712933754,
+        "constrained_null_p2": 0.2998422712933754,
+        "checked_n1": 211,
+        "checked_n2": 106,
+        "rounding_increments": 0,
+        "realized_package_ratio": 0.5023696682464455,
+        "warnings": [],
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "package_version": "3.11.0",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n [1] vctrs_0.7.3        gsDesign_3.11.0    cli_3.6.6          gt_1.3.0          \n [5] rlang_1.3.0        purrr_1.2.2        generics_0.1.4     S7_0.2.2          \n [9] xtable_1.8-8       jsonlite_2.0.0     glue_1.8.1         htmltools_0.5.9   \n[13] scales_1.4.0       grid_4.6.1         tibble_3.3.1       fastmap_1.2.0     \n[17] lifecycle_1.0.5    compiler_4.6.1     dplyr_1.2.1        fs_2.1.0          \n[21] r2rtf_1.3.1        RColorBrewer_1.1-3 pkgconfig_2.0.3    tidyr_1.3.2       \n[25] farver_2.1.2       digest_0.6.39      R6_2.6.1           tidyselect_1.2.1  \n[29] pillar_1.11.1      magrittr_2.0.5     gtable_0.3.6       xml2_1.6.0        \n[33] ggplot2_4.0.3     "
+      },
+      "integer_analyzable_outputs": {
+        "total": 317,
+        "groups": {
+          "treatment": 211,
+          "control": 106
+        },
+        "sequences": null
+      },
+      "randomized_outputs": {
+        "total": 353
+      },
+      "achieved_power": 0.8015121736634228,
+      "direct_package": {
+        "absolute_difference": 0.0,
+        "status": "PASS"
+      },
+      "independent_reference": {
+        "method": "independent SciPy/Python analytical equation",
+        "result": {
+          "power": 0.8015121736634226,
+          "p10": 0.2998422712933754,
+          "p20": 0.2998422712933754,
+          "sigma0": 0.9712017918560164,
+          "sigma1": 0.9056929201245876
+        },
+        "absolute_difference": 1.1102230246251565e-16,
+        "tolerance": 1e-10,
+        "status": "PASS"
+      },
+      "allocation_rounding_dropout": "PASS",
+      "spec_sha256": "sha256:7bcd1c4bb46dded29224b317ef6490d5feef0ec60a1c92814ddd6227225fa534",
+      "implementation_version": "round-5.2b",
+      "reproducible_r_code": "library(gsDesign)\n\ninverse <- gsDesign::nBinomial(\n  p1 = 0.35000000000000003, p2 = 0.2,\n  alpha = 0.025, beta = 0.19999999999999996, delta0 = 0.0,\n  ratio = 0.5, sided = 1, outtype = 3,\n  scale = \"RR\", n = NULL\n)\nraw_total <- as.numeric(inverse$n[[1]])\nraw_n1 <- as.numeric(inverse$n1[[1]])\nraw_n2 <- as.numeric(inverse$n2[[1]])\nn_treatment <- ceiling(raw_n1)\nn_control <- ceiling(raw_n2)\ntarget_power <- 0.8\nforward_power <- function(nt, nc) {\n  forward <- gsDesign::nBinomial(\n    p1 = 0.35000000000000003, p2 = 0.2,\n    alpha = 0.025, delta0 = 0.0, ratio = nc / nt,\n    sided = 1, outtype = 3, scale = \"RR\", n = nt + nc\n  )\n  list(power = as.numeric(forward$Power[[1]]), p10 = as.numeric(forward$p10[[1]]),\n       p20 = as.numeric(forward$p20[[1]]), n1 = as.numeric(forward$n1[[1]]),\n       n2 = as.numeric(forward$n2[[1]]))\n}\nchecked <- forward_power(n_treatment, n_control)\nincrements <- 0L\nwhile (checked$power + 1e-12 < target_power) {\n  if (n_treatment / 2 <= n_control) {\n    n_treatment <- n_treatment + 1L\n  } else {\n    n_control <- n_control + 1L\n  }\n  increments <- increments + 1L\n  if (increments > 100000L) stop(\"ROUNDING_CONVERGENCE_FAILURE\")\n  checked <- forward_power(n_treatment, n_control)\n}\nlist(package_total = raw_total, package_n1 = raw_n1, package_n2 = raw_n2,\n     analysis_n_treatment = n_treatment, analysis_n_control = n_control,\n     achieved_power = checked$power, constrained_null_p1 = checked$p10,\n     constrained_null_p2 = checked$p20, checked_n1 = checked$n1,\n     checked_n2 = checked$n2, rounding_increments = increments,\n     realized_package_ratio = n_control / n_treatment)"
+    },
+    "rr_khalf": {
+      "status": "PASS",
+      "clinical_inputs": {
+        "control_probability": 0.3,
+        "alternative_risk_ratio": 1.6,
+        "null_risk_ratio": 1,
+        "allocation_ratio": 0.5,
+        "alpha": 0.025,
+        "power": 0.9,
+        "dropout_rate": 0.2
+      },
+      "derived_parameters": {
+        "alternative_treatment_probability": 0.48,
+        "package_delta0": 0.0,
+        "package_ratio": 1.9912280701754386,
+        "analyzable_treatment": 114,
+        "analyzable_control": 227,
+        "analyzable_total": 341,
+        "randomized_treatment": 143,
+        "randomized_control": 284,
+        "package_continuous_total": 339.685892983039,
+        "package_continuous_n1": 113.22863099434635,
+        "package_continuous_n2": 226.4572619886927,
+        "rounding_increments": 0,
+        "constrained_null_treatment_probability": 0.3601759530791789,
+        "constrained_null_control_probability": 0.3601759530791789
+      },
+      "package_arguments": {
+        "inverse": {
+          "p1": 0.48,
+          "p2": 0.3,
+          "alpha": 0.025,
+          "beta": 0.09999999999999998,
+          "delta0": 0.0,
+          "ratio": 2.0,
+          "sided": 1,
+          "outtype": 3,
+          "scale": "RR",
+          "n": null
+        },
+        "forward_recheck": {
+          "p1": 0.48,
+          "p2": 0.3,
+          "alpha": 0.025,
+          "delta0": 0.0,
+          "ratio": "analysis_n_control / analysis_n_treatment",
+          "sided": 1,
+          "outtype": 3,
+          "scale": "RR",
+          "n": "analysis_n_treatment + analysis_n_control"
+        }
+      },
+      "raw_authoritative_outputs": {
+        "package_total": 339.685892983039,
+        "package_n1": 113.22863099434635,
+        "package_n2": 226.4572619886927,
+        "analysis_n_treatment": 114,
+        "analysis_n_control": 227,
+        "achieved_power": 0.901478312426342,
+        "constrained_null_p1": 0.3601759530791789,
+        "constrained_null_p2": 0.3601759530791789,
+        "checked_n1": 114.00000000000001,
+        "checked_n2": 227.00000000000003,
+        "rounding_increments": 0,
+        "realized_package_ratio": 1.9912280701754386,
+        "warnings": [],
+        "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+        "package_version": "3.11.0",
+        "session_info": "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\nRunning under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n [1] vctrs_0.7.3        gsDesign_3.11.0    cli_3.6.6          gt_1.3.0          \n [5] rlang_1.3.0        purrr_1.2.2        generics_0.1.4     S7_0.2.2          \n [9] xtable_1.8-8       jsonlite_2.0.0     glue_1.8.1         htmltools_0.5.9   \n[13] scales_1.4.0       grid_4.6.1         tibble_3.3.1       fastmap_1.2.0     \n[17] lifecycle_1.0.5    compiler_4.6.1     dplyr_1.2.1        fs_2.1.0          \n[21] r2rtf_1.3.1        RColorBrewer_1.1-3 pkgconfig_2.0.3    tidyr_1.3.2       \n[25] farver_2.1.2       digest_0.6.39      R6_2.6.1           tidyselect_1.2.1  \n[29] pillar_1.11.1      magrittr_2.0.5     gtable_0.3.6       xml2_1.6.0        \n[33] ggplot2_4.0.3     "
+      },
+      "integer_analyzable_outputs": {
+        "total": 341,
+        "groups": {
+          "treatment": 114,
+          "control": 227
+        },
+        "sequences": null
+      },
+      "randomized_outputs": {
+        "total": 427
+      },
+      "achieved_power": 0.901478312426342,
+      "direct_package": {
+        "absolute_difference": 0.0,
+        "status": "PASS"
+      },
+      "independent_reference": {
+        "method": "independent SciPy/Python analytical equation",
+        "result": {
+          "power": 0.901478312426342,
+          "p10": 0.3601759530791788,
+          "p20": 0.3601759530791788,
+          "sigma0": 1.0175989752709682,
+          "sigma1": 1.030569299650377
+        },
+        "absolute_difference": 0.0,
+        "tolerance": 1e-10,
+        "status": "PASS"
+      },
+      "allocation_rounding_dropout": "PASS",
+      "spec_sha256": "sha256:7bcd1c4bb46dded29224b317ef6490d5feef0ec60a1c92814ddd6227225fa534",
+      "implementation_version": "round-5.2b",
+      "reproducible_r_code": "library(gsDesign)\n\ninverse <- gsDesign::nBinomial(\n  p1 = 0.48, p2 = 0.3,\n  alpha = 0.025, beta = 0.09999999999999998, delta0 = 0.0,\n  ratio = 2.0, sided = 1, outtype = 3,\n  scale = \"RR\", n = NULL\n)\nraw_total <- as.numeric(inverse$n[[1]])\nraw_n1 <- as.numeric(inverse$n1[[1]])\nraw_n2 <- as.numeric(inverse$n2[[1]])\nn_treatment <- ceiling(raw_n1)\nn_control <- ceiling(raw_n2)\ntarget_power <- 0.9\nforward_power <- function(nt, nc) {\n  forward <- gsDesign::nBinomial(\n    p1 = 0.48, p2 = 0.3,\n    alpha = 0.025, delta0 = 0.0, ratio = nc / nt,\n    sided = 1, outtype = 3, scale = \"RR\", n = nt + nc\n  )\n  list(power = as.numeric(forward$Power[[1]]), p10 = as.numeric(forward$p10[[1]]),\n       p20 = as.numeric(forward$p20[[1]]), n1 = as.numeric(forward$n1[[1]]),\n       n2 = as.numeric(forward$n2[[1]]))\n}\nchecked <- forward_power(n_treatment, n_control)\nincrements <- 0L\nwhile (checked$power + 1e-12 < target_power) {\n  if (n_treatment / 0.5 <= n_control) {\n    n_treatment <- n_treatment + 1L\n  } else {\n    n_control <- n_control + 1L\n  }\n  increments <- increments + 1L\n  if (increments > 100000L) stop(\"ROUNDING_CONVERGENCE_FAILURE\")\n  checked <- forward_power(n_treatment, n_control)\n}\nlist(package_total = raw_total, package_n1 = raw_n1, package_n2 = raw_n2,\n     analysis_n_treatment = n_treatment, analysis_n_control = n_control,\n     achieved_power = checked$power, constrained_null_p1 = checked$p10,\n     constrained_null_p2 = checked$p20, checked_n1 = checked$n1,\n     checked_n2 = checked$n2, rounding_increments = increments,\n     realized_package_ratio = n_control / n_treatment)"
+    }
+  },
+  "monotonicity": {
+    "proportion_one": {
+      "status": "PASS",
+      "checks": {
+        "higher_power": true,
+        "lower_alpha": true,
+        "smaller_effect_or_margin": true,
+        "dropout_preserves_analyzable": true,
+        "dropout_randomized_monotone": true
+      },
+      "sample_sizes": {
+        "base": 64,
+        "higher_power": 89,
+        "lower_alpha": 81,
+        "harder": 99,
+        "dropout_randomized": [
+          64,
+          72,
+          80
+        ]
+      }
+    },
+    "proportion_paired": {
+      "status": "PASS",
+      "checks": {
+        "higher_power": true,
+        "lower_alpha": true,
+        "smaller_effect_or_margin": true,
+        "dropout_preserves_analyzable": true,
+        "dropout_randomized_monotone": true,
+        "two_sided_swap_symmetry": true
+      },
+      "sample_sizes": {
+        "base": 59,
+        "higher_power": 78,
+        "lower_alpha": 72,
+        "harder": 102,
+        "dropout_randomized": [
+          59,
+          66,
+          74
+        ]
+      }
+    },
+    "equivalence": {
+      "status": "PASS",
+      "checks": {
+        "higher_power": true,
+        "lower_alpha": true,
+        "smaller_effect_or_margin": true,
+        "dropout_preserves_analyzable": true,
+        "dropout_randomized_monotone": true,
+        "higher_sd": true,
+        "difference_closer_to_boundary": true
+      },
+      "sample_sizes": {
+        "base": 138,
+        "higher_power": 174,
+        "lower_alpha": 170,
+        "harder": 216,
+        "dropout_randomized": [
+          138,
+          154,
+          174
+        ]
+      }
+    },
+    "non_inferiority": {
+      "status": "PASS",
+      "checks": {
+        "higher_power": true,
+        "lower_alpha": true,
+        "smaller_effect_or_margin": true,
+        "dropout_preserves_analyzable": true,
+        "dropout_randomized_monotone": true
+      },
+      "sample_sizes": {
+        "base": 504,
+        "higher_power": 674,
+        "lower_alpha": 610,
+        "harder": 504,
+        "dropout_randomized": [
+          504,
+          560,
+          630
+        ]
+      }
+    },
+    "superiority_margin": {
+      "status": "PASS",
+      "checks": {
+        "higher_power": true,
+        "lower_alpha": true,
+        "smaller_effect_or_margin": true,
+        "dropout_preserves_analyzable": true,
+        "dropout_randomized_monotone": true
+      },
+      "sample_sizes": {
+        "base": 336,
+        "higher_power": 450,
+        "lower_alpha": 406,
+        "harder": 632,
+        "dropout_randomized": [
+          336,
+          374,
+          420
+        ]
+      }
+    },
+    "odds_ratio": {
+      "status": "PASS",
+      "checks": {
+        "higher_power": true,
+        "lower_alpha": true,
+        "smaller_effect_or_margin": true,
+        "dropout_preserves_analyzable": true,
+        "dropout_randomized_monotone": true
+      },
+      "sample_sizes": {
+        "base": 340,
+        "higher_power": 458,
+        "lower_alpha": 412,
+        "harder": 484,
+        "dropout_randomized": [
+          340,
+          378,
+          426
+        ]
+      }
+    },
+    "risk_ratio": {
+      "status": "PASS",
+      "checks": {
+        "higher_power": true,
+        "lower_alpha": true,
+        "smaller_effect_or_margin": true,
+        "dropout_preserves_analyzable": true,
+        "dropout_randomized_monotone": true
+      },
+      "sample_sizes": {
+        "base": 276,
+        "higher_power": 370,
+        "lower_alpha": 336,
+        "harder": 418,
+        "dropout_randomized": [
+          276,
+          308,
+          346
+        ]
+      }
+    }
+  },
+  "simulations": {
+    "proportion_paired_power": {
+      "seed": 5302025,
+      "replicates": 100000,
+      "estimate": 0.80724,
+      "mcse": 0.0012474116497772497,
+      "confidence_interval_95": [
+        0.8047950731664365,
+        0.8096849268335634
+      ],
+      "target": 0.8025683632434663,
+      "acceptance_rule": "abs(estimate-analytical power) <= max(0.02, 3*MCSE)",
+      "tolerance": 0.02,
+      "status": "PASS"
+    },
+    "non_inferiority_boundary": {
+      "seed": 5302026,
+      "replicates": 100000,
+      "estimate": 0.02454,
+      "mcse": 0.0004892625920709656,
+      "confidence_interval_95": [
+        0.023581045319540906,
+        0.025498954680459093
+      ],
+      "target": 0.025,
+      "acceptance_rule": "abs(estimate-alpha) <= max(0.01, 3*MCSE)",
+      "tolerance": 0.01,
+      "status": "PASS"
+    },
+    "superiority_margin_boundary": {
+      "seed": 5302027,
+      "replicates": 100000,
+      "estimate": 0.02527,
+      "mcse": 0.0004963005853311076,
+      "confidence_interval_95": [
+        0.02429725085275103,
+        0.026242749147248973
+      ],
+      "target": 0.025,
+      "acceptance_rule": "abs(estimate-alpha) <= max(0.01, 3*MCSE)",
+      "tolerance": 0.01,
+      "status": "PASS"
+    },
+    "odds_ratio_boundary": {
+      "seed": 5302028,
+      "replicates": 100000,
+      "estimate": 0.02322,
+      "mcse": 0.0004762439668909203,
+      "confidence_interval_95": [
+        0.022286561824893796,
+        0.024153438175106207
+      ],
+      "target": 0.025,
+      "acceptance_rule": "abs(estimate-alpha) <= max(0.01, 3*MCSE)",
+      "tolerance": 0.01,
+      "status": "PASS"
+    },
+    "risk_ratio_boundary": {
+      "seed": 5302029,
+      "replicates": 100000,
+      "estimate": 0.02249,
+      "mcse": 0.000468873116098588,
+      "confidence_interval_95": [
+        0.021571008692446766,
+        0.023408991307553233
+      ],
+      "target": 0.025,
+      "acceptance_rule": "abs(estimate-alpha) <= max(0.01, 3*MCSE)",
+      "tolerance": 0.01,
+      "status": "PASS"
+    }
+  },
+  "method_gates": {
+    "proportion_one": {
+      "direct_package_reproduction": "PASS",
+      "independent_reference": "PASS",
+      "forward_inverse_consistency": "PASS",
+      "allocation_rounding_dropout": "PASS",
+      "edge_cases_monotonicity": "PASS",
+      "simulation": "PASS",
+      "reproducibility": "PASS",
+      "validation_status": "BENCHMARK_VALIDATED",
+      "blocker": null
+    },
+    "proportion_paired": {
+      "direct_package_reproduction": "PASS",
+      "independent_reference": "PASS",
+      "forward_inverse_consistency": "PASS",
+      "allocation_rounding_dropout": "PASS",
+      "edge_cases_monotonicity": "PASS",
+      "simulation": "PASS",
+      "reproducibility": "PASS",
+      "validation_status": "BENCHMARK_VALIDATED",
+      "blocker": null
+    },
+    "equivalence": {
+      "direct_package_reproduction": "PASS",
+      "independent_reference": "FAIL",
+      "forward_inverse_consistency": "FAIL",
+      "allocation_rounding_dropout": "PASS",
+      "edge_cases_monotonicity": "PASS",
+      "simulation": "PASS",
+      "reproducibility": "PASS",
+      "validation_status": "IMPLEMENTED_UNVALIDATED",
+      "blocker": "STATISTICAL_CONTRACT_DEFECT"
+    },
+    "non_inferiority": {
+      "direct_package_reproduction": "PASS",
+      "independent_reference": "PASS",
+      "forward_inverse_consistency": "PASS",
+      "allocation_rounding_dropout": "PASS",
+      "edge_cases_monotonicity": "PASS",
+      "simulation": "PASS",
+      "reproducibility": "PASS",
+      "validation_status": "BENCHMARK_VALIDATED",
+      "blocker": null
+    },
+    "superiority_margin": {
+      "direct_package_reproduction": "PASS",
+      "independent_reference": "PASS",
+      "forward_inverse_consistency": "PASS",
+      "allocation_rounding_dropout": "PASS",
+      "edge_cases_monotonicity": "PASS",
+      "simulation": "PASS",
+      "reproducibility": "PASS",
+      "validation_status": "BENCHMARK_VALIDATED",
+      "blocker": null
+    },
+    "odds_ratio": {
+      "direct_package_reproduction": "PASS",
+      "independent_reference": "PASS",
+      "forward_inverse_consistency": "PASS",
+      "allocation_rounding_dropout": "PASS",
+      "edge_cases_monotonicity": "PASS",
+      "simulation": "PASS",
+      "reproducibility": "PASS",
+      "validation_status": "BENCHMARK_VALIDATED",
+      "blocker": null
+    },
+    "risk_ratio": {
+      "direct_package_reproduction": "PASS",
+      "independent_reference": "PASS",
+      "forward_inverse_consistency": "PASS",
+      "allocation_rounding_dropout": "PASS",
+      "edge_cases_monotonicity": "PASS",
+      "simulation": "PASS",
+      "reproducibility": "PASS",
+      "validation_status": "BENCHMARK_VALIDATED",
+      "blocker": null
+    }
+  }
+}

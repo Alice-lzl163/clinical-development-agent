@@ -1,0 +1,157 @@
+schema_version: 1
+validation_round: '5.3'
+benchmark_id: round5-fixed-design-v1
+validation_date: '2026-09-02'
+outcome: PARTIALLY_VALIDATED
+environment:
+  Python: 3.12.7
+  SciPy: 1.18.1
+  R: R version 4.6.1 (2026-06-24 ucrt)
+  packages:
+    jsonlite: 2.0.0
+    pwr: 1.3.0
+    TrialSize: 1.4.1
+    gsDesign: 3.11.0
+live_calculations:
+  executed: 96
+  successful: 96
+  failed: 0
+fixtures:
+  total: 22
+  passed: 20
+  failed: 2
+methods:
+- test_key: proportion_one
+  direct_package_reproduction: PASS
+  independent_reference: PASS
+  forward_inverse_consistency: PASS
+  allocation_rounding_dropout: PASS
+  edge_cases_monotonicity: PASS
+  simulation: PASS
+  reproducibility: PASS
+  validation_status: BENCHMARK_VALIDATED
+  blocker: null
+- test_key: proportion_paired
+  direct_package_reproduction: PASS
+  independent_reference: PASS
+  forward_inverse_consistency: PASS
+  allocation_rounding_dropout: PASS
+  edge_cases_monotonicity: PASS
+  simulation: PASS
+  reproducibility: PASS
+  validation_status: BENCHMARK_VALIDATED
+  blocker: null
+- test_key: equivalence
+  direct_package_reproduction: PASS
+  independent_reference: FAIL
+  forward_inverse_consistency: FAIL
+  allocation_rounding_dropout: PASS
+  edge_cases_monotonicity: PASS
+  simulation: PASS
+  reproducibility: PASS
+  validation_status: IMPLEMENTED_UNVALIDATED
+  blocker: STATISTICAL_CONTRACT_DEFECT
+- test_key: non_inferiority
+  direct_package_reproduction: PASS
+  independent_reference: PASS
+  forward_inverse_consistency: PASS
+  allocation_rounding_dropout: PASS
+  edge_cases_monotonicity: PASS
+  simulation: PASS
+  reproducibility: PASS
+  validation_status: BENCHMARK_VALIDATED
+  blocker: null
+- test_key: superiority_margin
+  direct_package_reproduction: PASS
+  independent_reference: PASS
+  forward_inverse_consistency: PASS
+  allocation_rounding_dropout: PASS
+  edge_cases_monotonicity: PASS
+  simulation: PASS
+  reproducibility: PASS
+  validation_status: BENCHMARK_VALIDATED
+  blocker: null
+- test_key: odds_ratio
+  direct_package_reproduction: PASS
+  independent_reference: PASS
+  forward_inverse_consistency: PASS
+  allocation_rounding_dropout: PASS
+  edge_cases_monotonicity: PASS
+  simulation: PASS
+  reproducibility: PASS
+  validation_status: BENCHMARK_VALIDATED
+  blocker: null
+- test_key: risk_ratio
+  direct_package_reproduction: PASS
+  independent_reference: PASS
+  forward_inverse_consistency: PASS
+  allocation_rounding_dropout: PASS
+  edge_cases_monotonicity: PASS
+  simulation: PASS
+  reproducibility: PASS
+  validation_status: BENCHMARK_VALIDATED
+  blocker: null
+simulation_governance:
+  seed_base: 5302026
+  replicates_per_scenario: 100000
+  results:
+    proportion_paired_power:
+      seed: 5302025
+      replicates: 100000
+      estimate: 0.80724
+      mcse: 0.0012474116497772497
+      confidence_interval_95:
+      - 0.8047950731664365
+      - 0.8096849268335634
+      target: 0.8025683632434663
+      acceptance_rule: abs(estimate-analytical power) <= max(0.02, 3*MCSE)
+      tolerance: 0.02
+      status: PASS
+    non_inferiority_boundary:
+      seed: 5302026
+      replicates: 100000
+      estimate: 0.02454
+      mcse: 0.0004892625920709656
+      confidence_interval_95:
+      - 0.023581045319540906
+      - 0.025498954680459093
+      target: 0.025
+      acceptance_rule: abs(estimate-alpha) <= max(0.01, 3*MCSE)
+      tolerance: 0.01
+      status: PASS
+    superiority_margin_boundary:
+      seed: 5302027
+      replicates: 100000
+      estimate: 0.02527
+      mcse: 0.0004963005853311076
+      confidence_interval_95:
+      - 0.02429725085275103
+      - 0.026242749147248973
+      target: 0.025
+      acceptance_rule: abs(estimate-alpha) <= max(0.01, 3*MCSE)
+      tolerance: 0.01
+      status: PASS
+    odds_ratio_boundary:
+      seed: 5302028
+      replicates: 100000
+      estimate: 0.02322
+      mcse: 0.0004762439668909203
+      confidence_interval_95:
+      - 0.022286561824893796
+      - 0.024153438175106207
+      target: 0.025
+      acceptance_rule: abs(estimate-alpha) <= max(0.01, 3*MCSE)
+      tolerance: 0.01
+      status: PASS
+    risk_ratio_boundary:
+      seed: 5302029
+      replicates: 100000
+      estimate: 0.02249
+      mcse: 0.000468873116098588
+      confidence_interval_95:
+      - 0.021571008692446766
+      - 0.023408991307553233
+      target: 0.025
+      acceptance_rule: abs(estimate-alpha) <= max(0.01, 3*MCSE)
+      tolerance: 0.01
+      status: PASS

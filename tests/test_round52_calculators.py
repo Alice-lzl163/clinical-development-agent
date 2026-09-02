@@ -44,10 +44,10 @@ class Round52CalculatorTests(unittest.TestCase):
         self.assertEqual(math.ceil(20 / .9), result.randomized_sample_size)
         self.assertGreater(result.derived_parameters["signed_cohen_h"], 0)
         self.assertEqual("pwr::pwr.p.test", result.function)
-        self.assertEqual("IMPLEMENTED_UNVALIDATED", result.validation_status)
+        self.assertEqual("BENCHMARK_VALIDATED", result.validation_status)
         self.assertEqual("round-5.2a", result.implementation_version)
-        self.assertEqual("not_assigned", result.benchmark_id)
-        self.assertTrue(any("not completed numerical benchmark validation" in warning for warning in result.warnings))
+        self.assertEqual("round5-fixed-design-v1", result.benchmark_id)
+        self.assertFalse(any("not completed numerical benchmark validation" in warning for warning in result.warnings))
         self.assertIn("forward <- pwr::pwr.p.test", result.reproducible_code)
 
         power_engine = RecordingEngine(raw(achieved_power=.73))
@@ -74,7 +74,7 @@ class Round52CalculatorTests(unittest.TestCase):
         self.assertEqual(math.ceil(59 / .9), result.randomized_sample_size)
         self.assertEqual("two_sided", result.sidedness)
         self.assertIn("TrialSize::McNemar.Test", result.reproducible_code)
-        self.assertEqual("IMPLEMENTED_UNVALIDATED", result.validation_status)
+        self.assertEqual("BENCHMARK_VALIDATED", result.validation_status)
         with self.assertRaises(UnsupportedSolveModeError):
             calculate_sample_size({"test_key": "proportion_paired", "solve_mode": "power", "parameters": parameters}, engine=engine)
         for changes in ({"p_treatment_only": 0}, {"p_treatment_only": .6}, {"p_treatment_only": .5}):
@@ -106,7 +106,7 @@ class Round52CalculatorTests(unittest.TestCase):
                 self.assertEqual(expected, result.package_arguments["margin"])
                 self.assertEqual(expected, result.derived_parameters["package_margin"])
                 self.assertEqual({"treatment": 60, "control": 40}, result.sample_size_per_group)
-                self.assertEqual("IMPLEMENTED_UNVALIDATED", result.validation_status)
+                self.assertEqual("BENCHMARK_VALIDATED", result.validation_status)
 
     def test_margin_domains_fail_closed(self):
         ni = {"control_probability": .5, "treatment_probability": .39, "noninferiority_margin": .1, "allocation_ratio": 1, "alpha": .025, "power": .8, "dropout_rate": 0}

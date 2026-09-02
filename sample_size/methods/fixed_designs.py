@@ -18,7 +18,7 @@ from sample_size.engines.errors import PackageExecutionError, RequestValidationE
 from sample_size.validation.dependency_compatibility import classify_runtime
 
 
-_VALIDATED_PACKAGE_VERSIONS = {"pwr": "1.3.0", "TrialSize": "1.4.1", "PowerTOST": "1.5.7"}
+_VALIDATED_PACKAGE_VERSIONS = {"pwr": "1.3.0", "TrialSize": "1.4.1", "PowerTOST": "1.5.7", "gsDesign": "3.11.0"}
 
 
 def _ceil_dropout(n: int, dropout: float) -> int:
@@ -57,7 +57,7 @@ def _result(spec, values, adapter_result, *, solve_mode, analysis_total, randomi
     else:
         version_warnings = [f"Runtime versions differ from the validated R 4.6.1 / {package} {validated_package_version} environment; numerical validation status is not inherited."]
     validation_warnings = [] if benchmark_eligible else [
-        "This Round 5.2A calculator is implemented but has not completed numerical benchmark validation."
+        "This calculator is implemented but has not completed numerical benchmark validation."
     ]
     return SampleSizeResult(
         method_id=spec["method_id"], test_key=spec["test_key"], solve_mode=solve_mode,
@@ -164,7 +164,7 @@ class ProportionOneMethod:
         return _result(spec, values, result, solve_mode=solve_mode, analysis_total=n, randomized_total=randomized, per_group={"one_sample": n},
             derived={"signed_cohen_h": effect, "analyzable_subjects": n, "randomized_subjects": randomized},
             rounding=["ceil package n", "ceil dropout inflation"] if solve_mode == "sample_size" else [], sidedness=sided,
-            benchmark_eligible=False, implementation_version="round-5.2a", benchmark_id="not_assigned")
+            benchmark_eligible=True, implementation_version="round-5.2a", benchmark_id="round5-fixed-design-v1")
 
 
 class ProportionPairedMethod:
@@ -175,7 +175,7 @@ class ProportionPairedMethod:
         return _result(spec, values, result, solve_mode=solve_mode, analysis_total=n, randomized_total=randomized, per_sequence={"complete_matched_pairs": n},
             derived={"beta": 1-values["power"], "discordance_ratio": values["p_treatment_only"]/values["p_control_only"], "total_discordance_probability": values["p_treatment_only"]+values["p_control_only"], "complete_analyzable_pairs": n, "randomized_pairs": randomized},
             rounding=["ceil TrialSize complete-pair n", "ceil dropout inflation"], sidedness="two_sided",
-            benchmark_eligible=False, implementation_version="round-5.2a", benchmark_id="not_assigned")
+            benchmark_eligible=True, implementation_version="round-5.2a", benchmark_id="round5-fixed-design-v1")
 
 
 class MeanEquivalenceMethod:
@@ -201,7 +201,7 @@ class ProportionMarginMethod:
         return _result(spec, values, result, solve_mode=solve_mode, analysis_total=nt+nc, randomized_total=rt+rc, per_group={"treatment": nt, "control": nc},
             derived={"beta": 1-values["power"], "expected_risk_difference": delta, "package_margin": margin, "analyzable_treatment": nt, "analyzable_control": nc, "randomized_treatment": rt, "randomized_control": rc},
             rounding=["ceil TrialSize treatment n", "ceil implied control n", "ceil dropout inflation per arm"], sidedness="one_sided",
-            benchmark_eligible=False, implementation_version="round-5.2a", benchmark_id="not_assigned")
+            benchmark_eligible=True, implementation_version="round-5.2a", benchmark_id="round5-fixed-design-v1")
 
 
 class RatioBinomialMethod:
@@ -247,4 +247,4 @@ class RatioBinomialMethod:
         derived = {"alternative_treatment_probability": treatment, "package_delta0": delta0, "package_ratio": nc/nt, "analyzable_treatment": nt, "analyzable_control": nc, "analyzable_total": nt+nc, "randomized_treatment": rt, "randomized_control": rc}
         if solve_mode == "sample_size":
             derived.update({"package_continuous_total": result.raw["package_total"], "package_continuous_n1": result.raw["package_n1"], "package_continuous_n2": result.raw["package_n2"], "rounding_increments": int(result.raw["rounding_increments"]), "constrained_null_treatment_probability": result.raw["constrained_null_p1"], "constrained_null_control_probability": result.raw["constrained_null_p2"]})
-        return _result(spec, values, result, solve_mode=solve_mode, analysis_total=nt+nc, randomized_total=randomized_total, per_group={"treatment": nt, "control": nc}, derived=derived, rounding=rounding, sidedness="one_sided", benchmark_eligible=False, implementation_version="round-5.2b", benchmark_id="not_assigned")
+        return _result(spec, values, result, solve_mode=solve_mode, analysis_total=nt+nc, randomized_total=randomized_total, per_group={"treatment": nt, "control": nc}, derived=derived, rounding=rounding, sidedness="one_sided", benchmark_eligible=True, implementation_version="round-5.2b", benchmark_id="round5-fixed-design-v1")

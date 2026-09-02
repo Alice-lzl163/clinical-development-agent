@@ -3,6 +3,72 @@
 import math
 
 
+def one_proportion_arcsine_power(*, n, p1, p0, alpha, alternative):
+    from scipy.stats import norm
+    h = 2 * math.asin(math.sqrt(p1)) - 2 * math.asin(math.sqrt(p0))
+    if alternative == "two_sided":
+        z = norm.ppf(1 - alpha / 2)
+        return float(norm.cdf(-z - h * math.sqrt(n)) + norm.sf(z - h * math.sqrt(n)))
+    if alternative == "greater":
+        return float(norm.sf(norm.ppf(1 - alpha) - h * math.sqrt(n)))
+    return float(norm.cdf(norm.ppf(alpha) - h * math.sqrt(n)))
+
+
+def mcnemar_power(*, n, p01, p10, alpha):
+    """TrialSize McNemar asymptotic power, independently transcribed."""
+    from scipy.stats import norm
+    psi, paid = p01 / p10, p01 + p10
+    za = norm.ppf(1 - alpha / 2)
+    scale = math.sqrt((psi + 1) ** 2 - (psi - 1) ** 2 * paid)
+    zb = (math.sqrt(n * (psi - 1) ** 2 * paid) - za * (psi + 1)) / scale
+    return float(norm.cdf(zb))
+
+
+def mean_equivalence_normal_power(*, n_treatment, n_control, difference, sd, margin, alpha):
+    """Independent normal-approximation TOST power matching the declared TrialSize method."""
+    from scipy.stats import norm
+    se = sd * math.sqrt(1 / n_treatment + 1 / n_control)
+    z = norm.ppf(1 - alpha)
+    return float(max(0, norm.cdf((margin - difference) / se - z) - norm.cdf((-margin - difference) / se + z)))
+
+
+def risk_difference_margin_power(*, n_treatment, n_control, p1, p2, margin, alpha):
+    from scipy.stats import norm
+    se = math.sqrt(p1 * (1 - p1) / n_treatment + p2 * (1 - p2) / n_control)
+    return float(norm.cdf((p1 - p2 - margin) / se - norm.ppf(1 - alpha)))
+
+
+def gsdesign_ratio_reference(*, n_treatment, n_control, p1, p2, null_ratio, alpha, scale):
+    """Independent Python implementation of the nBinomial Farrington-Manning equations."""
+    from scipy.stats import norm
+    ratio = n_control / n_treatment
+    if scale == "RR":
+        rr = null_ratio
+        a = 1 + ratio
+        b = -(rr * (1 + ratio * p2) + ratio + p1)
+        c = rr * (p1 + ratio * p2)
+        p10 = (-b - math.sqrt(b * b - 4 * a * c)) / (2 * a)
+        p20 = p10 / rr
+        sigma0 = math.sqrt((ratio + 1) * (p10 * (1-p10) + rr**2 * p20 * (1-p20) / ratio))
+        sigma1 = math.sqrt((ratio + 1) * (p1 * (1-p1) + rr**2 * p2 * (1-p2) / ratio))
+        effect = p1 - rr * p2
+    elif scale == "OR":
+        inv_or = 1 / null_ratio
+        a = inv_or - 1
+        b = 1 + ratio * inv_or + (1-inv_or) * (ratio*p2+p1)
+        c = -(ratio*p2+p1)
+        p10 = (-b + math.sqrt(b*b-4*a*c))/(2*a) if abs(a) > 1e-14 else (p1+ratio*p2)/(1+ratio)
+        p20 = inv_or*p10/(1+p10*(inv_or-1))
+        sigma0 = math.sqrt((ratio+1)*(1/p10/(1-p10)+1/p20/(1-p20)/ratio))
+        sigma1 = math.sqrt((ratio+1)*(1/p1/(1-p1)+1/p2/(1-p2)/ratio))
+        effect = math.log(inv_or / p2 * (1-p2) * p1/(1-p1))
+    else:
+        raise ValueError("scale must be OR or RR")
+    total = n_treatment + n_control
+    power = norm.cdf(-(norm.ppf(1-alpha) - math.sqrt(total)*effect/sigma0)*sigma0/sigma1)
+    return {"power": float(power), "p10": p10, "p20": p20, "sigma0": sigma0, "sigma1": sigma1}
+
+
 def t_test_power(*, n: int, effect: float, alpha: float, test_type: str, alternative: str) -> float:
     from scipy.stats import nct, t
     if test_type in {"one.sample", "paired"}:

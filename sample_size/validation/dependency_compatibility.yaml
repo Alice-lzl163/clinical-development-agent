@@ -40,20 +40,21 @@ qualifications:
     tested_methods: [ttest_one, ttest_paired, ttest_ind, anova, proportion_two, be_tost]
     fixture_count: 24
     observed_difference: Serialization and marked JSON transport passed all 114 live R calls.
+  - <<: *canonical
+    dependency: gsDesign
+    version: "3.11.0"
+    tested_methods: [odds_ratio, risk_ratio]
+    fixture_count: 6
+    benchmark_id: round5-fixed-design-v1
+    evidence_reference: sample_size/validation/round5_fixed_design_evidence.json
+    observed_difference: OR and RR package outputs, constrained-null rates, allocation semantics, and forward power matched independent Farrington-Manning equations within frozen tolerances.
+    qualification_date: "2026-09-02"
+    tested_operating_systems: [Windows]
+    hosted_evidence_reference: null
 adjacent_version_strategy:
   pwr: {nearest_previous: NOT_TESTABLE, nearest_newer: NOT_TESTABLE, reason: No isolated reproducible adjacent-version runtime was available in this round.}
   TrialSize: {nearest_previous: NOT_TESTABLE, nearest_newer: NOT_TESTABLE, reason: No isolated reproducible adjacent-version runtime was available in this round.}
   PowerTOST: {nearest_previous: NOT_TESTABLE, nearest_newer: NOT_TESTABLE, reason: No isolated reproducible adjacent-version runtime was available in this round.}
   jsonlite: {nearest_previous: NOT_TESTABLE, nearest_newer: NOT_TESTABLE, reason: No isolated reproducible adjacent-version runtime was available in this round.}
 incompatible_versions: []
-installed_unvalidated:
-  - dependency: gsDesign
-    version: "3.11.0"
-    qualification_status: INSTALLED_UNVALIDATED
-    runtime: {R: "4.6.1"}
-    operating_system: Windows
-    library: C:/Users/ZhuoChang/AppData/Local/R/win-library/4.6
-    inspected_function: gsDesign::nBinomial
-    tested_methods: [odds_ratio, risk_ratio]
-    numerical_validation: NOT_RUN
-    evidence_reference: sample_size/docs/ROUND51B_GSDESIGN_INTROSPECTION.md
+installed_unvalidated: []

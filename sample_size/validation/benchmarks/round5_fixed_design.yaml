@@ -1,0 +1,1654 @@
+schema_version: 1
+benchmark_id: round5-fixed-design-v1
+status: PARTIALLY_FROZEN
+tolerances:
+  package_absolute: 1.0e-10
+  independent_power_absolute: 1.0e-10
+cases:
+- id: p1_greater
+  test_key: proportion_one
+  solve_mode: sample_size
+  inputs:
+    null_probability: 0.3
+    alternative_probability: 0.45
+    alpha: 0.05
+    power: 0.8
+    dropout_rate: 0
+    alternative: greater
+  validation_status: FROZEN_VALIDATED
+  derived_parameters:
+    signed_cohen_h: 0.3113494249059283
+    analyzable_subjects: 64
+    randomized_subjects: 64
+  exact_package_arguments:
+    h: 0.3113494249059283
+    sig.level: 0.05
+    power: 0.8
+    alternative: greater
+  raw_authoritative_outputs:
+    package_n: 63.778163577190035
+    analysis_n: 64
+    achieved_power: 0.8012073860448622
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.3.0
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nloaded via a namespace\
+      \ (and not attached):\n[1] compiler_4.6.1 pwr_1.3-0      jsonlite_2.0.0"
+  integer_analyzable_outputs:
+    total: 64
+    groups:
+      one_sample: 64
+    sequences: null
+  randomized_outputs:
+    total: 64
+  independent_reference:
+    method: independent SciPy/Python analytical equation
+    result: 0.8012073860448623
+    absolute_difference: 1.1102230246251565e-16
+    tolerance: 1.0e-10
+    status: PASS
+  validation_gates:
+    direct_package: PASS
+    independent_reference: PASS
+    allocation_rounding_dropout: PASS
+  runtime_versions:
+    R: R version 4.6.1 (2026-06-24 ucrt)
+    package: 1.3.0
+    Python: 3.12.7
+    SciPy: 1.18.1
+  spec_sha256: sha256:0f274dad14c0b7a2749b4a364177f97c5264796b068106efaf2592decc9389a0
+  implementation_version: round-5.2a
+- id: p1_less
+  test_key: proportion_one
+  solve_mode: sample_size
+  inputs:
+    null_probability: 0.5
+    alternative_probability: 0.35
+    alpha: 0.025
+    power: 0.85
+    dropout_rate: 0.1
+    alternative: less
+  validation_status: FROZEN_VALIDATED
+  derived_parameters:
+    signed_cohen_h: -0.3046926540153978
+    analyzable_subjects: 97
+    randomized_subjects: 108
+  exact_package_arguments:
+    h: -0.3046926540153978
+    sig.level: 0.025
+    power: 0.85
+    alternative: less
+  raw_authoritative_outputs:
+    package_n: 96.71078550542418
+    analysis_n: 97
+    achieved_power: 0.851041488006437
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.3.0
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nloaded via a namespace\
+      \ (and not attached):\n[1] compiler_4.6.1 pwr_1.3-0      jsonlite_2.0.0"
+  integer_analyzable_outputs:
+    total: 97
+    groups:
+      one_sample: 97
+    sequences: null
+  randomized_outputs:
+    total: 108
+  independent_reference:
+    method: independent SciPy/Python analytical equation
+    result: 0.8510414880064369
+    absolute_difference: 1.1102230246251565e-16
+    tolerance: 1.0e-10
+    status: PASS
+  validation_gates:
+    direct_package: PASS
+    independent_reference: PASS
+    allocation_rounding_dropout: PASS
+  runtime_versions:
+    R: R version 4.6.1 (2026-06-24 ucrt)
+    package: 1.3.0
+    Python: 3.12.7
+    SciPy: 1.18.1
+  spec_sha256: sha256:0f274dad14c0b7a2749b4a364177f97c5264796b068106efaf2592decc9389a0
+  implementation_version: round-5.2a
+- id: p1_two_sided
+  test_key: proportion_one
+  solve_mode: sample_size
+  inputs:
+    null_probability: 0.3
+    alternative_probability: 0.45
+    alpha: 0.05
+    power: 0.9
+    dropout_rate: 0.2
+    alternative: two_sided
+  validation_status: FROZEN_VALIDATED
+  derived_parameters:
+    signed_cohen_h: 0.3113494249059283
+    analyzable_subjects: 109
+    randomized_subjects: 137
+  exact_package_arguments:
+    h: 0.3113494249059283
+    sig.level: 0.05
+    power: 0.9
+    alternative: two.sided
+  raw_authoritative_outputs:
+    package_n: 108.3927041034043
+    analysis_n: 109
+    achieved_power: 0.9015822588024863
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.3.0
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nloaded via a namespace\
+      \ (and not attached):\n[1] compiler_4.6.1 pwr_1.3-0      jsonlite_2.0.0"
+  integer_analyzable_outputs:
+    total: 109
+    groups:
+      one_sample: 109
+    sequences: null
+  randomized_outputs:
+    total: 137
+  independent_reference:
+    method: independent SciPy/Python analytical equation
+    result: 0.9015822588024862
+    absolute_difference: 1.1102230246251565e-16
+    tolerance: 1.0e-10
+    status: PASS
+  validation_gates:
+    direct_package: PASS
+    independent_reference: PASS
+    allocation_rounding_dropout: PASS
+  runtime_versions:
+    R: R version 4.6.1 (2026-06-24 ucrt)
+    package: 1.3.0
+    Python: 3.12.7
+    SciPy: 1.18.1
+  spec_sha256: sha256:0f274dad14c0b7a2749b4a364177f97c5264796b068106efaf2592decc9389a0
+  implementation_version: round-5.2a
+- id: p1_power
+  test_key: proportion_one
+  solve_mode: power
+  inputs:
+    null_probability: 0.3
+    alternative_probability: 0.45
+    alpha: 0.05
+    alternative: greater
+    analyzable_sample_size: 69
+  validation_status: FROZEN_VALIDATED
+  derived_parameters:
+    signed_cohen_h: 0.3113494249059283
+    analyzable_subjects: 69
+    randomized_subjects: null
+  exact_package_arguments:
+    h: 0.3113494249059283
+    n: 69
+    sig.level: 0.05
+    alternative: greater
+  raw_authoritative_outputs:
+    achieved_power: 0.8267523319177071
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.3.0
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nloaded via a namespace\
+      \ (and not attached):\n[1] compiler_4.6.1 pwr_1.3-0      jsonlite_2.0.0"
+  integer_analyzable_outputs:
+    total: 69
+    groups:
+      one_sample: 69
+    sequences: null
+  randomized_outputs:
+    total: null
+  independent_reference:
+    method: independent SciPy/Python analytical equation
+    result: 0.8267523319177073
+    absolute_difference: 1.1102230246251565e-16
+    tolerance: 1.0e-10
+    status: PASS
+  validation_gates:
+    direct_package: PASS
+    independent_reference: PASS
+    allocation_rounding_dropout: PASS
+  runtime_versions:
+    R: R version 4.6.1 (2026-06-24 ucrt)
+    package: 1.3.0
+    Python: 3.12.7
+    SciPy: 1.18.1
+  spec_sha256: sha256:0f274dad14c0b7a2749b4a364177f97c5264796b068106efaf2592decc9389a0
+  implementation_version: round-5.2a
+- id: paired_required
+  test_key: proportion_paired
+  solve_mode: sample_size
+  inputs:
+    p_treatment_only: 0.2
+    p_control_only: 0.5
+    alpha: 0.05
+    power: 0.8
+    dropout_rate: 0
+  validation_status: FROZEN_VALIDATED
+  derived_parameters:
+    beta: 0.19999999999999996
+    discordance_ratio: 0.4
+    total_discordance_probability: 0.7
+    complete_analyzable_pairs: 59
+    randomized_pairs: 59
+  exact_package_arguments:
+    alpha: 0.05
+    beta: 0.19999999999999996
+    psai: 0.4
+    paid: 0.7
+  raw_authoritative_outputs:
+    package_n: 58.632237910611785
+    analysis_n: 59
+    achieved_power: 0.8025683632434663
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.4.1
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nloaded via a namespace\
+      \ (and not attached):\n[1] compiler_4.6.1  TrialSize_1.4.1 jsonlite_2.0.0 "
+  integer_analyzable_outputs:
+    total: 59
+    groups: null
+    sequences:
+      complete_matched_pairs: 59
+  randomized_outputs:
+    total: 59
+  independent_reference:
+    method: independent SciPy/Python analytical equation
+    result: 0.802568363243466
+    absolute_difference: 2.220446049250313e-16
+    tolerance: 1.0e-10
+    status: PASS
+  validation_gates:
+    direct_package: PASS
+    independent_reference: PASS
+    allocation_rounding_dropout: PASS
+  runtime_versions:
+    R: R version 4.6.1 (2026-06-24 ucrt)
+    package: 1.4.1
+    Python: 3.12.7
+    SciPy: 1.18.1
+  spec_sha256: sha256:134e34cede70059709915a2f4c1e06a9fc978128feb3908b5ed4bbf71f56e1f1
+  implementation_version: round-5.2a
+- id: paired_reverse
+  test_key: proportion_paired
+  solve_mode: sample_size
+  inputs:
+    p_treatment_only: 0.5
+    p_control_only: 0.2
+    alpha: 0.05
+    power: 0.8
+    dropout_rate: 0.1
+  validation_status: FROZEN_VALIDATED
+  derived_parameters:
+    beta: 0.19999999999999996
+    discordance_ratio: 2.5
+    total_discordance_probability: 0.7
+    complete_analyzable_pairs: 59
+    randomized_pairs: 66
+  exact_package_arguments:
+    alpha: 0.05
+    beta: 0.19999999999999996
+    psai: 2.5
+    paid: 0.7
+  raw_authoritative_outputs:
+    package_n: 58.6322379106118
+    analysis_n: 59
+    achieved_power: 0.8025683632434663
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.4.1
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nloaded via a namespace\
+      \ (and not attached):\n[1] compiler_4.6.1  TrialSize_1.4.1 jsonlite_2.0.0 "
+  integer_analyzable_outputs:
+    total: 59
+    groups: null
+    sequences:
+      complete_matched_pairs: 59
+  randomized_outputs:
+    total: 66
+  independent_reference:
+    method: independent SciPy/Python analytical equation
+    result: 0.802568363243466
+    absolute_difference: 2.220446049250313e-16
+    tolerance: 1.0e-10
+    status: PASS
+  validation_gates:
+    direct_package: PASS
+    independent_reference: PASS
+    allocation_rounding_dropout: PASS
+  runtime_versions:
+    R: R version 4.6.1 (2026-06-24 ucrt)
+    package: 1.4.1
+    Python: 3.12.7
+    SciPy: 1.18.1
+  spec_sha256: sha256:134e34cede70059709915a2f4c1e06a9fc978128feb3908b5ed4bbf71f56e1f1
+  implementation_version: round-5.2a
+- id: paired_close
+  test_key: proportion_paired
+  solve_mode: sample_size
+  inputs:
+    p_treatment_only: 0.3
+    p_control_only: 0.2
+    alpha: 0.05
+    power: 0.8
+    dropout_rate: 0.2
+  validation_status: FROZEN_VALIDATED
+  derived_parameters:
+    beta: 0.19999999999999996
+    discordance_ratio: 1.4999999999999998
+    total_discordance_probability: 0.5
+    complete_analyzable_pairs: 391
+    randomized_pairs: 489
+  exact_package_arguments:
+    alpha: 0.05
+    beta: 0.19999999999999996
+    psai: 1.4999999999999998
+    paid: 0.5
+  raw_authoritative_outputs:
+    package_n: 390.0777818507088
+    analysis_n: 391
+    achieved_power: 0.8009318857801138
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.4.1
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nloaded via a namespace\
+      \ (and not attached):\n[1] compiler_4.6.1  TrialSize_1.4.1 jsonlite_2.0.0 "
+  integer_analyzable_outputs:
+    total: 391
+    groups: null
+    sequences:
+      complete_matched_pairs: 391
+  randomized_outputs:
+    total: 489
+  independent_reference:
+    method: independent SciPy/Python analytical equation
+    result: 0.8009318857801135
+    absolute_difference: 2.220446049250313e-16
+    tolerance: 1.0e-10
+    status: PASS
+  validation_gates:
+    direct_package: PASS
+    independent_reference: PASS
+    allocation_rounding_dropout: PASS
+  runtime_versions:
+    R: R version 4.6.1 (2026-06-24 ucrt)
+    package: 1.4.1
+    Python: 3.12.7
+    SciPy: 1.18.1
+  spec_sha256: sha256:134e34cede70059709915a2f4c1e06a9fc978128feb3908b5ed4bbf71f56e1f1
+  implementation_version: round-5.2a
+- id: eq_k1
+  test_key: equivalence
+  solve_mode: sample_size
+  inputs:
+    expected_difference: 0
+    sd: 1
+    equivalence_margin: 0.5
+    allocation_ratio: 1
+    alpha: 0.05
+    power: 0.8
+    dropout_rate: 0
+  validation_status: VALIDATION_PENDING
+  derived_parameters:
+    beta: 0.19999999999999996
+    analyzable_treatment: 69
+    analyzable_control: 69
+    randomized_treatment: 69
+    randomized_control: 69
+  exact_package_arguments:
+    alpha: 0.05
+    beta: 0.19999999999999996
+    sigma: 1
+    k: 1
+    delta: 0.5
+    margin: 0
+  raw_authoritative_outputs:
+    package_n_treatment: 68.51077880534379
+    analysis_n_treatment: 69
+    analysis_n_control: 69
+    achieved_power: 0.8036364154237092
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.4.1
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nloaded via a namespace\
+      \ (and not attached):\n[1] compiler_4.6.1  TrialSize_1.4.1 jsonlite_2.0.0 "
+  integer_analyzable_outputs:
+    total: 138
+    groups:
+      treatment: 69
+      control: 69
+    sequences: null
+  randomized_outputs:
+    total: 138
+  independent_reference:
+    method: independent SciPy/Python analytical equation
+    result: 0.8036364154237088
+    absolute_difference: 4.440892098500626e-16
+    tolerance: 0.02
+    status: PASS
+  validation_gates:
+    direct_package: PASS
+    independent_reference: PASS
+    allocation_rounding_dropout: PASS
+  runtime_versions:
+    R: R version 4.6.1 (2026-06-24 ucrt)
+    package: 1.4.1
+    Python: 3.12.7
+    SciPy: 1.18.1
+  spec_sha256: sha256:0527efeedf99f79edc3fd5935a3545119a6400e9d59f3243453a41939392f904
+  implementation_version: round-5.2a
+- id: eq_k2
+  test_key: equivalence
+  solve_mode: sample_size
+  inputs:
+    expected_difference: 0.1
+    sd: 1
+    equivalence_margin: 0.5
+    allocation_ratio: 2
+    alpha: 0.05
+    power: 0.8
+    dropout_rate: 0.1
+  validation_status: VALIDATION_PENDING
+  derived_parameters:
+    beta: 0.19999999999999996
+    analyzable_treatment: 161
+    analyzable_control: 81
+    randomized_treatment: 179
+    randomized_control: 90
+  exact_package_arguments:
+    alpha: 0.05
+    beta: 0.19999999999999996
+    sigma: 1
+    k: 2
+    delta: 0.5
+    margin: 0.1
+  raw_authoritative_outputs:
+    package_n_treatment: 160.57213782502447
+    analysis_n_treatment: 161
+    analysis_n_control: 81
+    achieved_power: 0.8034682368420658
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.4.1
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nloaded via a namespace\
+      \ (and not attached):\n[1] compiler_4.6.1  TrialSize_1.4.1 jsonlite_2.0.0 "
+  integer_analyzable_outputs:
+    total: 242
+    groups:
+      treatment: 161
+      control: 81
+    sequences: null
+  randomized_outputs:
+    total: 269
+  independent_reference:
+    method: independent SciPy/Python analytical equation
+    result: 0.898841136048079
+    absolute_difference: 0.09537289920601322
+    tolerance: 0.02
+    status: FAIL
+  validation_gates:
+    direct_package: PASS
+    independent_reference: FAIL
+    allocation_rounding_dropout: PASS
+  runtime_versions:
+    R: R version 4.6.1 (2026-06-24 ucrt)
+    package: 1.4.1
+    Python: 3.12.7
+    SciPy: 1.18.1
+  spec_sha256: sha256:0527efeedf99f79edc3fd5935a3545119a6400e9d59f3243453a41939392f904
+  implementation_version: round-5.2a
+- id: eq_khalf
+  test_key: equivalence
+  solve_mode: sample_size
+  inputs:
+    expected_difference: -0.1
+    sd: 1.2
+    equivalence_margin: 0.5
+    allocation_ratio: 0.5
+    alpha: 0.05
+    power: 0.9
+    dropout_rate: 0.2
+  validation_status: VALIDATION_PENDING
+  derived_parameters:
+    beta: 0.09999999999999998
+    analyzable_treatment: 147
+    analyzable_control: 293
+    randomized_treatment: 184
+    randomized_control: 367
+  exact_package_arguments:
+    alpha: 0.05
+    beta: 0.09999999999999998
+    sigma: 1.2
+    k: 0.5
+    delta: 0.5
+    margin: -0.1
+  raw_authoritative_outputs:
+    package_n_treatment: 146.0993465211521
+    analysis_n_treatment: 147
+    analysis_n_control: 293
+    achieved_power: 0.9016900119055906
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.4.1
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nloaded via a namespace\
+      \ (and not attached):\n[1] compiler_4.6.1  TrialSize_1.4.1 jsonlite_2.0.0 "
+  integer_analyzable_outputs:
+    total: 440
+    groups:
+      treatment: 147
+      control: 293
+    sequences: null
+  randomized_outputs:
+    total: 551
+  independent_reference:
+    method: independent SciPy/Python analytical equation
+    result: 0.9503651536552606
+    absolute_difference: 0.048675141749670026
+    tolerance: 0.02
+    status: FAIL
+  validation_gates:
+    direct_package: PASS
+    independent_reference: FAIL
+    allocation_rounding_dropout: PASS
+  runtime_versions:
+    R: R version 4.6.1 (2026-06-24 ucrt)
+    package: 1.4.1
+    Python: 3.12.7
+    SciPy: 1.18.1
+  spec_sha256: sha256:0527efeedf99f79edc3fd5935a3545119a6400e9d59f3243453a41939392f904
+  implementation_version: round-5.2a
+- id: ni_equal
+  test_key: non_inferiority
+  solve_mode: sample_size
+  inputs:
+    control_probability: 0.8
+    treatment_probability: 0.8
+    noninferiority_margin: 0.1
+    allocation_ratio: 1
+    alpha: 0.025
+    power: 0.8
+    dropout_rate: 0
+  validation_status: FROZEN_VALIDATED
+  derived_parameters:
+    beta: 0.19999999999999996
+    expected_risk_difference: 0.0
+    package_margin: -0.1
+    analyzable_treatment: 252
+    analyzable_control: 252
+    randomized_treatment: 252
+    randomized_control: 252
+  exact_package_arguments:
+    alpha: 0.025
+    beta: 0.19999999999999996
+    p1: 0.8
+    p2: 0.8
+    k: 1
+    delta: 0.0
+    margin: -0.1
+  raw_authoritative_outputs:
+    package_n_treatment: 251.16415149917066
+    analysis_n_treatment: 252
+    analysis_n_control: 252
+    achieved_power: 0.8013014554737192
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.4.1
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nloaded via a namespace\
+      \ (and not attached):\n[1] compiler_4.6.1  TrialSize_1.4.1 jsonlite_2.0.0 "
+  integer_analyzable_outputs:
+    total: 504
+    groups:
+      treatment: 252
+      control: 252
+    sequences: null
+  randomized_outputs:
+    total: 504
+  independent_reference:
+    method: independent SciPy/Python analytical equation
+    result: 0.801301455473719
+    absolute_difference: 2.220446049250313e-16
+    tolerance: 1.0e-10
+    status: PASS
+  validation_gates:
+    direct_package: PASS
+    independent_reference: PASS
+    allocation_rounding_dropout: PASS
+  runtime_versions:
+    R: R version 4.6.1 (2026-06-24 ucrt)
+    package: 1.4.1
+    Python: 3.12.7
+    SciPy: 1.18.1
+  spec_sha256: sha256:6a52b794f1910f384bddb35f8764f9aa59db02ed85b03c8c78cfd8948b288c6c
+  implementation_version: round-5.2a
+- id: ni_k2
+  test_key: non_inferiority
+  solve_mode: sample_size
+  inputs:
+    control_probability: 0.8
+    treatment_probability: 0.82
+    noninferiority_margin: 0.1
+    allocation_ratio: 2
+    alpha: 0.025
+    power: 0.9
+    dropout_rate: 0.1
+  validation_status: FROZEN_VALIDATED
+  derived_parameters:
+    beta: 0.09999999999999998
+    expected_risk_difference: 0.019999999999999907
+    package_margin: -0.1
+    analyzable_treatment: 342
+    analyzable_control: 171
+    randomized_treatment: 380
+    randomized_control: 190
+  exact_package_arguments:
+    alpha: 0.025
+    beta: 0.09999999999999998
+    p1: 0.82
+    p2: 0.8
+    k: 2
+    delta: 0.019999999999999907
+    margin: -0.1
+  raw_authoritative_outputs:
+    package_n_treatment: 341.1993766340028
+    analysis_n_treatment: 342
+    analysis_n_control: 171
+    achieved_power: 0.9006654236795095
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.4.1
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nloaded via a namespace\
+      \ (and not attached):\n[1] compiler_4.6.1  TrialSize_1.4.1 jsonlite_2.0.0 "
+  integer_analyzable_outputs:
+    total: 513
+    groups:
+      treatment: 342
+      control: 171
+    sequences: null
+  randomized_outputs:
+    total: 570
+  independent_reference:
+    method: independent SciPy/Python analytical equation
+    result: 0.9006654236795095
+    absolute_difference: 0.0
+    tolerance: 1.0e-10
+    status: PASS
+  validation_gates:
+    direct_package: PASS
+    independent_reference: PASS
+    allocation_rounding_dropout: PASS
+  runtime_versions:
+    R: R version 4.6.1 (2026-06-24 ucrt)
+    package: 1.4.1
+    Python: 3.12.7
+    SciPy: 1.18.1
+  spec_sha256: sha256:6a52b794f1910f384bddb35f8764f9aa59db02ed85b03c8c78cfd8948b288c6c
+  implementation_version: round-5.2a
+- id: ni_khalf
+  test_key: non_inferiority
+  solve_mode: sample_size
+  inputs:
+    control_probability: 0.6
+    treatment_probability: 0.62
+    noninferiority_margin: 0.08
+    allocation_ratio: 0.5
+    alpha: 0.025
+    power: 0.8
+    dropout_rate: 0.2
+  validation_status: FROZEN_VALIDATED
+  derived_parameters:
+    beta: 0.19999999999999996
+    expected_risk_difference: 0.020000000000000018
+    package_margin: -0.08
+    analyzable_treatment: 280
+    analyzable_control: 559
+    randomized_treatment: 350
+    randomized_control: 699
+  exact_package_arguments:
+    alpha: 0.025
+    beta: 0.19999999999999996
+    p1: 0.62
+    p2: 0.6
+    k: 0.5
+    delta: 0.020000000000000018
+    margin: -0.08
+  raw_authoritative_outputs:
+    package_n_treatment: 279.1061633534534
+    analysis_n_treatment: 280
+    analysis_n_control: 559
+    achieved_power: 0.8010163404724914
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.4.1
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nloaded via a namespace\
+      \ (and not attached):\n[1] compiler_4.6.1  TrialSize_1.4.1 jsonlite_2.0.0 "
+  integer_analyzable_outputs:
+    total: 839
+    groups:
+      treatment: 280
+      control: 559
+    sequences: null
+  randomized_outputs:
+    total: 1049
+  independent_reference:
+    method: independent SciPy/Python analytical equation
+    result: 0.801016340472491
+    absolute_difference: 3.3306690738754696e-16
+    tolerance: 1.0e-10
+    status: PASS
+  validation_gates:
+    direct_package: PASS
+    independent_reference: PASS
+    allocation_rounding_dropout: PASS
+  runtime_versions:
+    R: R version 4.6.1 (2026-06-24 ucrt)
+    package: 1.4.1
+    Python: 3.12.7
+    SciPy: 1.18.1
+  spec_sha256: sha256:6a52b794f1910f384bddb35f8764f9aa59db02ed85b03c8c78cfd8948b288c6c
+  implementation_version: round-5.2a
+- id: sup_k1
+  test_key: superiority_margin
+  solve_mode: sample_size
+  inputs:
+    control_probability: 0.4
+    treatment_probability: 0.6
+    superiority_margin: 0.05
+    allocation_ratio: 1
+    alpha: 0.025
+    power: 0.8
+    dropout_rate: 0
+  validation_status: FROZEN_VALIDATED
+  derived_parameters:
+    beta: 0.19999999999999996
+    expected_risk_difference: 0.19999999999999996
+    package_margin: 0.05
+    analyzable_treatment: 168
+    analyzable_control: 168
+    randomized_treatment: 168
+    randomized_control: 168
+  exact_package_arguments:
+    alpha: 0.025
+    beta: 0.19999999999999996
+    p1: 0.6
+    p2: 0.4
+    k: 1
+    delta: 0.19999999999999996
+    margin: 0.05
+  raw_authoritative_outputs:
+    package_n_treatment: 167.4427676661139
+    analysis_n_treatment: 168
+    analysis_n_control: 168
+    achieved_power: 0.801301455473719
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.4.1
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nloaded via a namespace\
+      \ (and not attached):\n[1] compiler_4.6.1  TrialSize_1.4.1 jsonlite_2.0.0 "
+  integer_analyzable_outputs:
+    total: 336
+    groups:
+      treatment: 168
+      control: 168
+    sequences: null
+  randomized_outputs:
+    total: 336
+  independent_reference:
+    method: independent SciPy/Python analytical equation
+    result: 0.8013014554737188
+    absolute_difference: 2.220446049250313e-16
+    tolerance: 1.0e-10
+    status: PASS
+  validation_gates:
+    direct_package: PASS
+    independent_reference: PASS
+    allocation_rounding_dropout: PASS
+  runtime_versions:
+    R: R version 4.6.1 (2026-06-24 ucrt)
+    package: 1.4.1
+    Python: 3.12.7
+    SciPy: 1.18.1
+  spec_sha256: sha256:8e950496d6e99db466ab6838109197778b1d9ed64d07f45f726ed204cf835364
+  implementation_version: round-5.2a
+- id: sup_k2
+  test_key: superiority_margin
+  solve_mode: sample_size
+  inputs:
+    control_probability: 0.3
+    treatment_probability: 0.55
+    superiority_margin: 0.1
+    allocation_ratio: 2
+    alpha: 0.025
+    power: 0.9
+    dropout_rate: 0.1
+  validation_status: FROZEN_VALIDATED
+  derived_parameters:
+    beta: 0.09999999999999998
+    expected_risk_difference: 0.25000000000000006
+    package_margin: 0.1
+    analyzable_treatment: 312
+    analyzable_control: 156
+    randomized_treatment: 347
+    randomized_control: 174
+  exact_package_arguments:
+    alpha: 0.025
+    beta: 0.09999999999999998
+    p1: 0.55
+    p2: 0.3
+    k: 2
+    delta: 0.25000000000000006
+    margin: 0.1
+  raw_authoritative_outputs:
+    package_n_treatment: 311.7202174894048
+    analysis_n_treatment: 312
+    analysis_n_control: 156
+    achieved_power: 0.9002550025132887
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.4.1
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nloaded via a namespace\
+      \ (and not attached):\n[1] compiler_4.6.1  TrialSize_1.4.1 jsonlite_2.0.0 "
+  integer_analyzable_outputs:
+    total: 468
+    groups:
+      treatment: 312
+      control: 156
+    sequences: null
+  randomized_outputs:
+    total: 521
+  independent_reference:
+    method: independent SciPy/Python analytical equation
+    result: 0.9002550025132887
+    absolute_difference: 0.0
+    tolerance: 1.0e-10
+    status: PASS
+  validation_gates:
+    direct_package: PASS
+    independent_reference: PASS
+    allocation_rounding_dropout: PASS
+  runtime_versions:
+    R: R version 4.6.1 (2026-06-24 ucrt)
+    package: 1.4.1
+    Python: 3.12.7
+    SciPy: 1.18.1
+  spec_sha256: sha256:8e950496d6e99db466ab6838109197778b1d9ed64d07f45f726ed204cf835364
+  implementation_version: round-5.2a
+- id: sup_khalf
+  test_key: superiority_margin
+  solve_mode: sample_size
+  inputs:
+    control_probability: 0.45
+    treatment_probability: 0.6
+    superiority_margin: 0.05
+    allocation_ratio: 0.5
+    alpha: 0.025
+    power: 0.8
+    dropout_rate: 0.2
+  validation_status: FROZEN_VALIDATED
+  derived_parameters:
+    beta: 0.19999999999999996
+    expected_risk_difference: 0.14999999999999997
+    package_margin: 0.05
+    analyzable_treatment: 286
+    analyzable_control: 572
+    randomized_treatment: 358
+    randomized_control: 715
+  exact_package_arguments:
+    alpha: 0.025
+    beta: 0.19999999999999996
+    p1: 0.6
+    p2: 0.45
+    k: 0.5
+    delta: 0.14999999999999997
+    margin: 0.05
+  raw_authoritative_outputs:
+    package_n_treatment: 285.5030003369482
+    analysis_n_treatment: 286
+    analysis_n_control: 572
+    achieved_power: 0.80068168468477
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 1.4.1
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nloaded via a namespace\
+      \ (and not attached):\n[1] compiler_4.6.1  TrialSize_1.4.1 jsonlite_2.0.0 "
+  integer_analyzable_outputs:
+    total: 858
+    groups:
+      treatment: 286
+      control: 572
+    sequences: null
+  randomized_outputs:
+    total: 1073
+  independent_reference:
+    method: independent SciPy/Python analytical equation
+    result: 0.8006816846847697
+    absolute_difference: 2.220446049250313e-16
+    tolerance: 1.0e-10
+    status: PASS
+  validation_gates:
+    direct_package: PASS
+    independent_reference: PASS
+    allocation_rounding_dropout: PASS
+  runtime_versions:
+    R: R version 4.6.1 (2026-06-24 ucrt)
+    package: 1.4.1
+    Python: 3.12.7
+    SciPy: 1.18.1
+  spec_sha256: sha256:8e950496d6e99db466ab6838109197778b1d9ed64d07f45f726ed204cf835364
+  implementation_version: round-5.2a
+- id: or_k1
+  test_key: odds_ratio
+  solve_mode: sample_size
+  inputs:
+    control_probability: 0.2
+    alternative_odds_ratio: 2
+    null_odds_ratio: 1
+    allocation_ratio: 1
+    alpha: 0.025
+    power: 0.8
+    dropout_rate: 0
+  validation_status: FROZEN_VALIDATED
+  derived_parameters:
+    alternative_treatment_probability: 0.3333333333333333
+    package_delta0: 0.0
+    package_ratio: 1.0
+    analyzable_treatment: 170
+    analyzable_control: 170
+    analyzable_total: 340
+    randomized_treatment: 170
+    randomized_control: 170
+    package_continuous_total: 339.2398890136635
+    package_continuous_n1: 169.61994450683176
+    package_continuous_n2: 169.61994450683176
+    rounding_increments: 0
+    constrained_null_treatment_probability: 0.26666666666666666
+    constrained_null_control_probability: 0.26666666666666666
+  exact_package_arguments:
+    inverse:
+      p1: 0.3333333333333333
+      p2: 0.2
+      alpha: 0.025
+      beta: 0.19999999999999996
+      delta0: 0.0
+      ratio: 1.0
+      sided: 1
+      outtype: 3
+      scale: OR
+      n: null
+    forward_recheck:
+      p1: 0.3333333333333333
+      p2: 0.2
+      alpha: 0.025
+      delta0: 0.0
+      ratio: analysis_n_control / analysis_n_treatment
+      sided: 1
+      outtype: 3
+      scale: OR
+      n: analysis_n_treatment + analysis_n_control
+  raw_authoritative_outputs:
+    package_total: 339.2398890136635
+    package_n1: 169.61994450683176
+    package_n2: 169.61994450683176
+    analysis_n_treatment: 170
+    analysis_n_control: 170
+    achieved_power: 0.8008619691127892
+    constrained_null_p1: 0.26666666666666666
+    constrained_null_p2: 0.26666666666666666
+    checked_n1: 170
+    checked_n2: 170
+    rounding_increments: 0
+    realized_package_ratio: 1
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 3.11.0
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nloaded via a namespace\
+      \ (and not attached):\n [1] vctrs_0.7.3        gsDesign_3.11.0    cli_3.6.6\
+      \          gt_1.3.0          \n [5] rlang_1.3.0        purrr_1.2.2        generics_0.1.4\
+      \     S7_0.2.2          \n [9] xtable_1.8-8       jsonlite_2.0.0     glue_1.8.1\
+      \         htmltools_0.5.9   \n[13] scales_1.4.0       grid_4.6.1         tibble_3.3.1\
+      \       fastmap_1.2.0     \n[17] lifecycle_1.0.5    compiler_4.6.1     dplyr_1.2.1\
+      \        fs_2.1.0          \n[21] r2rtf_1.3.1        RColorBrewer_1.1-3 pkgconfig_2.0.3\
+      \    tidyr_1.3.2       \n[25] farver_2.1.2       digest_0.6.39      R6_2.6.1\
+      \           tidyselect_1.2.1  \n[29] pillar_1.11.1      magrittr_2.0.5     gtable_0.3.6\
+      \       xml2_1.6.0        \n[33] ggplot2_4.0.3     "
+  integer_analyzable_outputs:
+    total: 340
+    groups:
+      treatment: 170
+      control: 170
+    sequences: null
+  randomized_outputs:
+    total: 340
+  independent_reference:
+    method: independent SciPy/Python analytical equation
+    result:
+      power: 0.8008619691127891
+      p10: 0.26666666666666666
+      p20: 0.26666666666666666
+      sigma0: 4.522670168666454
+      sigma1: 4.636809247747852
+    absolute_difference: 1.1102230246251565e-16
+    tolerance: 1.0e-10
+    status: PASS
+  validation_gates:
+    direct_package: PASS
+    independent_reference: PASS
+    allocation_rounding_dropout: PASS
+  runtime_versions:
+    R: R version 4.6.1 (2026-06-24 ucrt)
+    package: 3.11.0
+    Python: 3.12.7
+    SciPy: 1.18.1
+  spec_sha256: sha256:0f0dbd7f05bdd263fbe5a1eb0611709a025063e896dd7b4d1167abb9aaa46ca1
+  implementation_version: round-5.2b
+- id: or_k2
+  test_key: odds_ratio
+  solve_mode: sample_size
+  inputs:
+    control_probability: 0.2
+    alternative_odds_ratio: 2
+    null_odds_ratio: 1
+    allocation_ratio: 2
+    alpha: 0.025
+    power: 0.8
+    dropout_rate: 0.1
+  validation_status: FROZEN_VALIDATED
+  derived_parameters:
+    alternative_treatment_probability: 0.3333333333333333
+    package_delta0: 0.0
+    package_ratio: 0.50199203187251
+    analyzable_treatment: 251
+    analyzable_control: 126
+    analyzable_total: 377
+    randomized_treatment: 279
+    randomized_control: 140
+    package_continuous_total: 375.02388155508976
+    package_continuous_n1: 250.0159210367265
+    package_continuous_n2: 125.00796051836325
+    rounding_increments: 0
+    constrained_null_treatment_probability: 0.2887709991158267
+    constrained_null_control_probability: 0.2887709991158267
+  exact_package_arguments:
+    inverse:
+      p1: 0.3333333333333333
+      p2: 0.2
+      alpha: 0.025
+      beta: 0.19999999999999996
+      delta0: 0.0
+      ratio: 0.5
+      sided: 1
+      outtype: 3
+      scale: OR
+      n: null
+    forward_recheck:
+      p1: 0.3333333333333333
+      p2: 0.2
+      alpha: 0.025
+      delta0: 0.0
+      ratio: analysis_n_control / analysis_n_treatment
+      sided: 1
+      outtype: 3
+      scale: OR
+      n: analysis_n_treatment + analysis_n_control
+  raw_authoritative_outputs:
+    package_total: 375.02388155508976
+    package_n1: 250.0159210367265
+    package_n2: 125.00796051836325
+    analysis_n_treatment: 251
+    analysis_n_control: 126
+    achieved_power: 0.8024134593691971
+    constrained_null_p1: 0.2887709991158267
+    constrained_null_p2: 0.2887709991158267
+    checked_n1: 251
+    checked_n2: 126.00000000000001
+    rounding_increments: 0
+    realized_package_ratio: 0.50199203187251
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 3.11.0
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nloaded via a namespace\
+      \ (and not attached):\n [1] vctrs_0.7.3        gsDesign_3.11.0    cli_3.6.6\
+      \          gt_1.3.0          \n [5] rlang_1.3.0        purrr_1.2.2        generics_0.1.4\
+      \     S7_0.2.2          \n [9] xtable_1.8-8       jsonlite_2.0.0     glue_1.8.1\
+      \         htmltools_0.5.9   \n[13] scales_1.4.0       grid_4.6.1         tibble_3.3.1\
+      \       fastmap_1.2.0     \n[17] lifecycle_1.0.5    compiler_4.6.1     dplyr_1.2.1\
+      \        fs_2.1.0          \n[21] r2rtf_1.3.1        RColorBrewer_1.1-3 pkgconfig_2.0.3\
+      \    tidyr_1.3.2       \n[25] farver_2.1.2       digest_0.6.39      R6_2.6.1\
+      \           tidyselect_1.2.1  \n[29] pillar_1.11.1      magrittr_2.0.5     gtable_0.3.6\
+      \       xml2_1.6.0        \n[33] ggplot2_4.0.3     "
+  integer_analyzable_outputs:
+    total: 377
+    groups:
+      treatment: 251
+      control: 126
+    sequences: null
+  randomized_outputs:
+    total: 419
+  independent_reference:
+    method: independent SciPy/Python analytical equation
+    result:
+      power: 0.802413459369197
+      p10: 0.2887709991158267
+      p20: 0.2887709991158267
+      sigma0: 4.677757466690688
+      sigma1: 5.045727001020083
+    absolute_difference: 1.1102230246251565e-16
+    tolerance: 1.0e-10
+    status: PASS
+  validation_gates:
+    direct_package: PASS
+    independent_reference: PASS
+    allocation_rounding_dropout: PASS
+  runtime_versions:
+    R: R version 4.6.1 (2026-06-24 ucrt)
+    package: 3.11.0
+    Python: 3.12.7
+    SciPy: 1.18.1
+  spec_sha256: sha256:0f0dbd7f05bdd263fbe5a1eb0611709a025063e896dd7b4d1167abb9aaa46ca1
+  implementation_version: round-5.2b
+- id: or_khalf
+  test_key: odds_ratio
+  solve_mode: sample_size
+  inputs:
+    control_probability: 0.3
+    alternative_odds_ratio: 1.8
+    null_odds_ratio: 1
+    allocation_ratio: 0.5
+    alpha: 0.025
+    power: 0.9
+    dropout_rate: 0.2
+  validation_status: FROZEN_VALIDATED
+  derived_parameters:
+    alternative_treatment_probability: 0.435483870967742
+    package_delta0: 0.0
+    package_ratio: 2.0
+    analyzable_treatment: 200
+    analyzable_control: 400
+    analyzable_total: 600
+    randomized_treatment: 250
+    randomized_control: 500
+    package_continuous_total: 598.6960805471141
+    package_continuous_n1: 199.56536018237136
+    package_continuous_n2: 399.13072036474273
+    rounding_increments: 0
+    constrained_null_treatment_probability: 0.3451612903225807
+    constrained_null_control_probability: 0.3451612903225807
+  exact_package_arguments:
+    inverse:
+      p1: 0.435483870967742
+      p2: 0.3
+      alpha: 0.025
+      beta: 0.09999999999999998
+      delta0: 0.0
+      ratio: 2.0
+      sided: 1
+      outtype: 3
+      scale: OR
+      n: null
+    forward_recheck:
+      p1: 0.435483870967742
+      p2: 0.3
+      alpha: 0.025
+      delta0: 0.0
+      ratio: analysis_n_control / analysis_n_treatment
+      sided: 1
+      outtype: 3
+      scale: OR
+      n: analysis_n_treatment + analysis_n_control
+  raw_authoritative_outputs:
+    package_total: 598.6960805471141
+    package_n1: 199.56536018237136
+    package_n2: 399.13072036474273
+    analysis_n_treatment: 200
+    analysis_n_control: 400
+    achieved_power: 0.9006231421917749
+    constrained_null_p1: 0.3451612903225807
+    constrained_null_p2: 0.3451612903225807
+    checked_n1: 200
+    checked_n2: 400
+    rounding_increments: 0
+    realized_package_ratio: 2
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 3.11.0
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nloaded via a namespace\
+      \ (and not attached):\n [1] vctrs_0.7.3        gsDesign_3.11.0    cli_3.6.6\
+      \          gt_1.3.0          \n [5] rlang_1.3.0        purrr_1.2.2        generics_0.1.4\
+      \     S7_0.2.2          \n [9] xtable_1.8-8       jsonlite_2.0.0     glue_1.8.1\
+      \         htmltools_0.5.9   \n[13] scales_1.4.0       grid_4.6.1         tibble_3.3.1\
+      \       fastmap_1.2.0     \n[17] lifecycle_1.0.5    compiler_4.6.1     dplyr_1.2.1\
+      \        fs_2.1.0          \n[21] r2rtf_1.3.1        RColorBrewer_1.1-3 pkgconfig_2.0.3\
+      \    tidyr_1.3.2       \n[25] farver_2.1.2       digest_0.6.39      R6_2.6.1\
+      \           tidyselect_1.2.1  \n[29] pillar_1.11.1      magrittr_2.0.5     gtable_0.3.6\
+      \       xml2_1.6.0        \n[33] ggplot2_4.0.3     "
+  integer_analyzable_outputs:
+    total: 600
+    groups:
+      treatment: 200
+      control: 400
+    sequences: null
+  randomized_outputs:
+    total: 750
+  independent_reference:
+    method: independent SciPy/Python analytical equation
+    result:
+      power: 0.9006231421917748
+      p10: 0.3451612903225807
+      p20: 0.3451612903225807
+      sigma0: 4.461984352262578
+      sigma1: 4.398412411999555
+    absolute_difference: 1.1102230246251565e-16
+    tolerance: 1.0e-10
+    status: PASS
+  validation_gates:
+    direct_package: PASS
+    independent_reference: PASS
+    allocation_rounding_dropout: PASS
+  runtime_versions:
+    R: R version 4.6.1 (2026-06-24 ucrt)
+    package: 3.11.0
+    Python: 3.12.7
+    SciPy: 1.18.1
+  spec_sha256: sha256:0f0dbd7f05bdd263fbe5a1eb0611709a025063e896dd7b4d1167abb9aaa46ca1
+  implementation_version: round-5.2b
+- id: rr_k1
+  test_key: risk_ratio
+  solve_mode: sample_size
+  inputs:
+    control_probability: 0.2
+    alternative_risk_ratio: 1.75
+    null_risk_ratio: 1
+    allocation_ratio: 1
+    alpha: 0.025
+    power: 0.8
+    dropout_rate: 0
+  validation_status: FROZEN_VALIDATED
+  derived_parameters:
+    alternative_treatment_probability: 0.35000000000000003
+    package_delta0: 0.0
+    package_ratio: 1.0
+    analyzable_treatment: 138
+    analyzable_control: 138
+    analyzable_total: 276
+    randomized_treatment: 138
+    randomized_control: 138
+    package_continuous_total: 275.82950627110944
+    package_continuous_n1: 137.91475313555472
+    package_continuous_n2: 137.91475313555472
+    rounding_increments: 0
+    constrained_null_treatment_probability: 0.275
+    constrained_null_control_probability: 0.275
+  exact_package_arguments:
+    inverse:
+      p1: 0.35000000000000003
+      p2: 0.2
+      alpha: 0.025
+      beta: 0.19999999999999996
+      delta0: 0.0
+      ratio: 1.0
+      sided: 1
+      outtype: 3
+      scale: RR
+      n: null
+    forward_recheck:
+      p1: 0.35000000000000003
+      p2: 0.2
+      alpha: 0.025
+      delta0: 0.0
+      ratio: analysis_n_control / analysis_n_treatment
+      sided: 1
+      outtype: 3
+      scale: RR
+      n: analysis_n_treatment + analysis_n_control
+  raw_authoritative_outputs:
+    package_total: 275.82950627110944
+    package_n1: 137.91475313555472
+    package_n2: 137.91475313555472
+    analysis_n_treatment: 138
+    analysis_n_control: 138
+    achieved_power: 0.8002447205692862
+    constrained_null_p1: 0.275
+    constrained_null_p2: 0.275
+    checked_n1: 138
+    checked_n2: 138
+    rounding_increments: 0
+    realized_package_ratio: 1
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 3.11.0
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nloaded via a namespace\
+      \ (and not attached):\n [1] vctrs_0.7.3        gsDesign_3.11.0    cli_3.6.6\
+      \          gt_1.3.0          \n [5] rlang_1.3.0        purrr_1.2.2        generics_0.1.4\
+      \     S7_0.2.2          \n [9] xtable_1.8-8       jsonlite_2.0.0     glue_1.8.1\
+      \         htmltools_0.5.9   \n[13] scales_1.4.0       grid_4.6.1         tibble_3.3.1\
+      \       fastmap_1.2.0     \n[17] lifecycle_1.0.5    compiler_4.6.1     dplyr_1.2.1\
+      \        fs_2.1.0          \n[21] r2rtf_1.3.1        RColorBrewer_1.1-3 pkgconfig_2.0.3\
+      \    tidyr_1.3.2       \n[25] farver_2.1.2       digest_0.6.39      R6_2.6.1\
+      \           tidyselect_1.2.1  \n[29] pillar_1.11.1      magrittr_2.0.5     gtable_0.3.6\
+      \       xml2_1.6.0        \n[33] ggplot2_4.0.3     "
+  integer_analyzable_outputs:
+    total: 276
+    groups:
+      treatment: 138
+      control: 138
+    sequences: null
+  randomized_outputs:
+    total: 276
+  independent_reference:
+    method: independent SciPy/Python analytical equation
+    result:
+      power: 0.800244720569286
+      p10: 0.27499999999999997
+      p20: 0.27499999999999997
+      sigma0: 0.8930285549745876
+      sigma1: 0.8803408430829505
+    absolute_difference: 2.220446049250313e-16
+    tolerance: 1.0e-10
+    status: PASS
+  validation_gates:
+    direct_package: PASS
+    independent_reference: PASS
+    allocation_rounding_dropout: PASS
+  runtime_versions:
+    R: R version 4.6.1 (2026-06-24 ucrt)
+    package: 3.11.0
+    Python: 3.12.7
+    SciPy: 1.18.1
+  spec_sha256: sha256:7bcd1c4bb46dded29224b317ef6490d5feef0ec60a1c92814ddd6227225fa534
+  implementation_version: round-5.2b
+- id: rr_k2
+  test_key: risk_ratio
+  solve_mode: sample_size
+  inputs:
+    control_probability: 0.2
+    alternative_risk_ratio: 1.75
+    null_risk_ratio: 1
+    allocation_ratio: 2
+    alpha: 0.025
+    power: 0.8
+    dropout_rate: 0.1
+  validation_status: FROZEN_VALIDATED
+  derived_parameters:
+    alternative_treatment_probability: 0.35000000000000003
+    package_delta0: 0.0
+    package_ratio: 0.5023696682464455
+    analyzable_treatment: 211
+    analyzable_control: 106
+    analyzable_total: 317
+    randomized_treatment: 235
+    randomized_control: 118
+    package_continuous_total: 316.36642620600304
+    package_continuous_n1: 210.91095080400203
+    package_continuous_n2: 105.45547540200101
+    rounding_increments: 0
+    constrained_null_treatment_probability: 0.2998422712933754
+    constrained_null_control_probability: 0.2998422712933754
+  exact_package_arguments:
+    inverse:
+      p1: 0.35000000000000003
+      p2: 0.2
+      alpha: 0.025
+      beta: 0.19999999999999996
+      delta0: 0.0
+      ratio: 0.5
+      sided: 1
+      outtype: 3
+      scale: RR
+      n: null
+    forward_recheck:
+      p1: 0.35000000000000003
+      p2: 0.2
+      alpha: 0.025
+      delta0: 0.0
+      ratio: analysis_n_control / analysis_n_treatment
+      sided: 1
+      outtype: 3
+      scale: RR
+      n: analysis_n_treatment + analysis_n_control
+  raw_authoritative_outputs:
+    package_total: 316.36642620600304
+    package_n1: 210.91095080400203
+    package_n2: 105.45547540200101
+    analysis_n_treatment: 211
+    analysis_n_control: 106
+    achieved_power: 0.8015121736634228
+    constrained_null_p1: 0.2998422712933754
+    constrained_null_p2: 0.2998422712933754
+    checked_n1: 211
+    checked_n2: 106
+    rounding_increments: 0
+    realized_package_ratio: 0.5023696682464455
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 3.11.0
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nloaded via a namespace\
+      \ (and not attached):\n [1] vctrs_0.7.3        gsDesign_3.11.0    cli_3.6.6\
+      \          gt_1.3.0          \n [5] rlang_1.3.0        purrr_1.2.2        generics_0.1.4\
+      \     S7_0.2.2          \n [9] xtable_1.8-8       jsonlite_2.0.0     glue_1.8.1\
+      \         htmltools_0.5.9   \n[13] scales_1.4.0       grid_4.6.1         tibble_3.3.1\
+      \       fastmap_1.2.0     \n[17] lifecycle_1.0.5    compiler_4.6.1     dplyr_1.2.1\
+      \        fs_2.1.0          \n[21] r2rtf_1.3.1        RColorBrewer_1.1-3 pkgconfig_2.0.3\
+      \    tidyr_1.3.2       \n[25] farver_2.1.2       digest_0.6.39      R6_2.6.1\
+      \           tidyselect_1.2.1  \n[29] pillar_1.11.1      magrittr_2.0.5     gtable_0.3.6\
+      \       xml2_1.6.0        \n[33] ggplot2_4.0.3     "
+  integer_analyzable_outputs:
+    total: 317
+    groups:
+      treatment: 211
+      control: 106
+    sequences: null
+  randomized_outputs:
+    total: 353
+  independent_reference:
+    method: independent SciPy/Python analytical equation
+    result:
+      power: 0.8015121736634226
+      p10: 0.2998422712933754
+      p20: 0.2998422712933754
+      sigma0: 0.9712017918560164
+      sigma1: 0.9056929201245876
+    absolute_difference: 1.1102230246251565e-16
+    tolerance: 1.0e-10
+    status: PASS
+  validation_gates:
+    direct_package: PASS
+    independent_reference: PASS
+    allocation_rounding_dropout: PASS
+  runtime_versions:
+    R: R version 4.6.1 (2026-06-24 ucrt)
+    package: 3.11.0
+    Python: 3.12.7
+    SciPy: 1.18.1
+  spec_sha256: sha256:7bcd1c4bb46dded29224b317ef6490d5feef0ec60a1c92814ddd6227225fa534
+  implementation_version: round-5.2b
+- id: rr_khalf
+  test_key: risk_ratio
+  solve_mode: sample_size
+  inputs:
+    control_probability: 0.3
+    alternative_risk_ratio: 1.6
+    null_risk_ratio: 1
+    allocation_ratio: 0.5
+    alpha: 0.025
+    power: 0.9
+    dropout_rate: 0.2
+  validation_status: FROZEN_VALIDATED
+  derived_parameters:
+    alternative_treatment_probability: 0.48
+    package_delta0: 0.0
+    package_ratio: 1.9912280701754386
+    analyzable_treatment: 114
+    analyzable_control: 227
+    analyzable_total: 341
+    randomized_treatment: 143
+    randomized_control: 284
+    package_continuous_total: 339.685892983039
+    package_continuous_n1: 113.22863099434635
+    package_continuous_n2: 226.4572619886927
+    rounding_increments: 0
+    constrained_null_treatment_probability: 0.3601759530791789
+    constrained_null_control_probability: 0.3601759530791789
+  exact_package_arguments:
+    inverse:
+      p1: 0.48
+      p2: 0.3
+      alpha: 0.025
+      beta: 0.09999999999999998
+      delta0: 0.0
+      ratio: 2.0
+      sided: 1
+      outtype: 3
+      scale: RR
+      n: null
+    forward_recheck:
+      p1: 0.48
+      p2: 0.3
+      alpha: 0.025
+      delta0: 0.0
+      ratio: analysis_n_control / analysis_n_treatment
+      sided: 1
+      outtype: 3
+      scale: RR
+      n: analysis_n_treatment + analysis_n_control
+  raw_authoritative_outputs:
+    package_total: 339.685892983039
+    package_n1: 113.22863099434635
+    package_n2: 226.4572619886927
+    analysis_n_treatment: 114
+    analysis_n_control: 227
+    achieved_power: 0.901478312426342
+    constrained_null_p1: 0.3601759530791789
+    constrained_null_p2: 0.3601759530791789
+    checked_n1: 114.00000000000001
+    checked_n2: 227.00000000000003
+    rounding_increments: 0
+    realized_package_ratio: 1.9912280701754386
+    warnings: []
+    r_version: R version 4.6.1 (2026-06-24 ucrt)
+    package_version: 3.11.0
+    session_info: "R version 4.6.1 (2026-06-24 ucrt)\nPlatform: x86_64-w64-mingw32/x64\n\
+      Running under: Windows 11 x64 (build 26100)\n\nMatrix products: default\n  LAPACK\
+      \ version 3.12.1\n\nlocale:\n[1] C\nsystem code page: 65001\n\ntime zone: Asia/Shanghai\n\
+      tzcode source: internal\n\nattached base packages:\n[1] stats     graphics \
+      \ grDevices utils     datasets  methods   base     \n\nloaded via a namespace\
+      \ (and not attached):\n [1] vctrs_0.7.3        gsDesign_3.11.0    cli_3.6.6\
+      \          gt_1.3.0          \n [5] rlang_1.3.0        purrr_1.2.2        generics_0.1.4\
+      \     S7_0.2.2          \n [9] xtable_1.8-8       jsonlite_2.0.0     glue_1.8.1\
+      \         htmltools_0.5.9   \n[13] scales_1.4.0       grid_4.6.1         tibble_3.3.1\
+      \       fastmap_1.2.0     \n[17] lifecycle_1.0.5    compiler_4.6.1     dplyr_1.2.1\
+      \        fs_2.1.0          \n[21] r2rtf_1.3.1        RColorBrewer_1.1-3 pkgconfig_2.0.3\
+      \    tidyr_1.3.2       \n[25] farver_2.1.2       digest_0.6.39      R6_2.6.1\
+      \           tidyselect_1.2.1  \n[29] pillar_1.11.1      magrittr_2.0.5     gtable_0.3.6\
+      \       xml2_1.6.0        \n[33] ggplot2_4.0.3     "
+  integer_analyzable_outputs:
+    total: 341
+    groups:
+      treatment: 114
+      control: 227
+    sequences: null
+  randomized_outputs:
+    total: 427
+  independent_reference:
+    method: independent SciPy/Python analytical equation
+    result:
+      power: 0.901478312426342
+      p10: 0.3601759530791788
+      p20: 0.3601759530791788
+      sigma0: 1.0175989752709682
+      sigma1: 1.030569299650377
+    absolute_difference: 0.0
+    tolerance: 1.0e-10
+    status: PASS
+  validation_gates:
+    direct_package: PASS
+    independent_reference: PASS
+    allocation_rounding_dropout: PASS
+  runtime_versions:
+    R: R version 4.6.1 (2026-06-24 ucrt)
+    package: 3.11.0
+    Python: 3.12.7
+    SciPy: 1.18.1
+  spec_sha256: sha256:7bcd1c4bb46dded29224b317ef6490d5feef0ec60a1c92814ddd6227225fa534
+  implementation_version: round-5.2b
