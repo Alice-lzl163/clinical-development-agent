@@ -55,12 +55,13 @@ class Round51SpecificationTests(unittest.TestCase):
         self.assertEqual("two_one_sided_tests", spec["alpha"]["sidedness"])
         alpha = next(item for item in spec["inputs"] if item["name"] == "alpha")
         self.assertIn("One-sided significance level", alpha["definition"])
-        self.assertIn("does not divide", alpha["clinical_interpretation"])
+        self.assertIn("not divided", alpha["clinical_interpretation"])
         mappings = {item["package_argument"]: item["source"] for item in spec["engine"]["parameter_mapping"]}
-        self.assertEqual("allocation_ratio", mappings["k"])
-        self.assertEqual("equivalence_margin", mappings["delta"])
-        self.assertEqual("expected_difference", mappings["margin"])
-        self.assertIn("n1", spec["engine"]["output_mapping"][0]["package_output"])
+        self.assertEqual("lower_equivalence_bound", mappings["theta1"])
+        self.assertEqual("upper_equivalence_bound", mappings["theta2"])
+        self.assertEqual("expected_difference", mappings["theta0"])
+        self.assertEqual("candidate_n_vector", mappings["n"])
+        self.assertEqual("PowerTOST::power.TOST", spec["engine"]["function"])
         self.assertTrue(any("Bioequivalence" in item for item in spec["unsupported_domains"]))
 
     def test_margin_orientation_and_shared_method_identity(self):
@@ -134,7 +135,7 @@ class Round51SpecificationTests(unittest.TestCase):
         self.assertEqual([], registry["installed_unvalidated"])
 
     def test_unsupported_power_mode_benchmarks_do_not_claim_public_power(self):
-        for key in ("proportion_paired", "equivalence", "non_inferiority", "superiority_margin"):
+        for key in ("proportion_paired", "non_inferiority", "superiority_margin"):
             with self.subTest(key=key):
                 spec = self.specs[key]
                 self.assertFalse(spec["solve_modes"]["power"])

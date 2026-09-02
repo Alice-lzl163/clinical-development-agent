@@ -1,237 +1,117 @@
 test_key: equivalence
-method_id: mean_parallel_equivalence_symmetric_normal
-display_name: Two-mean equivalence / TOST
+method_id: mean_parallel_equivalence_symmetric_exact_tost
+display_name: Two-mean parallel equivalence / exact TOST
 endpoint_family: continuous
 design_family: fixed_parallel_equivalence
-estimand: Treatment minus control mean relative to a symmetric equivalence interval
-  (-equivalence_margin, +equivalence_margin).
+estimand: Treatment minus control mean difference relative to symmetric bounds (-equivalence_margin, +equivalence_margin).
 hypothesis:
   'null': mean_difference <= -equivalence_margin OR mean_difference >= equivalence_margin
   alternative: -equivalence_margin < mean_difference < equivalence_margin
   effect_measure: mean_difference
   beneficial_direction: Inside the symmetric equivalence interval.
 inputs:
-- name: expected_difference
-  definition: Expected treatment minus control mean.
-  type: number
-  unit: endpoint units
-  required: true
-  valid_range: null
-  default: null
-  clinical_interpretation: Expected treatment minus control mean.
-  required_for_solve_modes: &id001
-  - sample_size
-  allowed_for_solve_modes: *id001
-- name: sd
-  definition: Common outcome SD.
-  type: number
-  unit: endpoint units
-  required: true
-  valid_range:
-    exclusive_minimum: 0
-  default: null
-  clinical_interpretation: Common outcome SD.
-  required_for_solve_modes: *id001
-  allowed_for_solve_modes: *id001
-- name: equivalence_margin
-  definition: Positive symmetric equivalence-margin magnitude on the original endpoint
-    scale.
-  type: number
-  unit: endpoint units
-  required: true
-  valid_range:
-    exclusive_minimum: 0
-  default: null
-  clinical_interpretation: Positive symmetric equivalence-margin magnitude on the
-    original endpoint scale.
-  required_for_solve_modes: *id001
-  allowed_for_solve_modes: *id001
-- name: allocation_ratio
-  definition: Planned treatment-to-control sample-size ratio n_treatment / n_control.
-  type: number
-  unit: dimensionless
-  required: true
-  valid_range:
-    exclusive_minimum: 0
-  default: 1
-  clinical_interpretation: Planned treatment-to-control sample-size ratio n_treatment
-    / n_control.
-  required_for_solve_modes: *id001
-  allowed_for_solve_modes: *id001
-- name: alpha
-  definition: One-sided significance level used for each component of TOST.
-  type: number
-  unit: dimensionless
-  required: true
-  valid_range:
-    exclusive_minimum: 0
-    exclusive_maximum: 1
-  default: 0.05
-  clinical_interpretation: One-sided type-I error for each of the two component tests;
-    the adapter passes this value directly and does not divide it by two.
-  required_for_solve_modes: *id001
-  allowed_for_solve_modes: *id001
-- name: power
-  definition: Target probability of rejecting the null under the design alternative.
-  type: number
-  unit: dimensionless
-  required: true
-  valid_range:
-    exclusive_minimum: 0
-    exclusive_maximum: 1
-  default: 0.8
-  clinical_interpretation: Target probability of rejecting the null under the design
-    alternative.
-  required_for_solve_modes: *id001
-  allowed_for_solve_modes: *id001
-- name: dropout_rate
-  definition: Expected proportion without an analyzable primary endpoint.
-  type: number
-  unit: dimensionless
-  required: true
-  valid_range:
-    minimum: 0
-    exclusive_maximum: 1
-  default: 0
-  clinical_interpretation: Anticipated loss applied only after the analysis-required
-    sample size is obtained.
-  required_for_solve_modes: *id001
-  allowed_for_solve_modes: *id001
+- {name: expected_difference, definition: Expected treatment minus control mean difference theta on the original endpoint scale., type: number, unit: endpoint units, required: true, valid_range: null, default: null, clinical_interpretation: Design alternative whose absolute value must be strictly below the equivalence margin., required_for_solve_modes: &both [sample_size, power], allowed_for_solve_modes: *both}
+- {name: sd, definition: Common population SD for the two independent groups., type: number, unit: endpoint units, required: true, valid_range: {exclusive_minimum: 0}, default: null, clinical_interpretation: Assumed common variability on the original endpoint scale., required_for_solve_modes: *both, allowed_for_solve_modes: *both}
+- {name: equivalence_margin, definition: Positive magnitude M defining symmetric bounds (-M and +M)., type: number, unit: endpoint units, required: true, valid_range: {exclusive_minimum: 0}, default: null, clinical_interpretation: Largest clinically unimportant absolute treatment-minus-control difference., required_for_solve_modes: *both, allowed_for_solve_modes: *both}
+- {name: allocation_ratio, definition: Planned analyzable treatment-to-control ratio n_treatment / n_control., type: number, unit: dimensionless, required: true, valid_range: {exclusive_minimum: 0}, default: 1, clinical_interpretation: Fixed allocation used by the deterministic sample-size search., required_for_solve_modes: &sample [sample_size], allowed_for_solve_modes: *sample}
+- {name: alpha, definition: One-sided significance level for each TOST component., type: number, unit: dimensionless, required: true, valid_range: {exclusive_minimum: 0, exclusive_maximum: 1}, default: 0.05, clinical_interpretation: Passed directly to PowerTOST and not divided by two., required_for_solve_modes: *both, allowed_for_solve_modes: *both}
+- {name: power, definition: Target joint probability that both one-sided tests reject., type: number, unit: dimensionless, required: true, valid_range: {exclusive_minimum: 0, exclusive_maximum: 1}, default: 0.8, clinical_interpretation: Minimum exact joint TOST power for the final analyzable integer design., required_for_solve_modes: *sample, allowed_for_solve_modes: *sample}
+- {name: dropout_rate, definition: Expected proportion without an analyzable primary endpoint., type: number, unit: dimensionless, required: true, valid_range: {minimum: 0, exclusive_maximum: 1}, default: 0, clinical_interpretation: Applied per arm only after analyzable design acceptance., required_for_solve_modes: *sample, allowed_for_solve_modes: *sample}
+- {name: analyzable_treatment, definition: Integer analyzable treatment-arm participants for forward power., type: integer, unit: participants, required: true, valid_range: {minimum: 2}, default: null, clinical_interpretation: Analysis count and never randomized enrollment., required_for_solve_modes: &forward [power], allowed_for_solve_modes: *forward}
+- {name: analyzable_control, definition: Integer analyzable control-arm participants for forward power., type: integer, unit: participants, required: true, valid_range: {minimum: 2}, default: null, clinical_interpretation: Analysis count and never randomized enrollment., required_for_solve_modes: *forward, allowed_for_solve_modes: *forward}
 alpha:
   sidedness: two_one_sided_tests
-  convention: alpha is the one-sided level for each component of TOST; it is not divided
-    by two by the adapter.
+  convention: alpha is the one-sided level for each component and is passed directly without division.
 allocation:
   ratio_definition: n_treatment / n_control
   supported: true
-  rounding_rule: Return integer arm sizes satisfying allocation; round upward and
-    re-evaluate achieved power.
-solve_modes:
-  sample_size: true
-  power: false
-  events: false
-  operating_characteristics: false
+  rounding_rule: Enumerate control N upward and set treatment N to ceil(allocation_ratio * control N); report the realized ratio.
+solve_modes: {sample_size: true, power: true, events: false, operating_characteristics: false}
 engine:
-  engine_family: trialsize
-  package: TrialSize
-  package_version_policy: Pin exact validated version in the project lockfile; any
-    version change triggers documented revalidation.
-  function: TrialSize::TwoSampleMean.Equivalence
-  parameter_mapping:
-  - package_argument: alpha
-    source_type: clinical_input
-    source: alpha
-    transformation: null
-  - package_argument: beta
-    source_type: derived_parameter
-    source: beta
-    transformation: null
-  - package_argument: sigma
-    source_type: clinical_input
-    source: sd
-    transformation: null
-  - package_argument: k
-    source_type: clinical_input
-    source: allocation_ratio
-    transformation: null
-  - package_argument: delta
-    source_type: clinical_input
-    source: equivalence_margin
-    transformation: null
-  - package_argument: margin
-    source_type: clinical_input
-    source: expected_difference
-    transformation: null
-  output_mapping:
-  - package_output: returned scalar n1
-    semantic_output: analyzable_treatment_sample_size
-    unit: participants in treatment group
   runtime: R
+  engine_family: powertost_exact_tost
+  package: PowerTOST
+  package_version_policy: Pin exact version 1.5.7; this equivalence use requires new method-specific numerical qualification.
+  function: PowerTOST::power.TOST
   formal_arguments:
-  - name: alpha
-    required: true
-    package_default: null
-    semantic_role: Package formal populated from one or more declared user inputs
-      or derived quantities in parameter_mapping.
-  - name: beta
-    required: true
-    package_default: null
-    semantic_role: Package formal populated from one or more declared user inputs
-      or derived quantities in parameter_mapping.
-  - name: sigma
-    required: true
-    package_default: null
-    semantic_role: Package formal populated from one or more declared user inputs
-      or derived quantities in parameter_mapping.
-  - name: k
-    required: true
-    package_default: null
-    semantic_role: Package formal populated from one or more declared user inputs
-      or derived quantities in parameter_mapping.
-  - name: delta
-    required: true
-    package_default: null
-    semantic_role: Package formal populated from one or more declared user inputs
-      or derived quantities in parameter_mapping.
-  - name: margin
-    required: true
-    package_default: null
-    semantic_role: Package formal populated from one or more declared user inputs
-      or derived quantities in parameter_mapping.
-method_type: analytical_asymptotic
-dropout_handling: After analyzable N is determined, inflate each applicable analyzable
-  group or pair total using ceil(n / (1 - dropout_rate)); dropout never changes the
-  statistical calculation.
-rounding_rule: Ceil the authoritative analyzable quantity, derive integer group quantities
-  under the declared allocation, then apply dropout inflation per group; no randomized
-  N is accepted as a power input.
+  - {name: alpha, required: false, package_default: 0.05, semantic_role: One-sided alpha for both TOST components.}
+  - {name: logscale, required: false, package_default: true, semantic_role: Intentionally set false for original-scale differences.}
+  - {name: theta1, required: true, package_default: null, semantic_role: Lower equivalence bound.}
+  - {name: theta2, required: true, package_default: null, semantic_role: Upper equivalence bound.}
+  - {name: theta0, required: true, package_default: null, semantic_role: Expected true treatment-minus-control difference.}
+  - {name: CV, required: true, package_default: null, semantic_role: Common original-scale SD when logscale is false.}
+  - {name: n, required: true, package_default: null, semantic_role: Two parallel-group analyzable counts.}
+  - {name: design, required: false, package_default: 2x2, semantic_role: Intentionally set to parallel.}
+  - {name: method, required: false, package_default: exact, semantic_role: Intentionally set to exact Owen-Q joint TOST power.}
+  - {name: robust, required: false, package_default: false, semantic_role: Intentionally retain ordinary pooled-variance degrees of freedom.}
+  parameter_mapping:
+  - {package_argument: alpha, source_type: clinical_input, source: alpha, transformation: null}
+  - {package_argument: logscale, source_type: constant, source: false, transformation: null}
+  - {package_argument: theta1, source_type: derived_parameter, source: lower_equivalence_bound, transformation: null}
+  - {package_argument: theta2, source_type: derived_parameter, source: upper_equivalence_bound, transformation: null}
+  - {package_argument: theta0, source_type: clinical_input, source: expected_difference, transformation: null}
+  - {package_argument: CV, source_type: clinical_input, source: sd, transformation: Original-scale common SD because logscale is false}
+  - {package_argument: n, source_type: derived_parameter, source: candidate_n_vector, transformation: 'c(analyzable_treatment, analyzable_control); explicit counts in power mode and current search candidate in sample-size mode'}
+  - {package_argument: design, source_type: constant, source: parallel, transformation: null}
+  - {package_argument: method, source_type: constant, source: exact, transformation: null}
+  - {package_argument: robust, source_type: constant, source: false, transformation: null}
+  output_mapping:
+  - {package_output: returned scalar power, semantic_output: achieved_power, unit: probability}
+sample_size_search:
+  minimum_per_arm: 2
+  maximum_per_arm: 1000000
+  enumeration_variable: analyzable_control
+  enumeration_start: minimum_per_arm
+  enumeration_step: 1
+  candidate_mapping: {analyzable_control: enumeration_variable, analyzable_treatment: 'ceil(allocation_ratio * analyzable_control)'}
+  allocation_realization: ceil_treatment_from_control
+  package_evaluation: 'PowerTOST::power.TOST(n=c(analyzable_treatment, analyzable_control))'
+  acceptance_rule: achieved_power >= target_power
+  tie_breaking_rule: first_accepted_control_size
+  failure_behavior: raise_calculation_convergence_error_no_result
+method_type: analytical_exact
+dropout_handling: After exact power accepts integer analyzable arms, inflate each arm with ceil(n/(1-dropout_rate)); randomized N is never used for power.
+rounding_rule: Search integer control N from 2 upward by one, derive treatment N by ceiling the fixed ratio, accept the first exact package power at or above target, then inflate dropout per arm.
 assumptions:
-- The continuous endpoint model and fixed_parallel_equivalence design are correctly
-  specified.
-- All required design-identifying inputs are fixed prospectively and use mutually
-  consistent units, orientation, and analysis populations.
-- The planned primary analysis matches the hypothesis and engine mapping in this specification.
+- Independent normally distributed outcomes with a common population variance and pooled-variance TOST analysis.
+- Treatment-minus-control orientation is fixed for theta and bounds.
+- PowerTOST parallel exact power is invariant to swapping arm-count positions under common variance because its source uses sum(n) and sum(1/n); c(treatment, control) is retained for project traceability.
 unsupported_domains:
-- Asymmetric equivalence bounds; the selected TrialSize function accepts one symmetric
-  delta.
-- Bioequivalence, log-scale ratios, crossover designs, unequal variances, paired means,
-  or covariate-adjusted analyses.
 - abs(expected_difference) >= equivalence_margin.
-- Power solve mode until a matching forward-power method is specified.
+- Bioequivalence or log-scale ratio contracts.
+- Crossover, paired, or repeated-measures designs.
+- Asymmetric equivalence bounds.
+- Unequal population variances or Welch-type TOST.
+- Covariate-adjusted, clustered, stratified, or adaptive analyses.
+- Randomized or dropout-inflated counts supplied to power mode.
 warnings:
-- TrialSize supports a symmetric bound; asymmetric bounds require a separately verified
-  engine and must not be silently symmetrized.
+- TrialSize::TwoSampleMean.Equivalence is historical diagnostic evidence only; its nearest-bound symmetric approximation and allocation labeling do not implement this contract.
+- PowerTOST 1.5.7 has prior project use, but this repaired equivalence mapping remains numerically unvalidated pending a new benchmark.
 validation_grade: V2
-migration_action: KEEP_AND_VALIDATE
+migration_action: REPLACE
 lifecycle_status: VALIDATION_PENDING
-primary_reference: Chow, Shao, Wang & Lokhnygina; Schuirmann (1987)
-package_reference: https://search.r-project.org/CRAN/refmans/TrialSize/html/00Index.html
+primary_reference: Phillips (1990); Diletti, Hauschke and Steinijans (1991); Schuirmann (1987)
+package_reference: https://cran.r-project.org/web/packages/PowerTOST/PowerTOST.pdf
 guideline_reference: ICH E9; ICH E10
 benchmark_requirements:
-- Compare TrialSize with two one-sided noncentral-t calculations and a commercial/textbook
-  benchmark
-- Reproduce official package examples for the pinned version.
-- Independently calculate forward power on a prespecified validation grid and compare
-  it with inverse sample-size results; this validation calculation is not a supported
-  public power solve mode.
-- Verify null-boundary type-I error and clinically relevant alternatives independently.
+- Reproduce PowerTOST 1.5.7 exact power for centered and noncentered theta at allocation ratios 1, 2, and 0.5.
+- Compare exact package power with independent pooled-variance joint-TOST integration and prespecified simulation.
+- Validate search minimality, alpha convention, arm-vector swap invariance, dropout separation, monotonicity, and maximum-bound failure.
+- Create a new equivalence benchmark identifier only after all gates pass; never inherit failed TrialSize diagnostic fixtures.
 specification_status: SPEC_FROZEN
 design_components: []
 derived_parameters:
-- name: beta
-  formula: 1 - power
-  inputs:
-  - power
-  output_unit: probability
+- {name: lower_equivalence_bound, formula: -equivalence_margin, inputs: [equivalence_margin], output_unit: endpoint units, assumptions: [Bounds are symmetric around zero.]}
+- {name: upper_equivalence_bound, formula: equivalence_margin, inputs: [equivalence_margin], output_unit: endpoint units, assumptions: [Bounds are symmetric around zero.]}
+- name: candidate_n_vector
+  formula: c(analyzable_treatment, analyzable_control)
+  inputs: [analyzable_treatment, analyzable_control]
+  output_unit: participants per arm
   assumptions:
-  - TrialSize documents beta as one minus power.
-- name: analyzable_control_sample_size
-  formula: ceil(analyzable_treatment_sample_size / allocation_ratio)
-  inputs:
-  - allocation_ratio
-  output_unit: participants
-  assumptions:
-  - TrialSize 1.4.1 defines k=n1/n2 and returns n1. The project contract assigns
-    n1 to treatment and n2 to control; integer allocation is rechecked after rounding.
-  - TrialSize documentation describes margin as test minus control (mu2-mu1), while
-    its formula uses abs(margin), so sign does not alter the returned sample size.
+  - Sample-size mode uses the current search candidate and power mode uses explicit public analyzable inputs.
+  - PowerTOST source and asymmetric-arm swap checks establish order invariance under the declared common-variance model.
+- {name: analyzable_total, formula: analyzable_treatment + analyzable_control, inputs: [analyzable_treatment, analyzable_control], output_unit: participants, assumptions: [Both counts are analyzable integers.]}
+- {name: realized_allocation_ratio, formula: analyzable_treatment / analyzable_control, inputs: [analyzable_treatment, analyzable_control], output_unit: dimensionless, assumptions: [Finite-integer realization may exceed the planned ratio because treatment is ceiled.]}
+- {name: randomized_treatment, formula: 'ceil(analyzable_treatment / (1 - dropout_rate))', inputs: [analyzable_treatment, dropout_rate], output_unit: participants, assumptions: [Defined after analyzable acceptance in sample-size mode.]}
+- {name: randomized_control, formula: 'ceil(analyzable_control / (1 - dropout_rate))', inputs: [analyzable_control, dropout_rate], output_unit: participants, assumptions: [Defined after analyzable acceptance in sample-size mode.]}
+- {name: randomized_total, formula: randomized_treatment + randomized_control, inputs: [analyzable_treatment, analyzable_control, dropout_rate], output_unit: participants, assumptions: [Operational total is never passed to the power engine.]}

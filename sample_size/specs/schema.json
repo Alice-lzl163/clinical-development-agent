@@ -34,6 +34,7 @@
     "package_reference": {"type": ["string", "null"]},
     "guideline_reference": {"type": "string", "minLength": 1},
     "benchmark_requirements": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+    ,"sample_size_search": {"$ref": "#/$defs/sampleSizeSearch"}
   },
   "$defs": {
     "hypothesis": {
@@ -156,6 +157,23 @@
         {"if": {"properties": {"function": {"type": "string"}}, "required": ["function"]}, "then": {"properties": {"package": {"type": "string", "minLength": 1}, "runtime": {"const": "R"}, "formal_arguments": {"minItems": 1}}}},
         {"if": {"properties": {"runtime": {"const": "NONE"}}, "required": ["runtime"]}, "then": {"properties": {"package": {"type": "null"}, "function": {"type": "null"}, "formal_arguments": {"maxItems": 0}}}}
       ]
+    },
+    "sampleSizeSearch": {
+      "type": "object", "additionalProperties": false,
+      "required": ["minimum_per_arm", "maximum_per_arm", "enumeration_variable", "enumeration_start", "enumeration_step", "candidate_mapping", "allocation_realization", "package_evaluation", "acceptance_rule", "tie_breaking_rule", "failure_behavior"],
+      "properties": {
+        "minimum_per_arm": {"type": "integer", "minimum": 2},
+        "maximum_per_arm": {"type": "integer", "minimum": 2},
+        "enumeration_variable": {"enum": ["analyzable_control"]},
+        "enumeration_start": {"enum": ["minimum_per_arm"]},
+        "enumeration_step": {"const": 1},
+        "candidate_mapping": {"type": "object", "additionalProperties": false, "required": ["analyzable_control", "analyzable_treatment"], "properties": {"analyzable_control": {"const": "enumeration_variable"}, "analyzable_treatment": {"const": "ceil(allocation_ratio * analyzable_control)"}}},
+        "allocation_realization": {"const": "ceil_treatment_from_control"},
+        "package_evaluation": {"const": "PowerTOST::power.TOST(n=c(analyzable_treatment, analyzable_control))"},
+        "acceptance_rule": {"const": "achieved_power >= target_power"},
+        "tie_breaking_rule": {"const": "first_accepted_control_size"},
+        "failure_behavior": {"const": "raise_calculation_convergence_error_no_result"}
+      }
     }
   }
 }
