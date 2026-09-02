@@ -1,5 +1,5 @@
 schema_version: 1
-qualification_round: "4.3"
+qualification_round: "4.4"
 lifecycle_dimensions:
   statistical_specification:
     states:
@@ -22,6 +22,7 @@ benchmark_validated_contract:
 version_policy:
   states:
     MATCHED_VALIDATED_ENVIRONMENT: Exact validated R and package versions.
+    TESTED_COMPATIBLE_VERSION: Different version that passed the required compatibility suite without replacing the canonical environment.
     UNVALIDATED_VERSION: Executable version without runtime-equivalence evidence; warn and withhold BENCHMARK_VALIDATED runtime status.
     INCOMPATIBLE_VERSION: Known incompatible version; fail closed.
   validated:
@@ -53,7 +54,7 @@ method_assessment:
     output_contract_complete: true
     change_control_complete: true
     production_candidate: false
-    remaining_gaps: [incompatible-version registry is empty, cross-operating-system runtime behavior is not evidenced]
+    remaining_gaps: [Linux runtime qualification pending, macOS runtime qualification pending, cross-platform comparison pending]
   - <<: *common
     test_key: ttest_paired
   - <<: *common

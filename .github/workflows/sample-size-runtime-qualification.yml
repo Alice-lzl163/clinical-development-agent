@@ -1,0 +1,78 @@
+name: Sample Size Runtime Qualification
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths: ["sample_size/**", "tests/**", "requirements*.txt", ".github/workflows/sample-size-runtime-qualification.yml"]
+
+jobs:
+  qualify:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12.7"
+          cache: pip
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: "4.6.1"
+          use-public-rspm: true
+      - name: Install exact R dependencies
+        shell: Rscript {0}
+        run: |
+          install.packages("remotes")
+          remotes::install_version("jsonlite", version = "2.0.0", upgrade = "never")
+          remotes::install_version("pwr", version = "1.3.0", upgrade = "never")
+          remotes::install_version("TrialSize", version = "1.4.1", upgrade = "never")
+          remotes::install_version("PowerTOST", version = "1.5.7", upgrade = "never")
+      - name: Install Python validation dependencies
+        run: python -m pip install -r requirements.txt -r requirements-dev.txt
+      - name: Create artifact directory
+        run: python -c "from pathlib import Path; Path('qualification-artifacts').mkdir()"
+      - name: Capture environment probe
+        run: python sample_size/validation/environment_probe.py > qualification-artifacts/environment-probe.json
+      - name: Run frozen numerical qualification
+        run: python sample_size/validation/run_numerical_validation.py --evidence-output qualification-artifacts/numerical-evidence.json > qualification-artifacts/numerical-summary.json
+      - name: Run production qualification tests
+        run: python -m unittest tests.test_production_qualification -v 2>&1 | tee qualification-artifacts/production-tests.txt
+      - name: Run full regression suite
+        run: python -m unittest discover -s tests -v 2>&1 | tee qualification-artifacts/full-tests.txt
+      - name: Capture installed versions
+        shell: Rscript {0}
+        run: |
+          versions <- sapply(c("jsonlite", "pwr", "TrialSize", "PowerTOST"), function(x) as.character(packageVersion(x)))
+          writeLines(jsonlite::toJSON(list(R=R.version.string, platform=R.version$platform, packages=versions), auto_unbox=TRUE, pretty=TRUE), "qualification-artifacts/r-versions.json")
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sample-size-runtime-${{ matrix.os }}
+          path: qualification-artifacts/
+          if-no-files-found: warn
+          retention-days: 30
+
+  compare-platforms:
+    needs: qualify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12.7"}
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: sample-size-runtime-*
+          path: platform-evidence
+      - name: Compare frozen fixture outputs
+        run: python sample_size/validation/compare_platform_evidence.py platform-evidence/*/numerical-evidence.json --output cross-platform-comparison.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sample-size-cross-platform-comparison
+          path: cross-platform-comparison.json
+          if-no-files-found: error
+          retention-days: 30

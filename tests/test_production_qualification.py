@@ -1,4 +1,5 @@
 import json
+import platform
 import subprocess
 import unittest
 from pathlib import Path
@@ -9,6 +10,8 @@ import yaml
 from sample_size import calculate_sample_size
 from sample_size.engines.errors import PackageContractError, PackageExecutionError, RequestValidationError, RuntimeDependencyError
 from sample_size.engines.r_engine import RExecutionEngine
+from sample_size.validation.compare_platform_evidence import compare
+from sample_size.validation.dependency_compatibility import classify_runtime
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -37,6 +40,23 @@ class ProductionQualificationTests(unittest.TestCase):
         self.assertEqual(6, len(data["method_assessment"]))
         self.assertEqual({"ttest_one", "ttest_paired", "ttest_ind", "anova", "proportion_two", "be_tost"}, {m["test_key"] for m in data["method_assessment"]})
         self.assertTrue(all(m["benchmark_validated"] and not m["production_candidate"] for m in data["method_assessment"]))
+
+    def test_dependency_and_os_registries_are_evidence_bounded(self):
+        dependencies = yaml.safe_load((ROOT / "sample_size/validation/dependency_compatibility.yaml").read_text(encoding="utf-8"))
+        self.assertEqual({"pwr", "TrialSize", "PowerTOST", "jsonlite"}, {item["dependency"] for item in dependencies["qualifications"]})
+        self.assertEqual([], dependencies["incompatible_versions"])
+        self.assertTrue(all(item["qualification_status"] == "MATCHED_VALIDATED_ENVIRONMENT" for item in dependencies["qualifications"]))
+        self.assertEqual("UNVALIDATED_VERSION", classify_runtime("pwr", "9.9.9", "R version 4.6.1", operating_system="Windows", architecture="AMD64"))
+        os_data = yaml.safe_load((ROOT / "sample_size/validation/os_qualification.yaml").read_text(encoding="utf-8"))
+        states = {item["operating_system"]: item["qualification_status"] for item in os_data["platforms"]}
+        self.assertEqual({"Windows": "QUALIFIED", "Linux": "UNQUALIFIED", "macOS": "UNQUALIFIED"}, states)
+        self.assertEqual("PENDING", os_data["cross_platform_comparison"]["status"])
+
+    def test_cross_platform_comparator_accepts_identical_evidence(self):
+        evidence = ROOT / "sample_size/validation/round42_evidence.json"
+        result = compare([evidence, evidence])
+        self.assertEqual("PASS", result["status"])
+        self.assertEqual(24, result["fixture_count"])
 
     def test_input_contract_fails_closed(self):
         invalid = [
@@ -79,12 +99,22 @@ class ProductionQualificationTests(unittest.TestCase):
 
     def test_version_match_and_mismatch_reporting(self):
         matched = calculate_sample_size({"test_key": "ttest_one", "parameters": t_parameters()}, engine=StubEngine(valid_raw()))
-        self.assertEqual("MATCHED_VALIDATED_ENVIRONMENT", matched.validation_environment)
-        self.assertEqual("BENCHMARK_VALIDATED", matched.validation_status)
+        expected = "MATCHED_VALIDATED_ENVIRONMENT" if platform.system() == "Windows" and platform.machine().lower() == "amd64" else "UNVALIDATED_VERSION"
+        self.assertEqual(expected, matched.validation_environment)
+        self.assertEqual("BENCHMARK_VALIDATED" if expected.startswith("MATCHED") else "IMPLEMENTED_UNVALIDATED", matched.validation_status)
         mismatch = calculate_sample_size({"test_key": "ttest_one", "parameters": t_parameters()}, engine=StubEngine(valid_raw(package_version="1.3.1")))
         self.assertEqual("UNVALIDATED_VERSION", mismatch.validation_environment)
         self.assertEqual("IMPLEMENTED_UNVALIDATED", mismatch.validation_status)
         self.assertTrue(any("differ" in warning for warning in mismatch.warnings))
+
+    def test_tested_compatible_and_incompatible_states_are_explicit(self):
+        request = {"test_key": "ttest_one", "parameters": t_parameters()}
+        with patch("sample_size.methods.fixed_designs.classify_runtime", return_value="TESTED_COMPATIBLE_VERSION"):
+            result = calculate_sample_size(request, engine=StubEngine(valid_raw(package_version="1.2.9")))
+        self.assertEqual("TESTED_COMPATIBLE_VERSION", result.validation_environment)
+        self.assertEqual("BENCHMARK_VALIDATED", result.validation_status)
+        with patch("sample_size.methods.fixed_designs.classify_runtime", return_value="INCOMPATIBLE_VERSION"), self.assertRaises(PackageExecutionError):
+            calculate_sample_size(request, engine=StubEngine(valid_raw(package_version="0.0.0")))
 
     def test_protocol_ready_output_contract(self):
         result = calculate_sample_size({"test_key": "ttest_one", "parameters": t_parameters()}, engine=StubEngine(valid_raw()))

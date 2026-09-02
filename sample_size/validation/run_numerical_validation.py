@@ -125,7 +125,7 @@ def _monotonicity(engine,key,base):
     return {"status":"PASS" if all(checks.values()) else "FAIL","checks":checks,"observed":{"n_power_80":low.analysis_required_sample_size,"n_power_90":high.analysis_required_sample_size,"n_stricter_alpha":strict_alpha.analysis_required_sample_size,"n_harder_effect":harder.analysis_required_sample_size,"dropout_randomized":[r.randomized_sample_size for r in dropout],"power_n_base":p1.achieved_power,"power_n_larger":p2.achieved_power}}
 
 
-def run(write=False):
+def run(write=False, evidence_output=None):
     environment=probe()
     if environment["rscript"]["status"]!="FOUND": raise RuntimeError("Rscript unavailable")
     if environment["scipy"]["status"]!="FOUND": raise RuntimeError("SciPy unavailable")
@@ -159,10 +159,13 @@ def run(write=False):
                     fixture["expected_raw_package_output"]=result["direct_package"]["raw"]; fixture["expected_analyzable_n"]=agent["analysis_required_sample_size"]; fixture["expected_randomized_n"]=agent["randomized_sample_size"]; fixture["expected_achieved_power"]=agent["achieved_power"]
                 fixture["validation_provenance"]={"R_version":environment["r"]["version"],"package":agent["package"],"package_version":agent["package_version"],"package_function":agent["function"],"package_arguments":agent["package_arguments"],"independent_reference":result["independent_reference"],"validation_date":str(date.today()),"basis_commit":evidence["basis_commit"]}
         FIXTURES.write_text(yaml.safe_dump(fixture_doc,sort_keys=False,allow_unicode=True),encoding="utf-8")
+    if evidence_output:
+        output_path=Path(evidence_output); output_path.parent.mkdir(parents=True,exist_ok=True)
+        output_path.write_text(json.dumps(evidence,indent=2)+"\n",encoding="utf-8")
     return evidence
 
 
 if __name__=="__main__":
-    parser=argparse.ArgumentParser(); parser.add_argument("--write",action="store_true"); args=parser.parse_args()
-    output=run(write=args.write)
+    parser=argparse.ArgumentParser(); parser.add_argument("--write",action="store_true"); parser.add_argument("--evidence-output"); args=parser.parse_args()
+    output=run(write=args.write,evidence_output=args.evidence_output)
     print(json.dumps({"live_execution":output["live_execution"],"method_gates":output["method_gates"],"fixture_statuses":{k:v["status"] for k,v in output["fixtures"].items()}},indent=2))

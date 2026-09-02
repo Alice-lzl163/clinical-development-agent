@@ -30,7 +30,8 @@ Runtime paths fail closed. Missing R or packages, package-contract errors, malfo
 ## Dependency versions
 
 - Exact R 4.6.1 and exact validated method-package version: `MATCHED_VALIDATED_ENVIRONMENT`.
-- A different executable version: `UNVALIDATED_VERSION`, warning emitted, benchmark-equivalence status withheld.
+- A different version that has passed the compatibility suite: `TESTED_COMPATIBLE_VERSION`; it is qualified but does not replace the canonical environment.
+- A different executable version without sufficient evidence: `UNVALIDATED_VERSION`, warning emitted, benchmark-equivalence status withheld.
 - A version entered in the incompatibility registry: `INCOMPATIBLE_VERSION`, execution fails closed.
 
 The validated package versions are pwr 1.3.0, TrialSize 1.4.1, and PowerTOST 1.5.7. The system never installs, upgrades, or downgrades dependencies automatically. The incompatible-version registry is intentionally empty until evidence identifies a version; absence from the registry is not evidence of compatibility.
@@ -45,4 +46,4 @@ Documentation-only formatting or wording changes are `NO_REVALIDATION`. Non-stat
 
 ## Six-method gap assessment
 
-All six Round 4.2 methods remain `BENCHMARK_VALIDATED`; none is a `PRODUCTION_CANDIDATE`. Their statistical, numerical, API, reproducibility, output, and change-control contracts are complete for this assessment. Runtime qualification remains incomplete because no evidence-backed incompatible-version registry exists and Linux/macOS runtime behavior has not been demonstrated. These gaps apply to `ttest_one`, `ttest_paired`, `ttest_ind`, `anova`, `proportion_two`, and `be_tost`.
+All six Round 4.2 methods remain `BENCHMARK_VALIDATED`; none is a `PRODUCTION_CANDIDATE`. Windows is qualified and the empty incompatible-version registry now truthfully records that no incompatibility has been observed. Runtime portability remains incomplete because Linux and macOS have not been executed and reviewed. These gaps apply to `ttest_one`, `ttest_paired`, `ttest_ind`, `anova`, `proportion_two`, and `be_tost`.

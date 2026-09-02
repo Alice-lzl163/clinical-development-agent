@@ -5,10 +5,10 @@ import math
 from sample_size.adapters import PwrAnovaAdapter, PwrTAdapter, PowerTOSTAdapter, TrialSizeProportionAdapter
 from sample_size.agent.result import SampleSizeResult
 from sample_size.engines.errors import PackageExecutionError, RequestValidationError
+from sample_size.validation.dependency_compatibility import classify_runtime
 
 
 _VALIDATED_PACKAGE_VERSIONS = {"pwr": "1.3.0", "TrialSize": "1.4.1", "PowerTOST": "1.5.7"}
-_VALIDATED_R_VERSION = "R version 4.6.1"
 
 
 def _ceil_dropout(n: int, dropout: float) -> int:
@@ -34,13 +34,12 @@ def _result(spec, values, adapter_result, *, solve_mode, analysis_total, randomi
     package = spec["engine"]["package"]
     package_version = str(raw["package_version"])
     r_version = str(raw["r_version"])
-    version_validated = (
-        package_version == _VALIDATED_PACKAGE_VERSIONS.get(package)
-        and r_version.startswith(_VALIDATED_R_VERSION)
-    )
-    validation_status = "BENCHMARK_VALIDATED" if version_validated else "IMPLEMENTED_UNVALIDATED"
-    validation_environment = "MATCHED_VALIDATED_ENVIRONMENT" if version_validated else "UNVALIDATED_VERSION"
-    version_warnings = [] if version_validated else [
+    validation_environment = classify_runtime(package, package_version, r_version)
+    if validation_environment == "INCOMPATIBLE_VERSION":
+        raise PackageExecutionError(f"{package} {package_version} is empirically incompatible with this calculator runtime")
+    version_qualified = validation_environment in {"MATCHED_VALIDATED_ENVIRONMENT", "TESTED_COMPATIBLE_VERSION"}
+    validation_status = "BENCHMARK_VALIDATED" if version_qualified else "IMPLEMENTED_UNVALIDATED"
+    version_warnings = [] if version_qualified else [
         f"Runtime versions differ from the validated R 4.6.1 / {package} "
         f"{_VALIDATED_PACKAGE_VERSIONS.get(package)} environment; numerical validation status is not inherited."
     ]

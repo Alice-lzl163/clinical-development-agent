@@ -1,0 +1,45 @@
+schema_version: 1
+status_definitions:
+  MATCHED_VALIDATED_ENVIRONMENT: Exact canonical environment used to freeze the benchmark.
+  TESTED_COMPATIBLE_VERSION: Different version that passed the required compatibility suite; not canonical.
+  UNVALIDATED_VERSION: Executable version without sufficient qualification evidence.
+  INCOMPATIBLE_VERSION: Empirically incompatible and required to fail closed.
+  NOT_TESTABLE: Candidate could not be installed reproducibly; no compatibility conclusion.
+qualifications:
+  - &canonical
+    dependency: pwr
+    version: "1.3.0"
+    qualification_status: MATCHED_VALIDATED_ENVIRONMENT
+    tested_methods: [ttest_one, ttest_paired, ttest_ind, anova]
+    operating_system: Windows
+    architecture: AMD64
+    runtime: {R: "4.6.1", Python: "3.12.7"}
+    benchmark_id: fixed-design-round4-v1
+    benchmark_result: PASS
+    fixture_count: 16
+    evidence_reference: sample_size/validation/round42_evidence.json
+    observed_difference: All integer outputs exact; floating-point differences within frozen tolerances.
+    qualification_date: "2026-09-02"
+    notes: Canonical Round 4.2 environment.
+  - <<: *canonical
+    dependency: TrialSize
+    version: "1.4.1"
+    tested_methods: [proportion_two]
+    fixture_count: 3
+  - <<: *canonical
+    dependency: PowerTOST
+    version: "1.5.7"
+    tested_methods: [be_tost]
+    fixture_count: 5
+  - <<: *canonical
+    dependency: jsonlite
+    version: "2.0.0"
+    tested_methods: [ttest_one, ttest_paired, ttest_ind, anova, proportion_two, be_tost]
+    fixture_count: 24
+    observed_difference: Serialization and marked JSON transport passed all 114 live R calls.
+adjacent_version_strategy:
+  pwr: {nearest_previous: NOT_TESTABLE, nearest_newer: NOT_TESTABLE, reason: No isolated reproducible adjacent-version runtime was available in this round.}
+  TrialSize: {nearest_previous: NOT_TESTABLE, nearest_newer: NOT_TESTABLE, reason: No isolated reproducible adjacent-version runtime was available in this round.}
+  PowerTOST: {nearest_previous: NOT_TESTABLE, nearest_newer: NOT_TESTABLE, reason: No isolated reproducible adjacent-version runtime was available in this round.}
+  jsonlite: {nearest_previous: NOT_TESTABLE, nearest_newer: NOT_TESTABLE, reason: No isolated reproducible adjacent-version runtime was available in this round.}
+incompatible_versions: []
