@@ -6,11 +6,11 @@ design_family: fixed_parallel
 estimand: Treatment-to-control risk ratio for independent binary outcomes, anchored
   by the control event probability.
 hypothesis:
-  'null': RR = null_risk_ratio
-  alternative: RR = alternative_risk_ratio in the prespecified direction
+  'null': RR <= null_risk_ratio
+  alternative: RR = alternative_risk_ratio > null_risk_ratio
   effect_measure: risk_ratio
-  beneficial_direction: Declared explicitly; ratio greater than one is not automatically
-    favorable.
+  beneficial_direction: Higher success probability is favorable; this frozen contract
+    supports only the one-sided treatment/control RR above the null RR.
 inputs:
 - name: control_probability
   definition: Control event probability anchoring the RR.
@@ -24,6 +24,7 @@ inputs:
   clinical_interpretation: Control event probability anchoring the RR.
   required_for_solve_modes: &id001
   - sample_size
+  - power
   allowed_for_solve_modes: *id001
 - name: alternative_risk_ratio
   definition: Treatment-to-control risk ratio under the alternative.
@@ -83,8 +84,9 @@ inputs:
   default: 0.8
   clinical_interpretation: Target probability of rejecting the null under the design
     alternative.
-  required_for_solve_modes: *id001
-  allowed_for_solve_modes: *id001
+  required_for_solve_modes: &id002
+  - sample_size
+  allowed_for_solve_modes: *id002
 - name: dropout_rate
   definition: Expected proportion without an analyzable primary endpoint.
   type: number
@@ -96,12 +98,35 @@ inputs:
   default: 0
   clinical_interpretation: Anticipated loss applied only after the analysis-required
     sample size is obtained.
-  required_for_solve_modes: *id001
-  allowed_for_solve_modes: *id001
+  required_for_solve_modes: *id002
+  allowed_for_solve_modes: *id002
+- name: analyzable_treatment
+  definition: Number of analyzable participants in the treatment group.
+  type: integer
+  unit: participants
+  required: true
+  valid_range:
+    minimum: 1
+  default: null
+  clinical_interpretation: Treatment participants with analyzable binary outcomes.
+  required_for_solve_modes: &id003
+  - power
+  allowed_for_solve_modes: *id003
+- name: analyzable_control
+  definition: Number of analyzable participants in the control group.
+  type: integer
+  unit: participants
+  required: true
+  valid_range:
+    minimum: 1
+  default: null
+  clinical_interpretation: Control participants with analyzable binary outcomes.
+  required_for_solve_modes: *id003
+  allowed_for_solve_modes: *id003
 alpha:
-  sidedness: one_or_two_sided
-  convention: Overall alpha; one-sided uses alpha and two-sided divides alpha equally
-    between tails.
+  sidedness: one_sided
+  convention: One-sided alpha passed directly with sided=1; only RR greater than the
+    null RR is supported by this frozen orientation.
 allocation:
   ratio_definition: n_treatment / n_control
   supported: true
@@ -109,123 +134,141 @@ allocation:
     re-evaluate achieved power.
 solve_modes:
   sample_size: true
-  power: false
+  power: true
   events: false
   operating_characteristics: false
 engine:
   engine_family: gsdesign
   package: gsDesign
-  package_version_policy: Pin exact validated version in the project lockfile; any
-    version change triggers documented revalidation.
+  package_version_policy: gsDesign 3.11.0 is the exact introspected version and remains
+    INSTALLED_UNVALIDATED until numerical validation; any version change requires
+    contract re-introspection.
   function: gsDesign::nBinomial
   parameter_mapping:
   - package_argument: p1
+    source_type: derived_parameter
+    source: alternative_treatment_probability
+    transformation: Project binds package group 1 to treatment.
+  - package_argument: p2
     source_type: clinical_input
     source: control_probability
-    transformation: null
-  - package_argument: p2
-    source_type: unresolved
-    source: null
-    transformation: Requires live gsDesign introspection; package unavailable locally.
+    transformation: Project binds package group 2 to control.
   - package_argument: beta
-    source_type: unresolved
-    source: null
-    transformation: Requires live gsDesign introspection; package unavailable locally.
+    source_type: derived_parameter
+    source: beta
+    transformation: 1 - power in sample_size mode; ignored when n is supplied in power mode.
   - package_argument: alpha
     source_type: clinical_input
     source: alpha
     transformation: null
   - package_argument: ratio
-    source_type: clinical_input
-    source: allocation_ratio
-    transformation: null
+    source_type: derived_parameter
+    source: package_ratio
+    transformation: 1 / allocation_ratio in sample_size mode; analyzable_control / analyzable_treatment in power mode.
   - package_argument: delta0
-    source_type: unresolved
-    source: null
-    transformation: Requires live gsDesign introspection; package unavailable locally.
+    source_type: derived_parameter
+    source: package_delta0
+    transformation: log(null_risk_ratio)
+  - package_argument: sided
+    source_type: constant
+    source: 1
+    transformation: null
+  - package_argument: outtype
+    source_type: constant
+    source: 3
+    transformation: null
   - package_argument: scale
     source_type: constant
-    source: constant
+    source: RR
     transformation: null
+  - package_argument: n
+    source_type: derived_parameter
+    source: analyzable_total
+    transformation: NULL in sample_size mode; analyzable_treatment + analyzable_control in power mode.
   output_mapping:
-  - package_output: total analyzable sample size
-    semantic_output: n
-    unit: package-defined
+  - package_output: n
+    semantic_output: continuous_total_analyzable_sample_size
+    unit: participants
+  - package_output: n1
+    semantic_output: continuous_treatment_sample_size
+    unit: participants
+  - package_output: n2
+    semantic_output: continuous_control_sample_size
+    unit: participants
+  - package_output: Power
+    semantic_output: achieved_power
+    unit: probability
   runtime: R
   formal_arguments:
   - name: p1
     required: true
     package_default: null
-    semantic_role: Package formal populated from one or more declared user inputs
-      or derived quantities in parameter_mapping.
+    semantic_role: Group 1 alternative event rate; project binds group 1 to treatment.
   - name: p2
     required: true
     package_default: null
-    semantic_role: Package formal populated from one or more declared user inputs
-      or derived quantities in parameter_mapping.
-  - name: beta
-    required: false
-    package_default: '0.1'
-    semantic_role: Package formal populated from one or more declared user inputs
-      or derived quantities in parameter_mapping.
+    semantic_role: Group 2 alternative event rate; project binds group 2 to control.
   - name: alpha
     required: false
     package_default: '0.025'
-    semantic_role: Package formal populated from one or more declared user inputs
-      or derived quantities in parameter_mapping.
-  - name: sided
+    semantic_role: Type-I error interpreted with sided.
+  - name: beta
     required: false
-    package_default: '1'
-    semantic_role: Package-level control/default; the adapter may use it only as declared
-      by the frozen method specification.
+    package_default: '0.1'
+    semantic_role: Type-II error for inverse sample-size mode.
   - name: delta0
     required: false
     package_default: '0'
-    semantic_role: Package formal populated from one or more declared user inputs
-      or derived quantities in parameter_mapping.
+    semantic_role: Natural log of the null group-1/group-2 risk ratio.
   - name: ratio
     required: false
     package_default: '1'
-    semantic_role: Package formal populated from one or more declared user inputs
-      or derived quantities in parameter_mapping.
-  - name: scale
-    required: false
-    package_default: c("Difference", "RR", "OR")
-    semantic_role: Package formal populated from one or more declared user inputs
-      or derived quantities in parameter_mapping.
-  - name: np
+    semantic_role: Sample-size ratio n2/n1.
+  - name: sided
     required: false
     package_default: '1'
-    semantic_role: Package-level control/default; the adapter may use it only as declared
-      by the frozen method specification.
+    semantic_role: One for one-sided or two for two-sided alpha handling.
+  - name: outtype
+    required: false
+    package_default: '1'
+    semantic_role: Output selector; 3 returns total n, n1, n2, and Power.
+  - name: scale
+    required: false
+    package_default: Difference
+    semantic_role: Effect scale; RR is selected explicitly.
+  - name: n
+    required: false
+    package_default: null
+    semantic_role: Total analyzable sample size supplied only for forward-power mode.
 method_type: analytical_asymptotic
 dropout_handling: After analyzable N is determined, inflate each applicable analyzable
   group or pair total using ceil(n / (1 - dropout_rate)); dropout never changes the
   statistical calculation.
 rounding_rule: Ceil the authoritative analyzable quantity, derive integer group quantities
-  under the declared allocation, then apply dropout inflation per group; no randomized
-  N is accepted as a power input.
+  by ceiling package n1 and n2 separately, re-evaluate power using the resulting total
+  and realized n2/n1 ratio, then apply dropout inflation per group; power mode accepts
+  analyzable arm sizes only and never randomized N.
 assumptions:
 - The binary endpoint model and fixed_parallel design are correctly specified.
 - All required design-identifying inputs are fixed prospectively and use mutually
   consistent units, orientation, and analysis populations.
 - The planned primary analysis matches the hypothesis and engine mapping in this specification.
+- Project group 1 is treatment and group 2 is control. gsDesign defines ratio=n2/n1,
+  so package ratio is control/treatment.
+- The one-sided alternative is treatment/control RR greater than null_risk_ratio.
 unsupported_domains:
 - RR without an explicit baseline control probability and null RR.
 - Infeasible derived treatment probability outside (0,1).
 - Logistic-regression, case-control, matched, clustered, stratified, or covariate-adjusted
   designs.
 - Zero-event boundary cases.
-- Power solve mode until gsDesign argument orientation and forward-power semantics
-  are formally verified.
-- Package mapping, scale="RR", delta0, sidedness, alpha, ratio, n, outtype, and output-unit
-  semantics remain unresolved because gsDesign is not installed in the local pinned
-  environment.
+- alternative_risk_ratio <= null_risk_ratio; lower-is-better endpoints must be explicitly
+  recoded to favorable success before use.
+- Two-sided or lower-tail alternatives, continuity correction, and exact tests.
 warnings:
 - 'DO_NOT_REPRODUCE_HISTORICAL_BEHAVIOR: Do not transform the RR to a risk and power
   an arcsine risk-difference surrogate.'
-- Keep this specification DRAFT until live gsDesign::nBinomial introspection resolves
-  every package-level contract item.
+- gsDesign 3.11.0 is installed and contract-introspected but not numerically validated.
 validation_grade: V4
 migration_action: REPLACE
 lifecycle_status: VALIDATION_PENDING
@@ -236,11 +279,10 @@ benchmark_requirements:
 - Reproduce `nBinomial` examples; compare with binomial simulation and an independent
   score-test implementation
 - Reproduce official package examples for the pinned version.
-- Independently calculate forward power on a prespecified validation grid and compare
-  it with inverse sample-size results; this validation calculation is not a supported
-  public power solve mode.
+- Reproduce authoritative forward power by supplying rounded total analyzable n and
+  realized n_control/n_treatment ratio to nBinomial.
 - Verify null-boundary type-I error and clinically relevant alternatives independently.
-specification_status: DRAFT
+specification_status: SPEC_FROZEN
 design_components: []
 derived_parameters:
 - name: beta
@@ -258,3 +300,28 @@ derived_parameters:
   output_unit: probability
   assumptions:
   - Derived probability must be strictly between zero and one.
+- name: package_delta0
+  formula: log(null_risk_ratio)
+  inputs:
+  - null_risk_ratio
+  output_unit: log risk ratio
+  assumptions:
+  - With p1=treatment and p2=control, gsDesign 3.11.0 delta0 is the natural log
+    of the null p1/p2 risk ratio for scale RR.
+- name: package_ratio
+  formula: 'sample_size: 1 / allocation_ratio; power: analyzable_control / analyzable_treatment'
+  inputs:
+  - allocation_ratio
+  - analyzable_treatment
+  - analyzable_control
+  output_unit: dimensionless
+  assumptions:
+  - gsDesign 3.11.0 defines ratio=n2/n1; project n1 is treatment and n2 is control.
+- name: analyzable_total
+  formula: analyzable_treatment + analyzable_control
+  inputs:
+  - analyzable_treatment
+  - analyzable_control
+  output_unit: participants
+  assumptions:
+  - Used only in public power mode together with package_ratio=analyzable_control/analyzable_treatment.

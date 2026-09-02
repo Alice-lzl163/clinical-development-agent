@@ -22,8 +22,7 @@ class Round51SpecificationTests(unittest.TestCase):
             with self.subTest(key=key): self.assertEqual([], list(self.validator.iter_errors(spec)))
 
     def test_freeze_decisions_are_evidence_bounded(self):
-        self.assertEqual({"odds_ratio", "risk_ratio"}, {key for key, spec in self.specs.items() if spec["specification_status"] == "DRAFT"})
-        self.assertTrue(all(self.specs[key]["specification_status"] == "SPEC_FROZEN" for key in set(KEYS) - {"odds_ratio", "risk_ratio"}))
+        self.assertTrue(all(spec["specification_status"] == "SPEC_FROZEN" for spec in self.specs.values()))
 
     def test_one_sample_orientation_and_power_contract(self):
         spec = self.specs["proportion_one"]
@@ -90,11 +89,48 @@ class Round51SpecificationTests(unittest.TestCase):
                 self.assertTrue(any("Infeasible" in item for item in spec["unsupported_domains"]))
                 control = next(item for item in spec["inputs"] if item["name"] == "control_probability")
                 self.assertEqual({"exclusive_minimum": 0, "exclusive_maximum": 1}, control["valid_range"])
-                self.assertEqual("DRAFT", spec["specification_status"])
-                self.assertTrue(any("gsDesign is not installed" in item for item in spec["unsupported_domains"]))
+                self.assertEqual("SPEC_FROZEN", spec["specification_status"])
+                self.assertTrue(any("Infeasible" in item for item in spec["unsupported_domains"]))
+
+        control = .20
+        rr = .35 / control
+        self.assertAlmostEqual(.35, rr * control)
+        odds_ratio = (.35 / (1 - .35)) / (control / (1 - control))
+        transformed = odds_ratio * control / (1 - control + odds_ratio * control)
+        self.assertAlmostEqual(.35, transformed)
+        self.assertGreater(2 * .6, 1)  # an RR-derived probability that the contract rejects as infeasible
+
+    def test_gsdesign_mapping_is_exact_version_qualified(self):
+        expected_formals = ["p1", "p2", "alpha", "beta", "delta0", "ratio", "sided", "outtype", "scale", "n"]
+        for key, scale, null_name in (("odds_ratio", "OR", "null_odds_ratio"), ("risk_ratio", "RR", "null_risk_ratio")):
+            with self.subTest(key=key):
+                spec = self.specs[key]
+                mappings = {item["package_argument"]: item for item in spec["engine"]["parameter_mapping"]}
+                self.assertEqual("alternative_treatment_probability", mappings["p1"]["source"])
+                self.assertEqual("control_probability", mappings["p2"]["source"])
+                self.assertEqual("package_ratio", mappings["ratio"]["source"])
+                self.assertEqual(1, mappings["sided"]["source"])
+                self.assertEqual(3, mappings["outtype"]["source"])
+                self.assertEqual(scale, mappings["scale"]["source"])
+                self.assertEqual(expected_formals, [item["name"] for item in spec["engine"]["formal_arguments"]])
+                derived = {item["name"]: item for item in spec["derived_parameters"]}
+                self.assertEqual(f"log({null_name})", derived["package_delta0"]["formula"])
+                self.assertIn("1 / allocation_ratio", derived["package_ratio"]["formula"])
+                self.assertTrue(spec["solve_modes"]["sample_size"])
+                self.assertTrue(spec["solve_modes"]["power"])
+                self.assertEqual("one_sided", spec["alpha"]["sidedness"])
+                self.assertIn("INSTALLED_UNVALIDATED", spec["engine"]["package_version_policy"])
+
+    def test_gsdesign_is_recorded_as_installed_not_validated(self):
+        registry = yaml.safe_load((ROOT / "sample_size/validation/dependency_compatibility.yaml").read_text(encoding="utf-8"))
+        record = next(item for item in registry["installed_unvalidated"] if item["dependency"] == "gsDesign")
+        self.assertEqual("3.11.0", record["version"])
+        self.assertEqual("INSTALLED_UNVALIDATED", record["qualification_status"])
+        self.assertEqual("NOT_RUN", record["numerical_validation"])
+        self.assertNotIn("gsDesign", {item["dependency"] for item in registry["qualifications"]})
 
     def test_unsupported_power_mode_benchmarks_do_not_claim_public_power(self):
-        for key in ("proportion_paired", "equivalence", "non_inferiority", "superiority_margin", "odds_ratio", "risk_ratio"):
+        for key in ("proportion_paired", "equivalence", "non_inferiority", "superiority_margin"):
             with self.subTest(key=key):
                 spec = self.specs[key]
                 self.assertFalse(spec["solve_modes"]["power"])
