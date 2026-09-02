@@ -39,9 +39,9 @@ jobs:
       - name: Create artifact directory
         run: python -c "from pathlib import Path; Path('qualification-artifacts').mkdir()"
       - name: Capture environment probe
-        run: python sample_size/validation/environment_probe.py > qualification-artifacts/environment-probe.json
+        run: python -m sample_size.validation.environment_probe > qualification-artifacts/environment-probe.json
       - name: Run frozen numerical qualification
-        run: python sample_size/validation/run_numerical_validation.py --evidence-output qualification-artifacts/numerical-evidence.json > qualification-artifacts/numerical-summary.json
+        run: python -m sample_size.validation.run_numerical_validation --evidence-output qualification-artifacts/numerical-evidence.json > qualification-artifacts/numerical-summary.json
       - name: Run production qualification tests
         run: python -m unittest tests.test_production_qualification -v 2>&1 | tee qualification-artifacts/production-tests.txt
       - name: Run full regression suite
@@ -71,7 +71,7 @@ jobs:
           pattern: sample-size-runtime-*
           path: platform-evidence
       - name: Compare frozen fixture outputs
-        run: python sample_size/validation/compare_platform_evidence.py platform-evidence/*/numerical-evidence.json --output cross-platform-comparison.json
+        run: python -m sample_size.validation.compare_platform_evidence platform-evidence/*/numerical-evidence.json --output cross-platform-comparison.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:

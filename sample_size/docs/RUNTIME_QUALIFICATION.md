@@ -24,6 +24,10 @@ Acceptance thresholds were declared before Linux/macOS execution: all analyzable
 
 The GitHub Actions matrix runs local `Rscript` calculations on Windows, Ubuntu, and macOS runners. It installs declared runtimes and exact package versions where the repositories can reproduce them, runs the probe, writes separate numerical evidence (never overwriting Round 4.2 evidence), runs qualification and regression tests, and uploads all artifacts. Failure to install an exact version is a failed/pending CI qualification—not permission to substitute a newer version.
 
+### Round 4.4.1 CI infrastructure correction
+
+The first GitHub-hosted qualification run failed before numerical validation because `run_numerical_validation.py` was executed by file path. In that execution mode Python placed `sample_size/validation` rather than the checkout root on its import path, so `from sample_size import calculate_sample_size` failed. The repository has no installable-package metadata, making an editable installation inappropriate. Package-internal workflow entry points now use `python -m sample_size.validation.<module>` from the checkout root. The failed hosted run is classified as Python package-discovery infrastructure failure: no fixture ran, and it is not an R failure, statistical failure, benchmark failure, or cross-platform discrepancy. Windows, Linux, and macOS qualification require a fresh workflow run after this correction.
+
 ## Production-candidate decision
 
 All six methods remain `BENCHMARK_VALIDATED`. None reaches `PRODUCTION_CANDIDATE` until reviewed Linux and macOS artifacts complete the portability gate and any dependency versions used outside the canonical environment have explicit registry evidence. No method is promoted to `PRODUCTION` in this round.

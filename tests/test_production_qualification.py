@@ -1,6 +1,7 @@
 import json
 import platform
 import subprocess
+import sys
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -35,6 +36,16 @@ def valid_raw(**changes):
 
 
 class ProductionQualificationTests(unittest.TestCase):
+    def test_ci_numerical_entry_point_resolves_package_from_checkout_root(self):
+        environment = dict(__import__("os").environ)
+        environment.pop("PYTHONPATH", None)
+        process = subprocess.run(
+            [sys.executable, "-m", "sample_size.validation.run_numerical_validation", "--help"],
+            cwd=ROOT, env=environment, text=True, capture_output=True, check=False,
+        )
+        self.assertEqual(0, process.returncode, process.stderr)
+        self.assertIn("--evidence-output", process.stdout)
+
     def test_machine_readable_assessment_has_six_unpromoted_methods(self):
         data = yaml.safe_load((ROOT / "sample_size/validation/production_qualification.yaml").read_text(encoding="utf-8"))
         self.assertEqual(6, len(data["method_assessment"]))
