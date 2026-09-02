@@ -84,11 +84,24 @@ class ProductionQualificationTests(unittest.TestCase):
             calculate_sample_size({"test_key": "ttest_one", "solve_mode": "power", "parameters": t_parameters()}, engine=StubEngine(valid_raw()))
 
     def test_missing_runtime_and_package_fail_closed(self):
-        with self.assertRaises(RuntimeDependencyError):
-            RExecutionEngine(rscript=None).execute(package="pwr", function="pwr::pwr.t.test", calculation_code="list()")
+        with patch("sample_size.engines.r_engine.shutil.which", return_value=None) as discovery:
+            engine = RExecutionEngine(rscript=None)
+            self.assertFalse(engine.available)
+            with self.assertRaises(RuntimeDependencyError):
+                engine.execute(package="pwr", function="pwr::pwr.t.test", calculation_code="list()")
+            discovery.assert_called_once_with("Rscript")
         failed = type("P", (), {"returncode": 1, "stdout": "", "stderr": "Error: DEPENDENCY_MISSING: pwr"})()
-        with patch("sample_size.engines.r_engine.subprocess.run", return_value=failed), self.assertRaises(RuntimeDependencyError):
+        with patch("sample_size.engines.r_engine.subprocess.run", return_value=failed) as runner, self.assertRaises(RuntimeDependencyError):
             RExecutionEngine(rscript="Rscript").execute(package="pwr", function="pwr::pwr.t.test", calculation_code="list()")
+        self.assertIn('requireNamespace("pwr"', runner.call_args.kwargs["input"])
+
+    def test_runtime_discovery_result_is_preserved_when_not_injected(self):
+        discovered = str(ROOT / "test-runtime" / "Rscript")
+        with patch("sample_size.engines.r_engine.shutil.which", return_value=discovered) as discovery:
+            engine = RExecutionEngine()
+        discovery.assert_called_once_with("Rscript")
+        self.assertTrue(engine.available)
+        self.assertEqual(discovered, engine.rscript)
 
     def test_malformed_failure_timeout_and_nonfinite_fail_closed(self):
         cases = [
